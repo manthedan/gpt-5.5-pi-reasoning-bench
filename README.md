@@ -20,6 +20,64 @@ npm run bench
 
 Default config compares `off`, `minimal`, `low`, `medium`, and `high` for `openai-codex/gpt-5.5` on three small JS tasks plus three harder open-ended design tasks with smoke tests and human-review rubrics.
 
+## First run results
+
+The first completed run was:
+
+- **Model:** `openai-codex/gpt-5.5`
+- **Tasks:** 6
+- **Reasoning levels:** `off`, `minimal`, `low`, `medium`, `high`
+- **Repetitions:** 1
+- **Total Pi sessions:** 30
+- **Result directory:** `results/2026-04-26T06-22-22-910Z`
+
+### Recommendation
+
+| Rank | Thinking level | Recommendation | Why |
+|---:|---|---|---|
+| 🥇 1 | `low` | **Best default** | Fastest passing level on 5/6 tasks, 100% pass rate, strong on open-ended prompts. |
+| 🥈 2 | `minimal` | **Best cost-sensitive option** | 100% pass rate, often lowest token use, only slightly slower than `low`. |
+| 3 | `off` | **Works, but inefficient on hard tasks** | Passed all tasks, but became very slow and token-heavy on open-ended work. |
+| 4 | `medium` | **Generally dominated** | Passed all tasks, but was much slower and usually more token-heavy than `low`/`minimal`. |
+| 5 | `high` | **Avoid for this workflow** | Failed or timed out on all three open-ended tasks; only 50% pass rate overall. |
+
+### Aggregate comparison
+
+| Thinking | Pass rate | Median time | Total wall time | Median tokens | Total tokens | Notes |
+|---|---:|---:|---:|---:|---:|---|
+| `low` | **100%** | **40.2s** | **3.9 min** | 24.4k | 168k | Best overall balance. |
+| `minimal` | **100%** | 46.8s | 4.9 min | **19.9k** | **165k** | Best efficiency competitor. |
+| `off` | **100%** | 208.6s | 25.4 min | 52.3k | 368k | Correct but wandered on harder tasks. |
+| `medium` | **100%** | 149.3s | 21.5 min | 49.6k | 332k | More expensive without clear benefit. |
+| `high` | 50% | 258.9s | 49.2 min | 8.6k* | 87k* | Failed/timeout-heavy; token numbers are misleadingly low due to early failures. |
+
+\* `high` token counts are not directly comparable because several runs failed or timed out early.
+
+### Per-task comparison
+
+Each cell shows `time / total tokens` for that level. Non-passing runs show their status.
+
+| Task | `off` | `minimal` | `low` | `medium` | `high` | Fastest pass |
+|---|---:|---:|---:|---:|---:|---|
+| Date range bugfix | 15s / 11.4k | 25s / 11.4k | **11s / 10.2k** | 18s / 12.3k | 46s / 28.5k | `low` |
+| LRU cache | 15s / 10.8k | **14s / 10.5k** | 17s / 12.0k | 16s / 12.0k | 19s / 11.6k | `minimal` |
+| Markdown parser refactor | 39s / 31.3k | 31s / 20.0k | **27s / 16.6k** | 53s / 32.9k | 70s / 35.9k | `low` |
+| Workflow orchestrator | 378s / 133.5k | 79s / 69.2k | **57s / 50.4k** | 245s / 140.3k | timeout | `low` |
+| Data quality profiler | 520s / 108.1k | 84s / 33.9k | **69s / 46.2k** | 312s / 68.1k | pi_fail | `low` |
+| Pi session inspector | 554s / 73.3k | 62s / 19.8k | **53s / 32.2k** | 645s / 66.4k | timeout | `low` |
+
+### Open-ended task signal
+
+The three open-ended tasks are the most useful part of the benchmark for comparing reasoning levels.
+
+| Thinking | Open-ended pass rate | Median time | Total time | Median tokens | Interpretation |
+|---|---:|---:|---:|---:|---|
+| `low` | **100%** | **56.7s** | **3.0 min** | 46.2k | Best practical performance. |
+| `minimal` | **100%** | 79.3s | 3.8 min | **33.9k** | Slightly slower, often cheaper. |
+| `off` | **100%** | 519.6s | 24.2 min | 108.1k | Passed, but inefficient. |
+| `medium` | **100%** | 312.3s | 20.0 min | 68.1k | Correct but slow. |
+| `high` | 0% | 908.7s | 47.0 min | 2.8k* | Failed/timed out on all open-ended tasks. |
+
 ## Configuration
 
 Edit `bench.config.json`:
@@ -28,7 +86,7 @@ Edit `bench.config.json`:
 {
   "model": "openai-codex/gpt-5.5",
   "thinkingLevels": ["off", "minimal", "low", "medium", "high"],
-  "repetitions": 3,
+  "repetitions": 1,
   "timeoutSeconds": 900,
   "tasks": [
     "js-date-range-bugfix",
