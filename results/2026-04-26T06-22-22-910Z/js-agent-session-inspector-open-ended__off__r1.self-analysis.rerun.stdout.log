@@ -1,0 +1,104 @@
+Pi session report
+=================
+Time: 2026-04-26T07:21:13.697Z → 2026-04-26T07:22:22.636Z (1m 9s)
+Session: id=019dc8a9-f0d9-77ec-be80-35a3b9d50fe8, cwd=/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/workspaces/js-agent-session-inspector-open-ended__off__r1
+
+Activity
+- Entries: 24 (21 messages)
+- Turns: 1 user, 9 assistant turns, 11 tool results
+- Tools: bash×4, read×4, edit×2, write×1
+- Tokens: 73,326 total (input 14,045, output 7,569, cache read 51,712, cache write 0)
+- Cost: $0
+- Errors: 1 (0 malformed JSONL lines)
+- Files touched/inferred: EVALUATION_RUBRIC.md, package.json, session-inspector.js, session-inspector.test.js
+
+Branch/tree
+- Nodes: 22, roots: 1, leaves: 1, max depth: 21
+- Active path: thinking_level_change:badc983e → user:a1b6a4df → assistant:fd5f2a5d → toolResult:a2c171ea → assistant:fa21e5d8 → toolResult:85f49783 → toolResult:97f1c25d → toolResult:dadcf6e9 → toolResult:6cd3c35d → assistant:36450c0f → toolResult:61787e04 → assistant:d89a0fc1 → toolResult:027b4101 → assistant:f6cab417 → toolResult:2a2b83f1 → assistant:b03d6641 → toolResult:7af4c30e → assistant:fa3b016a → toolResult:4d0f6f8d → assistant:ca2ee900 → toolResult:8003019a → assistant:55e1ce21
+
+Likely productivity signals
+- Touched 4 file(s), suggesting concrete codebase interaction
+- Used tools 11 time(s): bash×4, read×4, edit×2, write×1
+- Tool use per assistant turn: 1.22
+- Active branch contains 22 node(s) with depth 21
+
+Anomalies
+- warning: Node badc983e references missing parent 0d88aeaa
+- warning: 1 errors or malformed records observed
+
+---SELF_ANALYSIS_JSON---
+{
+  "entries": 24,
+  "diagnostics": 0,
+  "metrics": {
+    "entryCount": 24,
+    "messageCount": 21,
+    "userTurns": 1,
+    "assistantTurns": 9,
+    "toolResultCount": 11,
+    "toolCalls": {
+      "bash": 4,
+      "read": 4,
+      "write": 1,
+      "edit": 2
+    },
+    "toolErrors": {
+      "bash": 1
+    },
+    "tokens": {
+      "input": 14045,
+      "output": 7569,
+      "cacheRead": 51712,
+      "cacheWrite": 0
+    },
+    "totalTokens": 73326,
+    "cost": 0,
+    "errorCount": 1,
+    "malformedLineCount": 0,
+    "filesTouched": [
+      "EVALUATION_RUBRIC.md",
+      "package.json",
+      "session-inspector.js",
+      "session-inspector.test.js"
+    ],
+    "filesTouchedByTool": {
+      "read": [
+        "session-inspector.js",
+        "session-inspector.test.js",
+        "package.json",
+        "EVALUATION_RUBRIC.md"
+      ],
+      "message": [
+        "session-inspector.js",
+        "session-inspector.test.js",
+        "package.json",
+        "EVALUATION_RUBRIC.md"
+      ],
+      "write": [
+        "session-inspector.js"
+      ],
+      "edit": [
+        "session-inspector.js",
+        "session-inspector.test.js"
+      ]
+    },
+    "timeRange": {
+      "start": "2026-04-26T07:21:13.697Z",
+      "end": "2026-04-26T07:22:22.636Z",
+      "startMs": 1777188073697,
+      "endMs": 1777188142636
+    },
+    "durationMs": 68939,
+    "stopReasons": {
+      "toolUse": 8,
+      "stop": 1
+    },
+    "session": {
+      "id": "019dc8a9-f0d9-77ec-be80-35a3b9d50fe8",
+      "cwd": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/workspaces/js-agent-session-inspector-open-ended__off__r1",
+      "version": 3
+    },
+    "branchCount": 1,
+    "activePathLength": 22
+  }
+}

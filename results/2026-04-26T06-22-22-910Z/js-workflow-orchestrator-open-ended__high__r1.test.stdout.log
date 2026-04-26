@@ -1,0 +1,100 @@
+TAP version 13
+# Subtest: runs ordered workflow steps and stores outputs
+ok 1 - runs ordered workflow steps and stores outputs
+  ---
+  duration_ms: 2.395541
+  type: 'test'
+  ...
+# Subtest: retries failed steps and records attempts
+not ok 2 - retries failed steps and records attempts
+  ---
+  duration_ms: 2.201
+  type: 'test'
+  location: '/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/workspaces/js-workflow-orchestrator-open-ended__high__r1/orchestrator.test.js:18:1'
+  failureType: 'cancelledByParent'
+  error: 'Promise resolution is still pending but the event loop has already resolved'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    process.emit (node:events:519:28)
+  ...
+# Subtest: honors concurrency limit while processing multiple jobs
+not ok 3 - honors concurrency limit while processing multiple jobs
+  ---
+  duration_ms: 0
+  type: 'test'
+  location: '/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/workspaces/js-workflow-orchestrator-open-ended__high__r1/orchestrator.test.js:30:1'
+  failureType: 'cancelledByParent'
+  error: 'Promise resolution is still pending but the event loop has already resolved'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    process.emit (node:events:519:28)
+  ...
+# Subtest: emits structured lifecycle events
+not ok 4 - emits structured lifecycle events
+  ---
+  duration_ms: 0
+  type: 'test'
+  location: '/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/workspaces/js-workflow-orchestrator-open-ended__high__r1/orchestrator.test.js:41:1'
+  failureType: 'cancelledByParent'
+  error: 'Promise resolution is still pending but the event loop has already resolved'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    process.emit (node:events:519:28)
+  ...
+# Subtest: schedules queued jobs by priority without preempting running work
+not ok 5 - schedules queued jobs by priority without preempting running work
+  ---
+  duration_ms: 0
+  type: 'test'
+  location: '/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/workspaces/js-workflow-orchestrator-open-ended__high__r1/orchestrator.test.js:53:1'
+  failureType: 'cancelledByParent'
+  error: 'Promise resolution is still pending but the event loop has already resolved'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    process.emit (node:events:519:28)
+  ...
+# Subtest: cancels running jobs and frees drain even when a handler ignores the signal
+not ok 6 - cancels running jobs and frees drain even when a handler ignores the signal
+  ---
+  duration_ms: 0
+  type: 'test'
+  location: '/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/workspaces/js-workflow-orchestrator-open-ended__high__r1/orchestrator.test.js:69:1'
+  failureType: 'cancelledByParent'
+  error: 'Promise resolution is still pending but the event loop has already resolved'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    process.emit (node:events:519:28)
+  ...
+# Subtest: enforces step timeouts and records timeout errors
+not ok 7 - enforces step timeouts and records timeout errors
+  ---
+  duration_ms: 0
+  type: 'test'
+  location: '/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/workspaces/js-workflow-orchestrator-open-ended__high__r1/orchestrator.test.js:84:1'
+  failureType: 'cancelledByParent'
+  error: 'Promise resolution is still pending but the event loop has already resolved'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    process.emit (node:events:519:28)
+  ...
+# Subtest: fails missing handlers with inspectable errors
+not ok 8 - fails missing handlers with inspectable errors
+  ---
+  duration_ms: 0
+  type: 'test'
+  location: '/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/workspaces/js-workflow-orchestrator-open-ended__high__r1/orchestrator.test.js:97:1'
+  failureType: 'cancelledByParent'
+  error: 'Promise resolution is still pending but the event loop has already resolved'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    process.emit (node:events:519:28)
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 1
+# fail 0
+# cancelled 7
+# skipped 0
+# todo 0
+# duration_ms 44.799167

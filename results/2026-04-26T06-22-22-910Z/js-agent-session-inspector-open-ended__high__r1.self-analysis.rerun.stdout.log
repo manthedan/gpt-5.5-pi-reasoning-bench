@@ -1,0 +1,986 @@
+Session report
+- Session: id 019dc8be-07f9-729c-94d2-040351315472; cwd /Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/workspaces/js-agent-session-inspector-open-ended__high__r1; version 3
+- Time range: 2026-04-26T07:43:10.338Z → 2026-04-26T07:45:58.152Z (2.8m)
+- Messages: 1 user, 20 assistant turns, 22 tool results (43 messages on active branch)
+- Branching: 43 message nodes, 1 leaves, 0 branch points, max depth 42
+- Usage: 310,877 tokens (in 34,251, out 14,482, cache 262,144); cost $0.00
+- Tools: bash×10, edit×7, read×4, write×1; 1 tool errors; 0 pending results
+- Files touched: EVALUATION_RUBRIC.md (read), package.json (read), session-inspector.js (command/edit/read/write), session-inspector.test.js (command/edit/read)
+- Productivity signals: 15544 tokens/assistant turn; 21/22 tool calls without reported errors; 2 file(s) likely modified; 8.4s per assistant turn elapsed; 1 error-level anomaly to inspect
+- Anomalies (2):
+  • orphan node: Message ac173da4 references missing parent b0f87fde
+  • tool error: Tool bash returned an error
+
+
+---SELF_ANALYSIS_JSON---
+{
+  "entries": 46,
+  "diagnostics": 0,
+  "metrics": {
+    "entryCount": 46,
+    "messageCount": 43,
+    "activeBranchMessages": 43,
+    "userTurns": 1,
+    "assistantTurns": 20,
+    "toolResults": 22,
+    "toolCallCount": 22,
+    "toolCalls": {
+      "bash": 10,
+      "read": 4,
+      "write": 1,
+      "edit": 7
+    },
+    "toolCallsByName": {
+      "bash": 10,
+      "read": 4,
+      "write": 1,
+      "edit": 7
+    },
+    "toolErrors": 1,
+    "pendingToolCalls": 0,
+    "unmatchedToolResults": 0,
+    "errorCount": 1,
+    "parseErrorCount": 0,
+    "tokens": {
+      "input": 34251,
+      "output": 14482,
+      "cacheRead": 262144,
+      "cacheWrite": 0,
+      "total": 310877
+    },
+    "totalTokens": 310877,
+    "cost": 0,
+    "startTime": "2026-04-26T07:43:10.338Z",
+    "endTime": "2026-04-26T07:45:58.152Z",
+    "durationMs": 167814,
+    "toolCallsDetailed": [
+      {
+        "id": "call_HEHhtP87x3bWB78IaJxN1ST9|fc_089a3eb9c01580ba0169edc212847c81939adbe3c34e7c5771",
+        "name": "bash",
+        "arguments": {
+          "command": "ls"
+        },
+        "raw": {
+          "type": "toolCall",
+          "id": "call_HEHhtP87x3bWB78IaJxN1ST9|fc_089a3eb9c01580ba0169edc212847c81939adbe3c34e7c5771",
+          "name": "bash",
+          "arguments": {
+            "command": "ls"
+          }
+        }
+      },
+      {
+        "id": "call_D9JkaKyHdIJQDbfu8sM12Osa|fc_089a3eb9c01580ba0169edc213ee48819382fb2115cc8c8f09",
+        "name": "read",
+        "arguments": {
+          "path": "session-inspector.js"
+        },
+        "raw": {
+          "type": "toolCall",
+          "id": "call_D9JkaKyHdIJQDbfu8sM12Osa|fc_089a3eb9c01580ba0169edc213ee48819382fb2115cc8c8f09",
+          "name": "read",
+          "arguments": {
+            "path": "session-inspector.js"
+          }
+        }
+      },
+      {
+        "id": "call_7FTItW4MpKT7YSH13igaP3oD|fc_089a3eb9c01580ba0169edc213ee588193b7776ca84b567c44",
+        "name": "read",
+        "arguments": {
+          "path": "session-inspector.test.js"
+        },
+        "raw": {
+          "type": "toolCall",
+          "id": "call_7FTItW4MpKT7YSH13igaP3oD|fc_089a3eb9c01580ba0169edc213ee588193b7776ca84b567c44",
+          "name": "read",
+          "arguments": {
+            "path": "session-inspector.test.js"
+          }
+        }
+      },
+      {
+        "id": "call_GEMg4hJwKfgDk88CenNXW7NU|fc_089a3eb9c01580ba0169edc213ee6481939a2e7f81c0aa3990",
+        "name": "read",
+        "arguments": {
+          "path": "package.json"
+        },
+        "raw": {
+          "type": "toolCall",
+          "id": "call_GEMg4hJwKfgDk88CenNXW7NU|fc_089a3eb9c01580ba0169edc213ee6481939a2e7f81c0aa3990",
+          "name": "read",
+          "arguments": {
+            "path": "package.json"
+          }
+        }
+      },
+      {
+        "id": "call_u45K2ycwRYuwaetxk87LC5Qj|fc_089a3eb9c01580ba0169edc213ee6c81939804551102668d2c",
+        "name": "read",
+        "arguments": {
+          "path": "EVALUATION_RUBRIC.md"
+        },
+        "raw": {
+          "type": "toolCall",
+          "id": "call_u45K2ycwRYuwaetxk87LC5Qj|fc_089a3eb9c01580ba0169edc213ee6c81939804551102668d2c",
+          "name": "read",
+          "arguments": {
+            "path": "EVALUATION_RUBRIC.md"
+          }
+        }
+      },
+      {
+        "id": "call_sM0PjKNaWVfaP2IGfH7dXxf7|fc_089a3eb9c01580ba0169edc21b864881938a8740107d92972f",
+        "name": "bash",
+        "arguments": {
+          "command": "node -e \"console.log(Number((0.01+0.02).toFixed(12)))\""
+        },
+        "raw": {
+          "type": "toolCall",
+          "id": "call_sM0PjKNaWVfaP2IGfH7dXxf7|fc_089a3eb9c01580ba0169edc21b864881938a8740107d92972f",
+          "name": "bash",
+          "arguments": {
+            "command": "node -e \"console.log(Number((0.01+0.02).toFixed(12)))\""
+          }
+        }
+      },
+      {
+        "id": "call_Lak8nGBezONDUWAUNfFXOBhw|fc_089a3eb9c01580ba0169edc23789d48193b13213ef690f651c",
+        "name": "write",
+        "arguments": {
+          "path": "session-inspector.js",
+          "content": "const ROLE_ASSISTANT = 'assistant';\nconst ROLE_USER = 'user';\nconst ROLE_TOOL_RESULT = 'toolResult';\n\n/**\n * Parse a Pi-style JSONL session.\n *\n * The parser is deliberately forgiving: malformed records are skipped and\n * reported with line numbers, while valid lines are returned unchanged. Blank\n * lines are ignored by default because real logs often end with a newline or\n * contain occasional spacing from manual edits.\n *\n * @param {string|Buffer} text JSONL text\n * @param {{ includeBlankDiagnostics?: boolean }} [options]\n * @returns {{ entries: any[], diagnostics: Array<object>, lineMap: Array<object> }}\n */\nexport function parseSessionJsonl(text, options = {}) {\n  const source = Buffer.isBuffer(text) ? text.toString('utf8') : String(text ?? '');\n  const lines = source.split(/\\r?\\n/);\n  const entries = [];\n  const diagnostics = [];\n  const lineMap = [];\n\n  for (let index = 0; index < lines.length; index += 1) {\n    const line = lines[index];\n    const lineNumber = index + 1;\n\n    // Ignore the final empty line from a trailing newline, and by default all\n    // blank lines. Keep an opt-in diagnostic for callers that need strict JSONL.\n    if (line.trim() === '') {\n      if (options.includeBlankDiagnostics && !(index === lines.length - 1 && line === '')) {\n        diagnostics.push({\n          type: 'blank-line',\n          severity: 'info',\n          line: lineNumber,\n          message: 'Blank line ignored',\n          raw: line\n        });\n      }\n      lineMap.push({ line: lineNumber, raw: line, skipped: true });\n      continue;\n    }\n\n    try {\n      const entry = JSON.parse(line);\n      entries.push(entry);\n      lineMap.push({ line: lineNumber, raw: line, entry });\n    } catch (error) {\n      diagnostics.push({\n        type: 'malformed-json',\n        severity: 'error',\n        line: lineNumber,\n        column: extractJsonErrorColumn(error),\n        message: error instanceof Error ? error.message : String(error),\n        raw: line\n      });\n      lineMap.push({ line: lineNumber, raw: line, error });\n    }\n  }\n\n  return { entries, diagnostics, lineMap };\n}\n\n/**\n * Analyze parsed session entries and derive branch/tree, metrics and anomalies.\n *\n * Accepts either an array of entries or the full object returned by\n * parseSessionJsonl(). Diagnostics may be passed separately for backwards- and\n * test-friendly usage.\n *\n * @param {any[]|{ entries: any[], diagnostics?: Array<object> }} entriesOrParsed\n * @param {Array<object>} [diagnostics]\n * @param {{ activeLeafId?: string }} [options]\n */\nexport function analyzeSession(entriesOrParsed, diagnostics = [], options = {}) {\n  const parsedInput = Array.isArray(entriesOrParsed)\n    ? { entries: entriesOrParsed, diagnostics }\n    : { entries: entriesOrParsed?.entries ?? [], diagnostics: entriesOrParsed?.diagnostics ?? diagnostics };\n\n  const entries = parsedInput.entries;\n  const parseDiagnostics = parsedInput.diagnostics ?? [];\n  const anomalies = parseDiagnostics.map(diagnostic => ({\n    type: diagnostic.type ?? 'diagnostic',\n    severity: diagnostic.severity ?? 'warning',\n    line: diagnostic.line,\n    message: diagnostic.message ?? String(diagnostic),\n    diagnostic\n  }));\n\n  const session = extractSessionInfo(entries);\n  const tree = buildMessageTree(entries, anomalies, options);\n  const metrics = computeMetrics(entries, tree, parseDiagnostics, anomalies);\n  const signals = computeSignals(metrics, tree, anomalies);\n\n  return {\n    entries,\n    diagnostics: parseDiagnostics,\n    session,\n    tree,\n    metrics,\n    anomalies,\n    signals\n  };\n}\n\n/**\n * Format a concise human-readable session report.\n *\n * @param {ReturnType<typeof analyzeSession>} analysis\n * @param {{ maxAnomalies?: number, maxFiles?: number }} [options]\n */\nexport function formatReport(analysis, options = {}) {\n  const maxAnomalies = options.maxAnomalies ?? 8;\n  const maxFiles = options.maxFiles ?? 10;\n  const metrics = analysis?.metrics ?? {};\n  const tree = analysis?.tree ?? {};\n  const session = analysis?.session ?? {};\n  const anomalies = analysis?.anomalies ?? [];\n  const signals = analysis?.signals ?? [];\n\n  const lines = [];\n  lines.push('Session report');\n\n  const sessionParts = [];\n  if (session.id) sessionParts.push(`id ${session.id}`);\n  if (session.cwd) sessionParts.push(`cwd ${session.cwd}`);\n  if (session.version !== undefined) sessionParts.push(`version ${session.version}`);\n  if (sessionParts.length > 0) lines.push(`- Session: ${sessionParts.join('; ')}`);\n\n  lines.push(`- Time range: ${formatTimeRange(metrics.startTime, metrics.endTime, metrics.durationMs)}`);\n  lines.push(\n    `- Messages: ${metrics.userTurns ?? 0} user, ${metrics.assistantTurns ?? 0} assistant turns, ` +\n    `${metrics.toolResults ?? 0} tool results (${metrics.activeBranchMessages ?? 0} messages on active branch)`\n  );\n  lines.push(\n    `- Branching: ${tree.nodeCount ?? 0} message nodes, ${tree.leafCount ?? 0} leaves, ` +\n    `${tree.branchCount ?? 0} branch points, max depth ${tree.maxDepth ?? 0}`\n  );\n\n  const tokens = metrics.tokens ?? {};\n  lines.push(\n    `- Usage: ${formatNumber(metrics.totalTokens ?? tokens.total ?? 0)} tokens` +\n    ` (in ${formatNumber(tokens.input ?? 0)}, out ${formatNumber(tokens.output ?? 0)}, cache ${formatNumber((tokens.cacheRead ?? 0) + (tokens.cacheWrite ?? 0))}); ` +\n    `cost ${formatCurrency(metrics.cost ?? 0)}`\n  );\n\n  lines.push(`- Tools: ${formatToolCalls(metrics.toolCalls)}; ${metrics.toolErrors ?? 0} tool errors; ${metrics.pendingToolCalls ?? 0} pending results`);\n\n  const files = metrics.filesTouched ?? [];\n  if (files.length > 0) {\n    const rendered = files.slice(0, maxFiles).map(file => {\n      const detail = metrics.fileTouchDetails?.[file];\n      const ops = detail?.operations?.length ? ` (${detail.operations.join('/')})` : '';\n      return `${file}${ops}`;\n    });\n    const suffix = files.length > maxFiles ? `, +${files.length - maxFiles} more` : '';\n    lines.push(`- Files touched: ${rendered.join(', ')}${suffix}`);\n  } else {\n    lines.push('- Files touched: none inferred');\n  }\n\n  if (signals.length > 0) lines.push(`- Productivity signals: ${signals.join('; ')}`);\n\n  if (anomalies.length > 0) {\n    lines.push(`- Anomalies (${anomalies.length}):`);\n    for (const anomaly of anomalies.slice(0, maxAnomalies)) {\n      const location = anomaly.line ? `line ${anomaly.line}: ` : '';\n      lines.push(`  • ${location}${anomaly.message}`);\n    }\n    if (anomalies.length > maxAnomalies) lines.push(`  • … ${anomalies.length - maxAnomalies} more`);\n  } else {\n    lines.push('- Anomalies: none detected');\n  }\n\n  return `${lines.join('\\n')}\\n`;\n}\n\nexport function buildMessageTree(entries, anomalies = [], options = {}) {\n  const nodes = [];\n  const idToNode = new Map();\n  const duplicateCounts = new Map();\n\n  entries.forEach((entry, order) => {\n    if (!isMessageEntry(entry)) return;\n\n    const message = getMessage(entry);\n    const originalId = firstString(entry.id, message.id, entry.messageId, message.messageId);\n    const id = originalId ?? `__message_${order + 1}`;\n    const duplicateNumber = duplicateCounts.get(id) ?? 0;\n    duplicateCounts.set(id, duplicateNumber + 1);\n\n    if (duplicateNumber > 0) {\n      anomalies.push({\n        type: 'duplicate-id',\n        severity: 'warning',\n        message: `Duplicate message id \"${id}\" encountered; keeping both nodes but parent links target the first occurrence`,\n        entry\n      });\n    }\n\n    if (!originalId) {\n      anomalies.push({\n        type: 'missing-id',\n        severity: 'warning',\n        message: `Message at entry ${order + 1} has no id; generated ${id}`,\n        entry\n      });\n    }\n\n    const node = {\n      key: duplicateNumber > 0 ? `${id}#${duplicateNumber + 1}` : id,\n      id,\n      parentId: normalizeParentId(entry.parentId ?? message.parentId ?? entry.parent_id ?? message.parent_id),\n      entry,\n      message,\n      role: normalizeRole(message.role ?? entry.role ?? entry.type),\n      timestampMs: extractTimestampMs(entry, message),\n      order,\n      children: [],\n      parent: null,\n      depth: 0\n    };\n\n    nodes.push(node);\n    if (!idToNode.has(id)) idToNode.set(id, node);\n  });\n\n  for (const node of nodes) {\n    if (!node.parentId) continue;\n    const parent = idToNode.get(node.parentId);\n    if (!parent) {\n      anomalies.push({\n        type: 'orphan-node',\n        severity: 'warning',\n        message: `Message ${node.id} references missing parent ${node.parentId}`,\n        entry: node.entry\n      });\n      continue;\n    }\n    node.parent = parent;\n    parent.children.push(node);\n  }\n\n  for (const node of nodes) {\n    node.children.sort(compareNodesChronologically);\n  }\n\n  const roots = nodes.filter(node => !node.parent);\n  for (const root of roots) assignDepths(root, 0, new Set(), anomalies);\n\n  const leaves = nodes.filter(node => node.children.length === 0);\n  const branchPoints = nodes.filter(node => node.children.length > 1);\n  const requestedActiveId = options.activeLeafId ?? findSessionActiveLeafId(entries);\n  const activeLeaf = requestedActiveId ? (idToNode.get(requestedActiveId) ?? null) : chooseLatestLeaf(leaves);\n  const activePath = activeLeaf ? pathToRoot(activeLeaf) : [];\n\n  if (requestedActiveId && !activeLeaf) {\n    anomalies.push({\n      type: 'missing-active-leaf',\n      severity: 'warning',\n      message: `Requested active leaf ${requestedActiveId} was not found in the message tree`\n    });\n  }\n\n  return {\n    nodes,\n    roots,\n    leaves,\n    branchPoints,\n    activeLeaf,\n    activePath,\n    activePathIds: activePath.map(node => node.id),\n    nodeCount: nodes.length,\n    leafCount: leaves.length,\n    branchCount: branchPoints.length,\n    maxDepth: nodes.reduce((max, node) => Math.max(max, node.depth), 0),\n    byId: idToNode\n  };\n}\n\nfunction computeMetrics(entries, tree, parseDiagnostics, anomalies) {\n  const metrics = {\n    entryCount: entries.length,\n    messageCount: tree.nodeCount,\n    activeBranchMessages: tree.activePath?.length ?? 0,\n    userTurns: 0,\n    assistantTurns: 0,\n    toolResults: 0,\n    toolCallCount: 0,\n    toolCalls: {},\n    toolCallsByName: {},\n    toolErrors: 0,\n    pendingToolCalls: 0,\n    unmatchedToolResults: 0,\n    errorCount: 0,\n    parseErrorCount: parseDiagnostics.filter(d => (d.severity ?? 'error') === 'error').length,\n    tokens: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0, total: 0 },\n    totalTokens: 0,\n    cost: 0,\n    startTime: null,\n    endTime: null,\n    durationMs: 0,\n    toolCallsDetailed: [],\n    toolResultsDetailed: [],\n    filesTouched: [],\n    fileTouchDetails: {}\n  };\n\n  const toolCallIds = new Map();\n  const completedToolCallIds = new Set();\n  const messageTimes = [];\n  const allTimes = [];\n  const fileTouches = new Map();\n\n  for (const entry of entries) {\n    const message = getMessage(entry);\n    const timestamp = extractTimestampMs(entry, message);\n    if (timestamp !== null) {\n      allTimes.push(timestamp);\n      if (isMessageEntry(entry)) messageTimes.push(timestamp);\n    }\n\n    if (isErrorEntry(entry, message)) {\n      metrics.errorCount += 1;\n      anomalies.push({\n        type: 'error-entry',\n        severity: 'error',\n        message: describeErrorEntry(entry, message),\n        entry\n      });\n    }\n\n    if (!isMessageEntry(entry)) continue;\n\n    const role = normalizeRole(message.role ?? entry.role ?? entry.type);\n    if (role === ROLE_USER) metrics.userTurns += 1;\n    if (role === ROLE_ASSISTANT) metrics.assistantTurns += 1;\n    if (role === ROLE_TOOL_RESULT) metrics.toolResults += 1;\n\n    const usage = extractUsage(entry, message);\n    if (usage) addUsage(metrics, usage);\n\n    const calls = extractToolCalls(message, entry);\n    for (const call of calls) {\n      metrics.toolCallCount += 1;\n      increment(metrics.toolCalls, call.name);\n      increment(metrics.toolCallsByName, call.name);\n      metrics.toolCallsDetailed.push(call);\n      if (call.id) toolCallIds.set(call.id, call);\n      for (const touch of inferFileTouchesFromToolCall(call)) {\n        addFileTouch(fileTouches, touch.path, touch.operation, call.name);\n      }\n    }\n\n    const result = extractToolResult(message, entry);\n    if (result) {\n      metrics.toolResultsDetailed.push(result);\n      if (result.toolCallId) completedToolCallIds.add(result.toolCallId);\n      if (result.isError) {\n        metrics.toolErrors += 1;\n        metrics.errorCount += 1;\n        anomalies.push({\n          type: 'tool-error',\n          severity: 'error',\n          message: `Tool ${result.toolName ?? result.toolCallId ?? 'unknown'} returned an error`,\n          entry\n        });\n      }\n      if (result.toolCallId && !toolCallIds.has(result.toolCallId)) {\n        metrics.unmatchedToolResults += 1;\n        anomalies.push({\n          type: 'unmatched-tool-result',\n          severity: 'warning',\n          message: `Tool result ${result.toolCallId} has no matching tool call in parsed entries`,\n          entry\n        });\n      }\n    }\n  }\n\n  for (const [id, call] of toolCallIds) {\n    if (!completedToolCallIds.has(id)) {\n      metrics.pendingToolCalls += 1;\n      anomalies.push({\n        type: 'pending-tool-call',\n        severity: 'warning',\n        message: `Tool call ${call.name}${id ? ` (${id})` : ''} has no parsed result`,\n        call\n      });\n    }\n  }\n\n  const rangeTimes = messageTimes.length > 0 ? messageTimes : allTimes;\n  if (rangeTimes.length > 0) {\n    metrics.startTime = new Date(Math.min(...rangeTimes)).toISOString();\n    metrics.endTime = new Date(Math.max(...rangeTimes)).toISOString();\n    metrics.durationMs = Math.max(...rangeTimes) - Math.min(...rangeTimes);\n  }\n\n  metrics.totalTokens = metrics.tokens.total;\n  metrics.cost = roundMoney(metrics.cost);\n  metrics.filesTouched = [...fileTouches.keys()].sort();\n  metrics.fileTouchDetails = Object.fromEntries(\n    [...fileTouches.entries()].sort(([a], [b]) => a.localeCompare(b)).map(([path, detail]) => [\n      path,\n      {\n        operations: [...detail.operations].sort(),\n        tools: [...detail.tools].sort(),\n        count: detail.count\n      }\n    ])\n  );\n\n  return metrics;\n}\n\nfunction computeSignals(metrics, tree, anomalies) {\n  const signals = [];\n  if (metrics.assistantTurns > 0) {\n    const avgTokens = Math.round((metrics.totalTokens || 0) / metrics.assistantTurns);\n    signals.push(`${avgTokens} tokens/assistant turn`);\n  }\n  if (metrics.toolCallCount > 0) {\n    const success = metrics.toolCallCount - metrics.toolErrors;\n    signals.push(`${success}/${metrics.toolCallCount} tool calls without reported errors`);\n  }\n  const writeLikeFiles = (metrics.filesTouched ?? []).filter(file => {\n    const operations = metrics.fileTouchDetails?.[file]?.operations ?? [];\n    return operations.some(op => ['write', 'edit', 'delete', 'move'].includes(op));\n  });\n  if (writeLikeFiles.length > 0) signals.push(`${writeLikeFiles.length} file(s) likely modified`);\n  if ((tree.branchCount ?? 0) > 0) signals.push('branched conversation history detected');\n  if (metrics.durationMs > 0 && metrics.assistantTurns > 1) {\n    signals.push(`${formatDuration(metrics.durationMs / metrics.assistantTurns)} per assistant turn elapsed`);\n  }\n  const severe = anomalies.filter(a => a.severity === 'error').length;\n  if (severe > 0) signals.push(`${severe} error-level anomal${severe === 1 ? 'y' : 'ies'} to inspect`);\n  return signals;\n}\n\nfunction extractSessionInfo(entries) {\n  const sessionEntry = entries.find(entry => entry?.type === 'session') ?? {};\n  return {\n    id: firstString(sessionEntry.id, sessionEntry.sessionId, sessionEntry.session_id),\n    version: sessionEntry.version,\n    cwd: firstString(sessionEntry.cwd, sessionEntry.workingDirectory, sessionEntry.projectDir),\n    timestamp: sessionEntry.timestamp ?? sessionEntry.createdAt,\n    model: firstString(sessionEntry.model, sessionEntry.modelId, sessionEntry.providerModel)\n  };\n}\n\nfunction extractJsonErrorColumn(error) {\n  const match = /position\\s+(\\d+)/i.exec(error?.message ?? '');\n  return match ? Number(match[1]) + 1 : undefined;\n}\n\nfunction isMessageEntry(entry) {\n  if (!entry || typeof entry !== 'object') return false;\n  if (entry.type === 'message') return true;\n  const message = getMessage(entry);\n  return typeof message?.role === 'string' && (entry.id !== undefined || message.id !== undefined);\n}\n\nfunction getMessage(entry) {\n  if (!entry || typeof entry !== 'object') return {};\n  return entry.message && typeof entry.message === 'object' ? entry.message : entry;\n}\n\nfunction normalizeRole(role) {\n  if (role === 'tool_result' || role === 'tool' || role === 'toolResult') return ROLE_TOOL_RESULT;\n  if (role === 'assistant') return ROLE_ASSISTANT;\n  if (role === 'user') return ROLE_USER;\n  return role ?? 'unknown';\n}\n\nfunction normalizeParentId(parentId) {\n  if (parentId === null || parentId === undefined || parentId === '') return null;\n  return String(parentId);\n}\n\nfunction firstString(...values) {\n  for (const value of values) {\n    if (typeof value === 'string' && value.length > 0) return value;\n  }\n  return undefined;\n}\n\nfunction extractTimestampMs(entry, message = getMessage(entry)) {\n  const candidates = [\n    entry?.timestamp,\n    entry?.createdAt,\n    entry?.time,\n    message?.timestamp,\n    message?.createdAt,\n    message?.time\n  ];\n  for (const candidate of candidates) {\n    const parsed = parseTimestamp(candidate);\n    if (parsed !== null) return parsed;\n  }\n  return null;\n}\n\nfunction parseTimestamp(value) {\n  if (value === null || value === undefined || value === '') return null;\n  if (typeof value === 'number' && Number.isFinite(value)) {\n    // Pi message timestamps are generally milliseconds, but tolerate seconds.\n    return value < 10_000_000_000 ? Math.round(value * 1000) : Math.round(value);\n  }\n  if (typeof value === 'string') {\n    const numeric = Number(value);\n    if (Number.isFinite(numeric) && value.trim() !== '') return parseTimestamp(numeric);\n    const date = Date.parse(value);\n    if (Number.isFinite(date)) return date;\n  }\n  return null;\n}\n\nfunction compareNodesChronologically(a, b) {\n  const aTime = a.timestampMs ?? Number.POSITIVE_INFINITY;\n  const bTime = b.timestampMs ?? Number.POSITIVE_INFINITY;\n  if (aTime !== bTime) return aTime - bTime;\n  return a.order - b.order;\n}\n\nfunction assignDepths(node, depth, seen, anomalies) {\n  if (seen.has(node.key)) {\n    anomalies.push({\n      type: 'cycle',\n      severity: 'error',\n      message: `Cycle detected at message ${node.id}`,\n      entry: node.entry\n    });\n    return;\n  }\n  node.depth = depth;\n  const nextSeen = new Set(seen);\n  nextSeen.add(node.key);\n  for (const child of node.children) assignDepths(child, depth + 1, nextSeen, anomalies);\n}\n\nfunction chooseLatestLeaf(leaves) {\n  if (leaves.length === 0) return null;\n  return [...leaves].sort((a, b) => {\n    const aTime = a.timestampMs ?? Number.NEGATIVE_INFINITY;\n    const bTime = b.timestampMs ?? Number.NEGATIVE_INFINITY;\n    if (aTime !== bTime) return bTime - aTime;\n    return b.order - a.order;\n  })[0];\n}\n\nfunction pathToRoot(node) {\n  const path = [];\n  const seen = new Set();\n  let current = node;\n  while (current && !seen.has(current.key)) {\n    path.push(current);\n    seen.add(current.key);\n    current = current.parent;\n  }\n  return path.reverse();\n}\n\nfunction findSessionActiveLeafId(entries) {\n  for (const entry of entries) {\n    const candidates = [\n      entry?.activeLeafId,\n      entry?.activeMessageId,\n      entry?.currentMessageId,\n      entry?.headId,\n      entry?.lastMessageId,\n      entry?.session?.activeLeafId,\n      entry?.session?.activeMessageId,\n      entry?.session?.currentMessageId\n    ];\n    const found = firstString(...candidates);\n    if (found) return found;\n  }\n  return undefined;\n}\n\nfunction extractUsage(entry, message) {\n  return message?.usage ?? entry?.usage ?? message?.metadata?.usage ?? entry?.metadata?.usage ?? null;\n}\n\nfunction addUsage(metrics, usage) {\n  const input = readNumber(usage, ['input', 'inputTokens', 'input_tokens', 'promptTokens', 'prompt_tokens']);\n  const output = readNumber(usage, ['output', 'outputTokens', 'output_tokens', 'completionTokens', 'completion_tokens']);\n  const cacheRead = readNumber(usage, ['cacheRead', 'cache_read', 'cachedInputTokens', 'cache_read_tokens']);\n  const cacheWrite = readNumber(usage, ['cacheWrite', 'cache_write', 'cacheCreationTokens', 'cache_write_tokens']);\n  let total = readNumber(usage, ['totalTokens', 'total_tokens', 'total']);\n  if (total === 0) total = input + output + cacheRead + cacheWrite;\n\n  metrics.tokens.input += input;\n  metrics.tokens.output += output;\n  metrics.tokens.cacheRead += cacheRead;\n  metrics.tokens.cacheWrite += cacheWrite;\n  metrics.tokens.total += total;\n  metrics.cost += extractCost(usage);\n}\n\nfunction readNumber(object, keys) {\n  for (const key of keys) {\n    const value = object?.[key];\n    if (typeof value === 'number' && Number.isFinite(value)) return value;\n    if (typeof value === 'string' && Number.isFinite(Number(value))) return Number(value);\n  }\n  return 0;\n}\n\nfunction extractCost(usage) {\n  const cost = usage?.cost ?? usage?.costs;\n  if (typeof cost === 'number' && Number.isFinite(cost)) return cost;\n  if (typeof cost === 'string' && Number.isFinite(Number(cost))) return Number(cost);\n  if (cost && typeof cost === 'object') {\n    return readNumber(cost, ['total', 'totalCost', 'amount', 'usd']);\n  }\n  return readNumber(usage, ['costTotal', 'totalCost', 'costUsd']);\n}\n\nfunction roundMoney(value) {\n  return Number((value || 0).toFixed(12));\n}\n\nfunction extractToolCalls(message, entry) {\n  const calls = [];\n  const sources = [];\n  if (Array.isArray(message?.content)) sources.push(...message.content);\n  if (Array.isArray(message?.toolCalls)) sources.push(...message.toolCalls);\n  if (Array.isArray(message?.tool_calls)) sources.push(...message.tool_calls);\n  if (Array.isArray(entry?.toolCalls)) sources.push(...entry.toolCalls);\n\n  for (const item of sources) {\n    if (!item || typeof item !== 'object') continue;\n    const isCall = ['toolCall', 'tool_call', 'tool_use'].includes(item.type) || item.function || item.toolName || item.name;\n    if (!isCall) continue;\n    const name = firstString(item.name, item.toolName, item.function?.name, item.tool?.name) ?? 'unknown';\n    const id = firstString(item.id, item.toolCallId, item.tool_call_id, item.callId);\n    const args = parseArguments(item.arguments ?? item.input ?? item.args ?? item.function?.arguments ?? {});\n    calls.push({ id, name, arguments: args, raw: item });\n  }\n\n  return calls;\n}\n\nfunction parseArguments(value) {\n  if (value === null || value === undefined) return {};\n  if (typeof value === 'string') {\n    try {\n      const parsed = JSON.parse(value);\n      return parsed && typeof parsed === 'object' ? parsed : { value: parsed };\n    } catch {\n      return { value };\n    }\n  }\n  if (typeof value === 'object') return value;\n  return { value };\n}\n\nfunction extractToolResult(message, entry) {\n  const role = normalizeRole(message?.role ?? entry?.role ?? entry?.type);\n  const looksLikeResult = role === ROLE_TOOL_RESULT || message?.toolCallId || message?.tool_call_id || message?.toolName || entry?.toolCallId;\n  if (!looksLikeResult) return null;\n  return {\n    toolCallId: firstString(message?.toolCallId, message?.tool_call_id, entry?.toolCallId, entry?.tool_call_id),\n    toolName: firstString(message?.toolName, message?.name, entry?.toolName, entry?.name),\n    isError: Boolean(message?.isError ?? message?.is_error ?? entry?.isError ?? entry?.error),\n    raw: message\n  };\n}\n\nfunction isErrorEntry(entry, message) {\n  if (entry?.type === 'error') return true;\n  if (entry?.level === 'error' || entry?.severity === 'error') return true;\n  if (message?.role === 'error') return true;\n  if (message?.error && normalizeRole(message?.role) !== ROLE_TOOL_RESULT) return true;\n  return false;\n}\n\nfunction describeErrorEntry(entry, message) {\n  const text = firstString(entry?.message, message?.message, entry?.error?.message, message?.error?.message, entry?.type);\n  return text ? `Error entry: ${text}` : 'Error entry encountered';\n}\n\nfunction increment(object, key) {\n  const safeKey = key || 'unknown';\n  object[safeKey] = (object[safeKey] ?? 0) + 1;\n}\n\nfunction inferFileTouchesFromToolCall(call) {\n  const name = (call.name ?? '').toLowerCase();\n  const operation = operationForTool(name);\n  const paths = new Set();\n  collectPaths(call.arguments, paths);\n\n  const command = firstString(call.arguments?.command, call.arguments?.cmd, call.arguments?.value);\n  if (name.includes('bash') || name.includes('shell') || command) {\n    for (const path of inferPathsFromCommand(command ?? '')) paths.add(path);\n  }\n\n  return [...paths].map(path => ({ path, operation }));\n}\n\nfunction operationForTool(name) {\n  if (/delete|remove|rm/.test(name)) return 'delete';\n  if (/move|rename|mv/.test(name)) return 'move';\n  if (/write|create|save/.test(name)) return 'write';\n  if (/edit|patch|replace|apply/.test(name)) return 'edit';\n  if (/grep|search|find|rg|glob|ls|list/.test(name)) return 'search';\n  if (/read|cat|open|view/.test(name)) return 'read';\n  if (/bash|shell|exec|command/.test(name)) return 'command';\n  return 'unknown';\n}\n\nfunction collectPaths(value, paths, key = '', depth = 0) {\n  if (depth > 4 || value === null || value === undefined) return;\n  if (typeof value === 'string') {\n    if (looksLikePathKey(key) || looksLikePath(value)) paths.add(value);\n    return;\n  }\n  if (Array.isArray(value)) {\n    for (const item of value) collectPaths(item, paths, key, depth + 1);\n    return;\n  }\n  if (typeof value === 'object') {\n    for (const [childKey, childValue] of Object.entries(value)) {\n      if (childKey === 'content' || childKey === 'text' || childKey === 'oldText' || childKey === 'newText') continue;\n      collectPaths(childValue, paths, childKey, depth + 1);\n    }\n  }\n}\n\nfunction looksLikePathKey(key) {\n  return /(^|_)(path|paths|file|files|filename|source|destination|target|dir|cwd)(_|$)/i.test(key);\n}\n\nfunction looksLikePath(value) {\n  if (value.length === 0 || value.length > 400) return false;\n  if (/\\n/.test(value)) return false;\n  if (/^(https?:|data:)/i.test(value)) return false;\n  if (/^(\\.\\.?\\/|\\/|~\\/)/.test(value)) return true;\n  if (/[\\\\/]/.test(value)) return true;\n  if (/^[\\w.-]+\\.[A-Za-z0-9]{1,8}$/.test(value)) return true;\n  return false;\n}\n\nfunction inferPathsFromCommand(command) {\n  if (!command || typeof command !== 'string') return [];\n  const paths = new Set();\n  const tokenPattern = /(?:'([^']+)'|\"([^\"]+)\"|([^\\s;&|`$()<>]+))/g;\n  let match;\n  while ((match = tokenPattern.exec(command)) !== null) {\n    const token = match[1] ?? match[2] ?? match[3] ?? '';\n    const cleaned = token.replace(/^[,=:]+|[,=:]+$/g, '');\n    if (looksLikePath(cleaned) && !isLikelyCliFlag(cleaned)) paths.add(cleaned);\n  }\n  return [...paths];\n}\n\nfunction isLikelyCliFlag(token) {\n  return token.startsWith('-');\n}\n\nfunction addFileTouch(fileTouches, path, operation, tool) {\n  if (!path || typeof path !== 'string') return;\n  const normalized = path.trim();\n  if (!normalized) return;\n  if (!fileTouches.has(normalized)) {\n    fileTouches.set(normalized, { operations: new Set(), tools: new Set(), count: 0 });\n  }\n  const detail = fileTouches.get(normalized);\n  detail.operations.add(operation);\n  detail.tools.add(tool);\n  detail.count += 1;\n}\n\nfunction formatTimeRange(start, end, durationMs) {\n  if (!start || !end) return 'unknown';\n  return `${start} → ${end} (${formatDuration(durationMs)})`;\n}\n\nfunction formatDuration(ms) {\n  if (!Number.isFinite(ms) || ms < 0) return 'unknown';\n  if (ms < 1000) return `${Math.round(ms)}ms`;\n  const seconds = ms / 1000;\n  if (seconds < 60) return `${round(seconds, 1)}s`;\n  const minutes = seconds / 60;\n  if (minutes < 60) return `${round(minutes, 1)}m`;\n  const hours = minutes / 60;\n  return `${round(hours, 1)}h`;\n}\n\nfunction round(value, decimals) {\n  const factor = 10 ** decimals;\n  return Math.round(value * factor) / factor;\n}\n\nfunction formatNumber(value) {\n  return new Intl.NumberFormat('en-US').format(value ?? 0);\n}\n\nfunction formatCurrency(value) {\n  if (!value) return '$0.00';\n  if (Math.abs(value) < 0.01) return `$${value.toFixed(4)}`;\n  return `$${value.toFixed(2)}`;\n}\n\nfunction formatToolCalls(toolCalls = {}) {\n  const entries = Object.entries(toolCalls).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));\n  if (entries.length === 0) return 'none';\n  return entries.map(([name, count]) => `${name}×${count}`).join(', ');\n}\n"
+        },
+        "raw": {
+          "type": "toolCall",
+          "id": "call_Lak8nGBezONDUWAUNfFXOBhw|fc_089a3eb9c01580ba0169edc23789d48193b13213ef690f651c",
+          "name": "write",
+          "arguments": {
+            "path": "session-inspector.js",
+            "content": "const ROLE_ASSISTANT = 'assistant';\nconst ROLE_USER = 'user';\nconst ROLE_TOOL_RESULT = 'toolResult';\n\n/**\n * Parse a Pi-style JSONL session.\n *\n * The parser is deliberately forgiving: malformed records are skipped and\n * reported with line numbers, while valid lines are returned unchanged. Blank\n * lines are ignored by default because real logs often end with a newline or\n * contain occasional spacing from manual edits.\n *\n * @param {string|Buffer} text JSONL text\n * @param {{ includeBlankDiagnostics?: boolean }} [options]\n * @returns {{ entries: any[], diagnostics: Array<object>, lineMap: Array<object> }}\n */\nexport function parseSessionJsonl(text, options = {}) {\n  const source = Buffer.isBuffer(text) ? text.toString('utf8') : String(text ?? '');\n  const lines = source.split(/\\r?\\n/);\n  const entries = [];\n  const diagnostics = [];\n  const lineMap = [];\n\n  for (let index = 0; index < lines.length; index += 1) {\n    const line = lines[index];\n    const lineNumber = index + 1;\n\n    // Ignore the final empty line from a trailing newline, and by default all\n    // blank lines. Keep an opt-in diagnostic for callers that need strict JSONL.\n    if (line.trim() === '') {\n      if (options.includeBlankDiagnostics && !(index === lines.length - 1 && line === '')) {\n        diagnostics.push({\n          type: 'blank-line',\n          severity: 'info',\n          line: lineNumber,\n          message: 'Blank line ignored',\n          raw: line\n        });\n      }\n      lineMap.push({ line: lineNumber, raw: line, skipped: true });\n      continue;\n    }\n\n    try {\n      const entry = JSON.parse(line);\n      entries.push(entry);\n      lineMap.push({ line: lineNumber, raw: line, entry });\n    } catch (error) {\n      diagnostics.push({\n        type: 'malformed-json',\n        severity: 'error',\n        line: lineNumber,\n        column: extractJsonErrorColumn(error),\n        message: error instanceof Error ? error.message : String(error),\n        raw: line\n      });\n      lineMap.push({ line: lineNumber, raw: line, error });\n    }\n  }\n\n  return { entries, diagnostics, lineMap };\n}\n\n/**\n * Analyze parsed session entries and derive branch/tree, metrics and anomalies.\n *\n * Accepts either an array of entries or the full object returned by\n * parseSessionJsonl(). Diagnostics may be passed separately for backwards- and\n * test-friendly usage.\n *\n * @param {any[]|{ entries: any[], diagnostics?: Array<object> }} entriesOrParsed\n * @param {Array<object>} [diagnostics]\n * @param {{ activeLeafId?: string }} [options]\n */\nexport function analyzeSession(entriesOrParsed, diagnostics = [], options = {}) {\n  const parsedInput = Array.isArray(entriesOrParsed)\n    ? { entries: entriesOrParsed, diagnostics }\n    : { entries: entriesOrParsed?.entries ?? [], diagnostics: entriesOrParsed?.diagnostics ?? diagnostics };\n\n  const entries = parsedInput.entries;\n  const parseDiagnostics = parsedInput.diagnostics ?? [];\n  const anomalies = parseDiagnostics.map(diagnostic => ({\n    type: diagnostic.type ?? 'diagnostic',\n    severity: diagnostic.severity ?? 'warning',\n    line: diagnostic.line,\n    message: diagnostic.message ?? String(diagnostic),\n    diagnostic\n  }));\n\n  const session = extractSessionInfo(entries);\n  const tree = buildMessageTree(entries, anomalies, options);\n  const metrics = computeMetrics(entries, tree, parseDiagnostics, anomalies);\n  const signals = computeSignals(metrics, tree, anomalies);\n\n  return {\n    entries,\n    diagnostics: parseDiagnostics,\n    session,\n    tree,\n    metrics,\n    anomalies,\n    signals\n  };\n}\n\n/**\n * Format a concise human-readable session report.\n *\n * @param {ReturnType<typeof analyzeSession>} analysis\n * @param {{ maxAnomalies?: number, maxFiles?: number }} [options]\n */\nexport function formatReport(analysis, options = {}) {\n  const maxAnomalies = options.maxAnomalies ?? 8;\n  const maxFiles = options.maxFiles ?? 10;\n  const metrics = analysis?.metrics ?? {};\n  const tree = analysis?.tree ?? {};\n  const session = analysis?.session ?? {};\n  const anomalies = analysis?.anomalies ?? [];\n  const signals = analysis?.signals ?? [];\n\n  const lines = [];\n  lines.push('Session report');\n\n  const sessionParts = [];\n  if (session.id) sessionParts.push(`id ${session.id}`);\n  if (session.cwd) sessionParts.push(`cwd ${session.cwd}`);\n  if (session.version !== undefined) sessionParts.push(`version ${session.version}`);\n  if (sessionParts.length > 0) lines.push(`- Session: ${sessionParts.join('; ')}`);\n\n  lines.push(`- Time range: ${formatTimeRange(metrics.startTime, metrics.endTime, metrics.durationMs)}`);\n  lines.push(\n    `- Messages: ${metrics.userTurns ?? 0} user, ${metrics.assistantTurns ?? 0} assistant turns, ` +\n    `${metrics.toolResults ?? 0} tool results (${metrics.activeBranchMessages ?? 0} messages on active branch)`\n  );\n  lines.push(\n    `- Branching: ${tree.nodeCount ?? 0} message nodes, ${tree.leafCount ?? 0} leaves, ` +\n    `${tree.branchCount ?? 0} branch points, max depth ${tree.maxDepth ?? 0}`\n  );\n\n  const tokens = metrics.tokens ?? {};\n  lines.push(\n    `- Usage: ${formatNumber(metrics.totalTokens ?? tokens.total ?? 0)} tokens` +\n    ` (in ${formatNumber(tokens.input ?? 0)}, out ${formatNumber(tokens.output ?? 0)}, cache ${formatNumber((tokens.cacheRead ?? 0) + (tokens.cacheWrite ?? 0))}); ` +\n    `cost ${formatCurrency(metrics.cost ?? 0)}`\n  );\n\n  lines.push(`- Tools: ${formatToolCalls(metrics.toolCalls)}; ${metrics.toolErrors ?? 0} tool errors; ${metrics.pendingToolCalls ?? 0} pending results`);\n\n  const files = metrics.filesTouched ?? [];\n  if (files.length > 0) {\n    const rendered = files.slice(0, maxFiles).map(file => {\n      const detail = metrics.fileTouchDetails?.[file];\n      const ops = detail?.operations?.length ? ` (${detail.operations.join('/')})` : '';\n      return `${file}${ops}`;\n    });\n    const suffix = files.length > maxFiles ? `, +${files.length - maxFiles} more` : '';\n    lines.push(`- Files touched: ${rendered.join(', ')}${suffix}`);\n  } else {\n    lines.push('- Files touched: none inferred');\n  }\n\n  if (signals.length > 0) lines.push(`- Productivity signals: ${signals.join('; ')}`);\n\n  if (anomalies.length > 0) {\n    lines.push(`- Anomalies (${anomalies.length}):`);\n    for (const anomaly of anomalies.slice(0, maxAnomalies)) {\n      const location = anomaly.line ? `line ${anomaly.line}: ` : '';\n      lines.push(`  • ${location}${anomaly.message}`);\n    }\n    if (anomalies.length > maxAnomalies) lines.push(`  • … ${anomalies.length - maxAnomalies} more`);\n  } else {\n    lines.push('- Anomalies: none detected');\n  }\n\n  return `${lines.join('\\n')}\\n`;\n}\n\nexport function buildMessageTree(entries, anomalies = [], options = {}) {\n  const nodes = [];\n  const idToNode = new Map();\n  const duplicateCounts = new Map();\n\n  entries.forEach((entry, order) => {\n    if (!isMessageEntry(entry)) return;\n\n    const message = getMessage(entry);\n    const originalId = firstString(entry.id, message.id, entry.messageId, message.messageId);\n    const id = originalId ?? `__message_${order + 1}`;\n    const duplicateNumber = duplicateCounts.get(id) ?? 0;\n    duplicateCounts.set(id, duplicateNumber + 1);\n\n    if (duplicateNumber > 0) {\n      anomalies.push({\n        type: 'duplicate-id',\n        severity: 'warning',\n        message: `Duplicate message id \"${id}\" encountered; keeping both nodes but parent links target the first occurrence`,\n        entry\n      });\n    }\n\n    if (!originalId) {\n      anomalies.push({\n        type: 'missing-id',\n        severity: 'warning',\n        message: `Message at entry ${order + 1} has no id; generated ${id}`,\n        entry\n      });\n    }\n\n    const node = {\n      key: duplicateNumber > 0 ? `${id}#${duplicateNumber + 1}` : id,\n      id,\n      parentId: normalizeParentId(entry.parentId ?? message.parentId ?? entry.parent_id ?? message.parent_id),\n      entry,\n      message,\n      role: normalizeRole(message.role ?? entry.role ?? entry.type),\n      timestampMs: extractTimestampMs(entry, message),\n      order,\n      children: [],\n      parent: null,\n      depth: 0\n    };\n\n    nodes.push(node);\n    if (!idToNode.has(id)) idToNode.set(id, node);\n  });\n\n  for (const node of nodes) {\n    if (!node.parentId) continue;\n    const parent = idToNode.get(node.parentId);\n    if (!parent) {\n      anomalies.push({\n        type: 'orphan-node',\n        severity: 'warning',\n        message: `Message ${node.id} references missing parent ${node.parentId}`,\n        entry: node.entry\n      });\n      continue;\n    }\n    node.parent = parent;\n    parent.children.push(node);\n  }\n\n  for (const node of nodes) {\n    node.children.sort(compareNodesChronologically);\n  }\n\n  const roots = nodes.filter(node => !node.parent);\n  for (const root of roots) assignDepths(root, 0, new Set(), anomalies);\n\n  const leaves = nodes.filter(node => node.children.length === 0);\n  const branchPoints = nodes.filter(node => node.children.length > 1);\n  const requestedActiveId = options.activeLeafId ?? findSessionActiveLeafId(entries);\n  const activeLeaf = requestedActiveId ? (idToNode.get(requestedActiveId) ?? null) : chooseLatestLeaf(leaves);\n  const activePath = activeLeaf ? pathToRoot(activeLeaf) : [];\n\n  if (requestedActiveId && !activeLeaf) {\n    anomalies.push({\n      type: 'missing-active-leaf',\n      severity: 'warning',\n      message: `Requested active leaf ${requestedActiveId} was not found in the message tree`\n    });\n  }\n\n  return {\n    nodes,\n    roots,\n    leaves,\n    branchPoints,\n    activeLeaf,\n    activePath,\n    activePathIds: activePath.map(node => node.id),\n    nodeCount: nodes.length,\n    leafCount: leaves.length,\n    branchCount: branchPoints.length,\n    maxDepth: nodes.reduce((max, node) => Math.max(max, node.depth), 0),\n    byId: idToNode\n  };\n}\n\nfunction computeMetrics(entries, tree, parseDiagnostics, anomalies) {\n  const metrics = {\n    entryCount: entries.length,\n    messageCount: tree.nodeCount,\n    activeBranchMessages: tree.activePath?.length ?? 0,\n    userTurns: 0,\n    assistantTurns: 0,\n    toolResults: 0,\n    toolCallCount: 0,\n    toolCalls: {},\n    toolCallsByName: {},\n    toolErrors: 0,\n    pendingToolCalls: 0,\n    unmatchedToolResults: 0,\n    errorCount: 0,\n    parseErrorCount: parseDiagnostics.filter(d => (d.severity ?? 'error') === 'error').length,\n    tokens: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0, total: 0 },\n    totalTokens: 0,\n    cost: 0,\n    startTime: null,\n    endTime: null,\n    durationMs: 0,\n    toolCallsDetailed: [],\n    toolResultsDetailed: [],\n    filesTouched: [],\n    fileTouchDetails: {}\n  };\n\n  const toolCallIds = new Map();\n  const completedToolCallIds = new Set();\n  const messageTimes = [];\n  const allTimes = [];\n  const fileTouches = new Map();\n\n  for (const entry of entries) {\n    const message = getMessage(entry);\n    const timestamp = extractTimestampMs(entry, message);\n    if (timestamp !== null) {\n      allTimes.push(timestamp);\n      if (isMessageEntry(entry)) messageTimes.push(timestamp);\n    }\n\n    if (isErrorEntry(entry, message)) {\n      metrics.errorCount += 1;\n      anomalies.push({\n        type: 'error-entry',\n        severity: 'error',\n        message: describeErrorEntry(entry, message),\n        entry\n      });\n    }\n\n    if (!isMessageEntry(entry)) continue;\n\n    const role = normalizeRole(message.role ?? entry.role ?? entry.type);\n    if (role === ROLE_USER) metrics.userTurns += 1;\n    if (role === ROLE_ASSISTANT) metrics.assistantTurns += 1;\n    if (role === ROLE_TOOL_RESULT) metrics.toolResults += 1;\n\n    const usage = extractUsage(entry, message);\n    if (usage) addUsage(metrics, usage);\n\n    const calls = extractToolCalls(message, entry);\n    for (const call of calls) {\n      metrics.toolCallCount += 1;\n      increment(metrics.toolCalls, call.name);\n      increment(metrics.toolCallsByName, call.name);\n      metrics.toolCallsDetailed.push(call);\n      if (call.id) toolCallIds.set(call.id, call);\n      for (const touch of inferFileTouchesFromToolCall(call)) {\n        addFileTouch(fileTouches, touch.path, touch.operation, call.name);\n      }\n    }\n\n    const result = extractToolResult(message, entry);\n    if (result) {\n      metrics.toolResultsDetailed.push(result);\n      if (result.toolCallId) completedToolCallIds.add(result.toolCallId);\n      if (result.isError) {\n        metrics.toolErrors += 1;\n        metrics.errorCount += 1;\n        anomalies.push({\n          type: 'tool-error',\n          severity: 'error',\n          message: `Tool ${result.toolName ?? result.toolCallId ?? 'unknown'} returned an error`,\n          entry\n        });\n      }\n      if (result.toolCallId && !toolCallIds.has(result.toolCallId)) {\n        metrics.unmatchedToolResults += 1;\n        anomalies.push({\n          type: 'unmatched-tool-result',\n          severity: 'warning',\n          message: `Tool result ${result.toolCallId} has no matching tool call in parsed entries`,\n          entry\n        });\n      }\n    }\n  }\n\n  for (const [id, call] of toolCallIds) {\n    if (!completedToolCallIds.has(id)) {\n      metrics.pendingToolCalls += 1;\n      anomalies.push({\n        type: 'pending-tool-call',\n        severity: 'warning',\n        message: `Tool call ${call.name}${id ? ` (${id})` : ''} has no parsed result`,\n        call\n      });\n    }\n  }\n\n  const rangeTimes = messageTimes.length > 0 ? messageTimes : allTimes;\n  if (rangeTimes.length > 0) {\n    metrics.startTime = new Date(Math.min(...rangeTimes)).toISOString();\n    metrics.endTime = new Date(Math.max(...rangeTimes)).toISOString();\n    metrics.durationMs = Math.max(...rangeTimes) - Math.min(...rangeTimes);\n  }\n\n  metrics.totalTokens = metrics.tokens.total;\n  metrics.cost = roundMoney(metrics.cost);\n  metrics.filesTouched = [...fileTouches.keys()].sort();\n  metrics.fileTouchDetails = Object.fromEntries(\n    [...fileTouches.entries()].sort(([a], [b]) => a.localeCompare(b)).map(([path, detail]) => [\n      path,\n      {\n        operations: [...detail.operations].sort(),\n        tools: [...detail.tools].sort(),\n        count: detail.count\n      }\n    ])\n  );\n\n  return metrics;\n}\n\nfunction computeSignals(metrics, tree, anomalies) {\n  const signals = [];\n  if (metrics.assistantTurns > 0) {\n    const avgTokens = Math.round((metrics.totalTokens || 0) / metrics.assistantTurns);\n    signals.push(`${avgTokens} tokens/assistant turn`);\n  }\n  if (metrics.toolCallCount > 0) {\n    const success = metrics.toolCallCount - metrics.toolErrors;\n    signals.push(`${success}/${metrics.toolCallCount} tool calls without reported errors`);\n  }\n  const writeLikeFiles = (metrics.filesTouched ?? []).filter(file => {\n    const operations = metrics.fileTouchDetails?.[file]?.operations ?? [];\n    return operations.some(op => ['write', 'edit', 'delete', 'move'].includes(op));\n  });\n  if (writeLikeFiles.length > 0) signals.push(`${writeLikeFiles.length} file(s) likely modified`);\n  if ((tree.branchCount ?? 0) > 0) signals.push('branched conversation history detected');\n  if (metrics.durationMs > 0 && metrics.assistantTurns > 1) {\n    signals.push(`${formatDuration(metrics.durationMs / metrics.assistantTurns)} per assistant turn elapsed`);\n  }\n  const severe = anomalies.filter(a => a.severity === 'error').length;\n  if (severe > 0) signals.push(`${severe} error-level anomal${severe === 1 ? 'y' : 'ies'} to inspect`);\n  return signals;\n}\n\nfunction extractSessionInfo(entries) {\n  const sessionEntry = entries.find(entry => entry?.type === 'session') ?? {};\n  return {\n    id: firstString(sessionEntry.id, sessionEntry.sessionId, sessionEntry.session_id),\n    version: sessionEntry.version,\n    cwd: firstString(sessionEntry.cwd, sessionEntry.workingDirectory, sessionEntry.projectDir),\n    timestamp: sessionEntry.timestamp ?? sessionEntry.createdAt,\n    model: firstString(sessionEntry.model, sessionEntry.modelId, sessionEntry.providerModel)\n  };\n}\n\nfunction extractJsonErrorColumn(error) {\n  const match = /position\\s+(\\d+)/i.exec(error?.message ?? '');\n  return match ? Number(match[1]) + 1 : undefined;\n}\n\nfunction isMessageEntry(entry) {\n  if (!entry || typeof entry !== 'object') return false;\n  if (entry.type === 'message') return true;\n  const message = getMessage(entry);\n  return typeof message?.role === 'string' && (entry.id !== undefined || message.id !== undefined);\n}\n\nfunction getMessage(entry) {\n  if (!entry || typeof entry !== 'object') return {};\n  return entry.message && typeof entry.message === 'object' ? entry.message : entry;\n}\n\nfunction normalizeRole(role) {\n  if (role === 'tool_result' || role === 'tool' || role === 'toolResult') return ROLE_TOOL_RESULT;\n  if (role === 'assistant') return ROLE_ASSISTANT;\n  if (role === 'user') return ROLE_USER;\n  return role ?? 'unknown';\n}\n\nfunction normalizeParentId(parentId) {\n  if (parentId === null || parentId === undefined || parentId === '') return null;\n  return String(parentId);\n}\n\nfunction firstString(...values) {\n  for (const value of values) {\n    if (typeof value === 'string' && value.length > 0) return value;\n  }\n  return undefined;\n}\n\nfunction extractTimestampMs(entry, message = getMessage(entry)) {\n  const candidates = [\n    entry?.timestamp,\n    entry?.createdAt,\n    entry?.time,\n    message?.timestamp,\n    message?.createdAt,\n    message?.time\n  ];\n  for (const candidate of candidates) {\n    const parsed = parseTimestamp(candidate);\n    if (parsed !== null) return parsed;\n  }\n  return null;\n}\n\nfunction parseTimestamp(value) {\n  if (value === null || value === undefined || value === '') return null;\n  if (typeof value === 'number' && Number.isFinite(value)) {\n    // Pi message timestamps are generally milliseconds, but tolerate seconds.\n    return value < 10_000_000_000 ? Math.round(value * 1000) : Math.round(value);\n  }\n  if (typeof value === 'string') {\n    const numeric = Number(value);\n    if (Number.isFinite(numeric) && value.trim() !== '') return parseTimestamp(numeric);\n    const date = Date.parse(value);\n    if (Number.isFinite(date)) return date;\n  }\n  return null;\n}\n\nfunction compareNodesChronologically(a, b) {\n  const aTime = a.timestampMs ?? Number.POSITIVE_INFINITY;\n  const bTime = b.timestampMs ?? Number.POSITIVE_INFINITY;\n  if (aTime !== bTime) return aTime - bTime;\n  return a.order - b.order;\n}\n\nfunction assignDepths(node, depth, seen, anomalies) {\n  if (seen.has(node.key)) {\n    anomalies.push({\n      type: 'cycle',\n      severity: 'error',\n      message: `Cycle detected at message ${node.id}`,\n      entry: node.entry\n    });\n    return;\n  }\n  node.depth = depth;\n  const nextSeen = new Set(seen);\n  nextSeen.add(node.key);\n  for (const child of node.children) assignDepths(child, depth + 1, nextSeen, anomalies);\n}\n\nfunction chooseLatestLeaf(leaves) {\n  if (leaves.length === 0) return null;\n  return [...leaves].sort((a, b) => {\n    const aTime = a.timestampMs ?? Number.NEGATIVE_INFINITY;\n    const bTime = b.timestampMs ?? Number.NEGATIVE_INFINITY;\n    if (aTime !== bTime) return bTime - aTime;\n    return b.order - a.order;\n  })[0];\n}\n\nfunction pathToRoot(node) {\n  const path = [];\n  const seen = new Set();\n  let current = node;\n  while (current && !seen.has(current.key)) {\n    path.push(current);\n    seen.add(current.key);\n    current = current.parent;\n  }\n  return path.reverse();\n}\n\nfunction findSessionActiveLeafId(entries) {\n  for (const entry of entries) {\n    const candidates = [\n      entry?.activeLeafId,\n      entry?.activeMessageId,\n      entry?.currentMessageId,\n      entry?.headId,\n      entry?.lastMessageId,\n      entry?.session?.activeLeafId,\n      entry?.session?.activeMessageId,\n      entry?.session?.currentMessageId\n    ];\n    const found = firstString(...candidates);\n    if (found) return found;\n  }\n  return undefined;\n}\n\nfunction extractUsage(entry, message) {\n  return message?.usage ?? entry?.usage ?? message?.metadata?.usage ?? entry?.metadata?.usage ?? null;\n}\n\nfunction addUsage(metrics, usage) {\n  const input = readNumber(usage, ['input', 'inputTokens', 'input_tokens', 'promptTokens', 'prompt_tokens']);\n  const output = readNumber(usage, ['output', 'outputTokens', 'output_tokens', 'completionTokens', 'completion_tokens']);\n  const cacheRead = readNumber(usage, ['cacheRead', 'cache_read', 'cachedInputTokens', 'cache_read_tokens']);\n  const cacheWrite = readNumber(usage, ['cacheWrite', 'cache_write', 'cacheCreationTokens', 'cache_write_tokens']);\n  let total = readNumber(usage, ['totalTokens', 'total_tokens', 'total']);\n  if (total === 0) total = input + output + cacheRead + cacheWrite;\n\n  metrics.tokens.input += input;\n  metrics.tokens.output += output;\n  metrics.tokens.cacheRead += cacheRead;\n  metrics.tokens.cacheWrite += cacheWrite;\n  metrics.tokens.total += total;\n  metrics.cost += extractCost(usage);\n}\n\nfunction readNumber(object, keys) {\n  for (const key of keys) {\n    const value = object?.[key];\n    if (typeof value === 'number' && Number.isFinite(value)) return value;\n    if (typeof value === 'string' && Number.isFinite(Number(value))) return Number(value);\n  }\n  return 0;\n}\n\nfunction extractCost(usage) {\n  const cost = usage?.cost ?? usage?.costs;\n  if (typeof cost === 'number' && Number.isFinite(cost)) return cost;\n  if (typeof cost === 'string' && Number.isFinite(Number(cost))) return Number(cost);\n  if (cost && typeof cost === 'object') {\n    return readNumber(cost, ['total', 'totalCost', 'amount', 'usd']);\n  }\n  return readNumber(usage, ['costTotal', 'totalCost', 'costUsd']);\n}\n\nfunction roundMoney(value) {\n  return Number((value || 0).toFixed(12));\n}\n\nfunction extractToolCalls(message, entry) {\n  const calls = [];\n  const sources = [];\n  if (Array.isArray(message?.content)) sources.push(...message.content);\n  if (Array.isArray(message?.toolCalls)) sources.push(...message.toolCalls);\n  if (Array.isArray(message?.tool_calls)) sources.push(...message.tool_calls);\n  if (Array.isArray(entry?.toolCalls)) sources.push(...entry.toolCalls);\n\n  for (const item of sources) {\n    if (!item || typeof item !== 'object') continue;\n    const isCall = ['toolCall', 'tool_call', 'tool_use'].includes(item.type) || item.function || item.toolName || item.name;\n    if (!isCall) continue;\n    const name = firstString(item.name, item.toolName, item.function?.name, item.tool?.name) ?? 'unknown';\n    const id = firstString(item.id, item.toolCallId, item.tool_call_id, item.callId);\n    const args = parseArguments(item.arguments ?? item.input ?? item.args ?? item.function?.arguments ?? {});\n    calls.push({ id, name, arguments: args, raw: item });\n  }\n\n  return calls;\n}\n\nfunction parseArguments(value) {\n  if (value === null || value === undefined) return {};\n  if (typeof value === 'string') {\n    try {\n      const parsed = JSON.parse(value);\n      return parsed && typeof parsed === 'object' ? parsed : { value: parsed };\n    } catch {\n      return { value };\n    }\n  }\n  if (typeof value === 'object') return value;\n  return { value };\n}\n\nfunction extractToolResult(message, entry) {\n  const role = normalizeRole(message?.role ?? entry?.role ?? entry?.type);\n  const looksLikeResult = role === ROLE_TOOL_RESULT || message?.toolCallId || message?.tool_call_id || message?.toolName || entry?.toolCallId;\n  if (!looksLikeResult) return null;\n  return {\n    toolCallId: firstString(message?.toolCallId, message?.tool_call_id, entry?.toolCallId, entry?.tool_call_id),\n    toolName: firstString(message?.toolName, message?.name, entry?.toolName, entry?.name),\n    isError: Boolean(message?.isError ?? message?.is_error ?? entry?.isError ?? entry?.error),\n    raw: message\n  };\n}\n\nfunction isErrorEntry(entry, message) {\n  if (entry?.type === 'error') return true;\n  if (entry?.level === 'error' || entry?.severity === 'error') return true;\n  if (message?.role === 'error') return true;\n  if (message?.error && normalizeRole(message?.role) !== ROLE_TOOL_RESULT) return true;\n  return false;\n}\n\nfunction describeErrorEntry(entry, message) {\n  const text = firstString(entry?.message, message?.message, entry?.error?.message, message?.error?.message, entry?.type);\n  return text ? `Error entry: ${text}` : 'Error entry encountered';\n}\n\nfunction increment(object, key) {\n  const safeKey = key || 'unknown';\n  object[safeKey] = (object[safeKey] ?? 0) + 1;\n}\n\nfunction inferFileTouchesFromToolCall(call) {\n  const name = (call.name ?? '').toLowerCase();\n  const operation = operationForTool(name);\n  const paths = new Set();\n  collectPaths(call.arguments, paths);\n\n  const command = firstString(call.arguments?.command, call.arguments?.cmd, call.arguments?.value);\n  if (name.includes('bash') || name.includes('shell') || command) {\n    for (const path of inferPathsFromCommand(command ?? '')) paths.add(path);\n  }\n\n  return [...paths].map(path => ({ path, operation }));\n}\n\nfunction operationForTool(name) {\n  if (/delete|remove|rm/.test(name)) return 'delete';\n  if (/move|rename|mv/.test(name)) return 'move';\n  if (/write|create|save/.test(name)) return 'write';\n  if (/edit|patch|replace|apply/.test(name)) return 'edit';\n  if (/grep|search|find|rg|glob|ls|list/.test(name)) return 'search';\n  if (/read|cat|open|view/.test(name)) return 'read';\n  if (/bash|shell|exec|command/.test(name)) return 'command';\n  return 'unknown';\n}\n\nfunction collectPaths(value, paths, key = '', depth = 0) {\n  if (depth > 4 || value === null || value === undefined) return;\n  if (typeof value === 'string') {\n    if (looksLikePathKey(key) || looksLikePath(value)) paths.add(value);\n    return;\n  }\n  if (Array.isArray(value)) {\n    for (const item of value) collectPaths(item, paths, key, depth + 1);\n    return;\n  }\n  if (typeof value === 'object') {\n    for (const [childKey, childValue] of Object.entries(value)) {\n      if (childKey === 'content' || childKey === 'text' || childKey === 'oldText' || childKey === 'newText') continue;\n      collectPaths(childValue, paths, childKey, depth + 1);\n    }\n  }\n}\n\nfunction looksLikePathKey(key) {\n  return /(^|_)(path|paths|file|files|filename|source|destination|target|dir|cwd)(_|$)/i.test(key);\n}\n\nfunction looksLikePath(value) {\n  if (value.length === 0 || value.length > 400) return false;\n  if (/\\n/.test(value)) return false;\n  if (/^(https?:|data:)/i.test(value)) return false;\n  if (/^(\\.\\.?\\/|\\/|~\\/)/.test(value)) return true;\n  if (/[\\\\/]/.test(value)) return true;\n  if (/^[\\w.-]+\\.[A-Za-z0-9]{1,8}$/.test(value)) return true;\n  return false;\n}\n\nfunction inferPathsFromCommand(command) {\n  if (!command || typeof command !== 'string') return [];\n  const paths = new Set();\n  const tokenPattern = /(?:'([^']+)'|\"([^\"]+)\"|([^\\s;&|`$()<>]+))/g;\n  let match;\n  while ((match = tokenPattern.exec(command)) !== null) {\n    const token = match[1] ?? match[2] ?? match[3] ?? '';\n    const cleaned = token.replace(/^[,=:]+|[,=:]+$/g, '');\n    if (looksLikePath(cleaned) && !isLikelyCliFlag(cleaned)) paths.add(cleaned);\n  }\n  return [...paths];\n}\n\nfunction isLikelyCliFlag(token) {\n  return token.startsWith('-');\n}\n\nfunction addFileTouch(fileTouches, path, operation, tool) {\n  if (!path || typeof path !== 'string') return;\n  const normalized = path.trim();\n  if (!normalized) return;\n  if (!fileTouches.has(normalized)) {\n    fileTouches.set(normalized, { operations: new Set(), tools: new Set(), count: 0 });\n  }\n  const detail = fileTouches.get(normalized);\n  detail.operations.add(operation);\n  detail.tools.add(tool);\n  detail.count += 1;\n}\n\nfunction formatTimeRange(start, end, durationMs) {\n  if (!start || !end) return 'unknown';\n  return `${start} → ${end} (${formatDuration(durationMs)})`;\n}\n\nfunction formatDuration(ms) {\n  if (!Number.isFinite(ms) || ms < 0) return 'unknown';\n  if (ms < 1000) return `${Math.round(ms)}ms`;\n  const seconds = ms / 1000;\n  if (seconds < 60) return `${round(seconds, 1)}s`;\n  const minutes = seconds / 60;\n  if (minutes < 60) return `${round(minutes, 1)}m`;\n  const hours = minutes / 60;\n  return `${round(hours, 1)}h`;\n}\n\nfunction round(value, decimals) {\n  const factor = 10 ** decimals;\n  return Math.round(value * factor) / factor;\n}\n\nfunction formatNumber(value) {\n  return new Intl.NumberFormat('en-US').format(value ?? 0);\n}\n\nfunction formatCurrency(value) {\n  if (!value) return '$0.00';\n  if (Math.abs(value) < 0.01) return `$${value.toFixed(4)}`;\n  return `$${value.toFixed(2)}`;\n}\n\nfunction formatToolCalls(toolCalls = {}) {\n  const entries = Object.entries(toolCalls).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));\n  if (entries.length === 0) return 'none';\n  return entries.map(([name, count]) => `${name}×${count}`).join(', ');\n}\n"
+          }
+        }
+      },
+      {
+        "id": "call_P61zBdQtXAMtOFNaVaLpdtxs|fc_089a3eb9c01580ba0169edc271e6288193ad6a5091df108afd",
+        "name": "bash",
+        "arguments": {
+          "command": "node --test",
+          "timeout": 120
+        },
+        "raw": {
+          "type": "toolCall",
+          "id": "call_P61zBdQtXAMtOFNaVaLpdtxs|fc_089a3eb9c01580ba0169edc271e6288193ad6a5091df108afd",
+          "name": "bash",
+          "arguments": {
+            "command": "node --test",
+            "timeout": 120
+          }
+        }
+      },
+      {
+        "id": "call_x1u8uf3mMdVzvLb4zdNOtTYY|fc_089a3eb9c01580ba0169edc2745d288193a7cf24a795463536",
+        "name": "edit",
+        "arguments": {
+          "path": "session-inspector.js",
+          "edits": [
+            {
+              "oldText": "      const location = anomaly.line ? `line ${anomaly.line}: ` : '';\n      lines.push(`  • ${location}${anomaly.message}`);",
+              "newText": "      const location = anomaly.line ? `line ${anomaly.line}: ` : '';\n      const label = anomaly.type ? `${humanizeAnomalyType(anomaly.type)}: ` : '';\n      lines.push(`  • ${location}${label}${anomaly.message}`);"
+            }
+          ]
+        },
+        "raw": {
+          "type": "toolCall",
+          "id": "call_x1u8uf3mMdVzvLb4zdNOtTYY|fc_089a3eb9c01580ba0169edc2745d288193a7cf24a795463536",
+          "name": "edit",
+          "arguments": {
+            "path": "session-inspector.js",
+            "edits": [
+              {
+                "oldText": "      const location = anomaly.line ? `line ${anomaly.line}: ` : '';\n      lines.push(`  • ${location}${anomaly.message}`);",
+                "newText": "      const location = anomaly.line ? `line ${anomaly.line}: ` : '';\n      const label = anomaly.type ? `${humanizeAnomalyType(anomaly.type)}: ` : '';\n      lines.push(`  • ${location}${label}${anomaly.message}`);"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "id": "call_YTKtPA0vaNKBkgGVspP1d5IB|fc_089a3eb9c01580ba0169edc276a14c819383018b0b9b83082c",
+        "name": "edit",
+        "arguments": {
+          "path": "session-inspector.js",
+          "edits": [
+            {
+              "oldText": "function formatToolCalls(toolCalls = {}) {\n  const entries = Object.entries(toolCalls).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));\n  if (entries.length === 0) return 'none';\n  return entries.map(([name, count]) => `${name}×${count}`).join(', ');\n}\n",
+              "newText": "function formatToolCalls(toolCalls = {}) {\n  const entries = Object.entries(toolCalls).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));\n  if (entries.length === 0) return 'none';\n  return entries.map(([name, count]) => `${name}×${count}`).join(', ');\n}\n\nfunction humanizeAnomalyType(type) {\n  return String(type).replace(/-/g, ' ');\n}\n"
+            }
+          ]
+        },
+        "raw": {
+          "type": "toolCall",
+          "id": "call_YTKtPA0vaNKBkgGVspP1d5IB|fc_089a3eb9c01580ba0169edc276a14c819383018b0b9b83082c",
+          "name": "edit",
+          "arguments": {
+            "path": "session-inspector.js",
+            "edits": [
+              {
+                "oldText": "function formatToolCalls(toolCalls = {}) {\n  const entries = Object.entries(toolCalls).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));\n  if (entries.length === 0) return 'none';\n  return entries.map(([name, count]) => `${name}×${count}`).join(', ');\n}\n",
+                "newText": "function formatToolCalls(toolCalls = {}) {\n  const entries = Object.entries(toolCalls).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));\n  if (entries.length === 0) return 'none';\n  return entries.map(([name, count]) => `${name}×${count}`).join(', ');\n}\n\nfunction humanizeAnomalyType(type) {\n  return String(type).replace(/-/g, ' ');\n}\n"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "id": "call_pFjGLBlj9Q73V8KszKG977pS|fc_089a3eb9c01580ba0169edc27829bc8193ba928cc564a69bca",
+        "name": "bash",
+        "arguments": {
+          "command": "node --test",
+          "timeout": 120
+        },
+        "raw": {
+          "type": "toolCall",
+          "id": "call_pFjGLBlj9Q73V8KszKG977pS|fc_089a3eb9c01580ba0169edc27829bc8193ba928cc564a69bca",
+          "name": "bash",
+          "arguments": {
+            "command": "node --test",
+            "timeout": 120
+          }
+        }
+      },
+      {
+        "id": "call_pTxhryckgXx0ZHV5pmi2W0AS|fc_089a3eb9c01580ba0169edc27cf4648193bcbfff45c59cc3f6",
+        "name": "edit",
+        "arguments": {
+          "path": "session-inspector.test.js",
+          "edits": [
+            {
+              "oldText": "test('formats a human-readable report with anomalies', () => {\n  const parsed = parseSessionJsonl(fixture);\n  const report = formatReport(analyzeSession(parsed.entries, parsed.diagnostics));\n  assert.match(report, /assistant turns/i);\n  assert.match(report, /tokens/i);\n  assert.match(report, /malformed/i);\n});\n",
+              "newText": "test('formats a human-readable report with anomalies', () => {\n  const parsed = parseSessionJsonl(fixture);\n  const report = formatReport(analyzeSession(parsed.entries, parsed.diagnostics));\n  assert.match(report, /assistant turns/i);\n  assert.match(report, /tokens/i);\n  assert.match(report, /malformed/i);\n});\n\ntest('reconstructs branches and chooses the latest active leaf', () => {\n  const entries = [\n    { type: 'message', id: 'root', parentId: null, timestamp: '2026-01-01T00:00:00.000Z', message: { role: 'user' } },\n    { type: 'message', id: 'old', parentId: 'root', timestamp: '2026-01-01T00:00:01.000Z', message: { role: 'assistant' } },\n    { type: 'message', id: 'new', parentId: 'root', timestamp: '2026-01-01T00:00:02.000Z', message: { role: 'assistant' } }\n  ];\n\n  const analysis = analyzeSession(entries);\n  assert.equal(analysis.tree.branchCount, 1);\n  assert.deepEqual(analysis.tree.activePathIds, ['root', 'new']);\n  assert.match(formatReport(analysis), /branched conversation history/i);\n});\n\ntest('infers file touches and tool anomalies from common variants', () => {\n  const parsed = parseSessionJsonl([\n    JSON.stringify({ type: 'message', id: 'a', timestamp: 1767225600, message: { role: 'assistant', tool_calls: [{ id: 'call-1', function: { name: 'write', arguments: '{\"path\":\"src/app.js\"}' } }] } }),\n    JSON.stringify({ type: 'message', id: 't', parentId: 'a', timestamp: 1767225601, message: { role: 'tool', tool_call_id: 'call-1', is_error: true } })\n  ].join('\\n'));\n\n  const analysis = analyzeSession(parsed);\n  assert.equal(analysis.metrics.toolCalls.write, 1);\n  assert.equal(analysis.metrics.toolErrors, 1);\n  assert.deepEqual(analysis.metrics.filesTouched, ['src/app.js']);\n  assert.equal(analysis.metrics.fileTouchDetails['src/app.js'].operations[0], 'write');\n});\n"
+            }
+          ]
+        },
+        "raw": {
+          "type": "toolCall",
+          "id": "call_pTxhryckgXx0ZHV5pmi2W0AS|fc_089a3eb9c01580ba0169edc27cf4648193bcbfff45c59cc3f6",
+          "name": "edit",
+          "arguments": {
+            "path": "session-inspector.test.js",
+            "edits": [
+              {
+                "oldText": "test('formats a human-readable report with anomalies', () => {\n  const parsed = parseSessionJsonl(fixture);\n  const report = formatReport(analyzeSession(parsed.entries, parsed.diagnostics));\n  assert.match(report, /assistant turns/i);\n  assert.match(report, /tokens/i);\n  assert.match(report, /malformed/i);\n});\n",
+                "newText": "test('formats a human-readable report with anomalies', () => {\n  const parsed = parseSessionJsonl(fixture);\n  const report = formatReport(analyzeSession(parsed.entries, parsed.diagnostics));\n  assert.match(report, /assistant turns/i);\n  assert.match(report, /tokens/i);\n  assert.match(report, /malformed/i);\n});\n\ntest('reconstructs branches and chooses the latest active leaf', () => {\n  const entries = [\n    { type: 'message', id: 'root', parentId: null, timestamp: '2026-01-01T00:00:00.000Z', message: { role: 'user' } },\n    { type: 'message', id: 'old', parentId: 'root', timestamp: '2026-01-01T00:00:01.000Z', message: { role: 'assistant' } },\n    { type: 'message', id: 'new', parentId: 'root', timestamp: '2026-01-01T00:00:02.000Z', message: { role: 'assistant' } }\n  ];\n\n  const analysis = analyzeSession(entries);\n  assert.equal(analysis.tree.branchCount, 1);\n  assert.deepEqual(analysis.tree.activePathIds, ['root', 'new']);\n  assert.match(formatReport(analysis), /branched conversation history/i);\n});\n\ntest('infers file touches and tool anomalies from common variants', () => {\n  const parsed = parseSessionJsonl([\n    JSON.stringify({ type: 'message', id: 'a', timestamp: 1767225600, message: { role: 'assistant', tool_calls: [{ id: 'call-1', function: { name: 'write', arguments: '{\"path\":\"src/app.js\"}' } }] } }),\n    JSON.stringify({ type: 'message', id: 't', parentId: 'a', timestamp: 1767225601, message: { role: 'tool', tool_call_id: 'call-1', is_error: true } })\n  ].join('\\n'));\n\n  const analysis = analyzeSession(parsed);\n  assert.equal(analysis.metrics.toolCalls.write, 1);\n  assert.equal(analysis.metrics.toolErrors, 1);\n  assert.deepEqual(analysis.metrics.filesTouched, ['src/app.js']);\n  assert.equal(analysis.metrics.fileTouchDetails['src/app.js'].operations[0], 'write');\n});\n"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "id": "call_WMe889DTIS46GkG3hGe3FwWR|fc_089a3eb9c01580ba0169edc281f7a881939bb5efd0d72ec82f",
+        "name": "bash",
+        "arguments": {
+          "command": "node --test",
+          "timeout": 120
+        },
+        "raw": {
+          "type": "toolCall",
+          "id": "call_WMe889DTIS46GkG3hGe3FwWR|fc_089a3eb9c01580ba0169edc281f7a881939bb5efd0d72ec82f",
+          "name": "bash",
+          "arguments": {
+            "command": "node --test",
+            "timeout": 120
+          }
+        }
+      },
+      {
+        "id": "call_ea0QaOC3t4GnWPgyOimp0zZh|fc_089a3eb9c01580ba0169edc28842f88193abdc3bac8f16c289",
+        "name": "edit",
+        "arguments": {
+          "path": "session-inspector.js",
+          "edits": [
+            {
+              "oldText": "export function analyzeSession(entriesOrParsed, diagnostics = [], options = {}) {\n  const parsedInput = Array.isArray(entriesOrParsed)\n    ? { entries: entriesOrParsed, diagnostics }\n    : { entries: entriesOrParsed?.entries ?? [], diagnostics: entriesOrParsed?.diagnostics ?? diagnostics };\n\n  const entries = parsedInput.entries;\n  const parseDiagnostics = parsedInput.diagnostics ?? [];\n  const anomalies = parseDiagnostics.map(diagnostic => ({",
+              "newText": "export function analyzeSession(entriesOrParsed, diagnostics = [], options = {}) {\n  const diagnosticsAreArray = Array.isArray(diagnostics);\n  const analysisOptions = diagnosticsAreArray ? options : diagnostics;\n  const parsedInput = Array.isArray(entriesOrParsed)\n    ? { entries: entriesOrParsed, diagnostics: diagnosticsAreArray ? diagnostics : [] }\n    : { entries: entriesOrParsed?.entries ?? [], diagnostics: entriesOrParsed?.diagnostics ?? (diagnosticsAreArray ? diagnostics : []) };\n\n  const entries = parsedInput.entries;\n  const parseDiagnostics = Array.isArray(parsedInput.diagnostics) ? parsedInput.diagnostics : [];\n  const anomalies = parseDiagnostics.map(diagnostic => ({"
+            },
+            {
+              "oldText": "  const tree = buildMessageTree(entries, anomalies, options);",
+              "newText": "  const tree = buildMessageTree(entries, anomalies, analysisOptions);"
+            }
+          ]
+        },
+        "raw": {
+          "type": "toolCall",
+          "id": "call_ea0QaOC3t4GnWPgyOimp0zZh|fc_089a3eb9c01580ba0169edc28842f88193abdc3bac8f16c289",
+          "name": "edit",
+          "arguments": {
+            "path": "session-inspector.js",
+            "edits": [
+              {
+                "oldText": "export function analyzeSession(entriesOrParsed, diagnostics = [], options = {}) {\n  const parsedInput = Array.isArray(entriesOrParsed)\n    ? { entries: entriesOrParsed, diagnostics }\n    : { entries: entriesOrParsed?.entries ?? [], diagnostics: entriesOrParsed?.diagnostics ?? diagnostics };\n\n  const entries = parsedInput.entries;\n  const parseDiagnostics = parsedInput.diagnostics ?? [];\n  const anomalies = parseDiagnostics.map(diagnostic => ({",
+                "newText": "export function analyzeSession(entriesOrParsed, diagnostics = [], options = {}) {\n  const diagnosticsAreArray = Array.isArray(diagnostics);\n  const analysisOptions = diagnosticsAreArray ? options : diagnostics;\n  const parsedInput = Array.isArray(entriesOrParsed)\n    ? { entries: entriesOrParsed, diagnostics: diagnosticsAreArray ? diagnostics : [] }\n    : { entries: entriesOrParsed?.entries ?? [], diagnostics: entriesOrParsed?.diagnostics ?? (diagnosticsAreArray ? diagnostics : []) };\n\n  const entries = parsedInput.entries;\n  const parseDiagnostics = Array.isArray(parsedInput.diagnostics) ? parsedInput.diagnostics : [];\n  const anomalies = parseDiagnostics.map(diagnostic => ({"
+              },
+              {
+                "oldText": "  const tree = buildMessageTree(entries, anomalies, options);",
+                "newText": "  const tree = buildMessageTree(entries, anomalies, analysisOptions);"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "id": "call_uQZsXqsRZbsCGRvCwo67NOJv|fc_089a3eb9c01580ba0169edc28c4b2c8193a88b87c28afbdce8",
+        "name": "bash",
+        "arguments": {
+          "command": "node --test",
+          "timeout": 120
+        },
+        "raw": {
+          "type": "toolCall",
+          "id": "call_uQZsXqsRZbsCGRvCwo67NOJv|fc_089a3eb9c01580ba0169edc28c4b2c8193a88b87c28afbdce8",
+          "name": "bash",
+          "arguments": {
+            "command": "node --test",
+            "timeout": 120
+          }
+        }
+      },
+      {
+        "id": "call_C9VI6LRWNr4SjeWh4X3v1VX2|fc_089a3eb9c01580ba0169edc2939c1c8193942695ed742973b4",
+        "name": "edit",
+        "arguments": {
+          "path": "session-inspector.js",
+          "edits": [
+            {
+              "oldText": "      if (result.toolCallId && !toolCallIds.has(result.toolCallId)) {\n        metrics.unmatchedToolResults += 1;\n        anomalies.push({\n          type: 'unmatched-tool-result',\n          severity: 'warning',\n          message: `Tool result ${result.toolCallId} has no matching tool call in parsed entries`,\n          entry\n        });\n      }\n",
+              "newText": ""
+            },
+            {
+              "oldText": "  for (const [id, call] of toolCallIds) {\n    if (!completedToolCallIds.has(id)) {\n      metrics.pendingToolCalls += 1;\n      anomalies.push({\n        type: 'pending-tool-call',\n        severity: 'warning',\n        message: `Tool call ${call.name}${id ? ` (${id})` : ''} has no parsed result`,\n        call\n      });\n    }\n  }\n",
+              "newText": "  for (const result of metrics.toolResultsDetailed) {\n    if (result.toolCallId && !toolCallIds.has(result.toolCallId)) {\n      metrics.unmatchedToolResults += 1;\n      anomalies.push({\n        type: 'unmatched-tool-result',\n        severity: 'warning',\n        message: `Tool result ${result.toolCallId} has no matching tool call in parsed entries`,\n        result\n      });\n    }\n  }\n\n  for (const [id, call] of toolCallIds) {\n    if (!completedToolCallIds.has(id)) {\n      metrics.pendingToolCalls += 1;\n      anomalies.push({\n        type: 'pending-tool-call',\n        severity: 'warning',\n        message: `Tool call ${call.name}${id ? ` (${id})` : ''} has no parsed result`,\n        call\n      });\n    }\n  }\n"
+            }
+          ]
+        },
+        "raw": {
+          "type": "toolCall",
+          "id": "call_C9VI6LRWNr4SjeWh4X3v1VX2|fc_089a3eb9c01580ba0169edc2939c1c8193942695ed742973b4",
+          "name": "edit",
+          "arguments": {
+            "path": "session-inspector.js",
+            "edits": [
+              {
+                "oldText": "      if (result.toolCallId && !toolCallIds.has(result.toolCallId)) {\n        metrics.unmatchedToolResults += 1;\n        anomalies.push({\n          type: 'unmatched-tool-result',\n          severity: 'warning',\n          message: `Tool result ${result.toolCallId} has no matching tool call in parsed entries`,\n          entry\n        });\n      }\n",
+                "newText": ""
+              },
+              {
+                "oldText": "  for (const [id, call] of toolCallIds) {\n    if (!completedToolCallIds.has(id)) {\n      metrics.pendingToolCalls += 1;\n      anomalies.push({\n        type: 'pending-tool-call',\n        severity: 'warning',\n        message: `Tool call ${call.name}${id ? ` (${id})` : ''} has no parsed result`,\n        call\n      });\n    }\n  }\n",
+                "newText": "  for (const result of metrics.toolResultsDetailed) {\n    if (result.toolCallId && !toolCallIds.has(result.toolCallId)) {\n      metrics.unmatchedToolResults += 1;\n      anomalies.push({\n        type: 'unmatched-tool-result',\n        severity: 'warning',\n        message: `Tool result ${result.toolCallId} has no matching tool call in parsed entries`,\n        result\n      });\n    }\n  }\n\n  for (const [id, call] of toolCallIds) {\n    if (!completedToolCallIds.has(id)) {\n      metrics.pendingToolCalls += 1;\n      anomalies.push({\n        type: 'pending-tool-call',\n        severity: 'warning',\n        message: `Tool call ${call.name}${id ? ` (${id})` : ''} has no parsed result`,\n        call\n      });\n    }\n  }\n"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "id": "call_YTohHkQfUEaEY5GAdE5zxDK2|fc_089a3eb9c01580ba0169edc2966d9c8193a77888f17df9c772",
+        "name": "bash",
+        "arguments": {
+          "command": "node --test",
+          "timeout": 120
+        },
+        "raw": {
+          "type": "toolCall",
+          "id": "call_YTohHkQfUEaEY5GAdE5zxDK2|fc_089a3eb9c01580ba0169edc2966d9c8193a77888f17df9c772",
+          "name": "bash",
+          "arguments": {
+            "command": "node --test",
+            "timeout": 120
+          }
+        }
+      },
+      {
+        "id": "call_ABB479l3khBM3c6UmPx73WQJ|fc_089a3eb9c01580ba0169edc29a682c8193943cf1a920efe297",
+        "name": "edit",
+        "arguments": {
+          "path": "session-inspector.js",
+          "edits": [
+            {
+              "oldText": "/**\n * Format a concise human-readable session report.\n *\n * @param {ReturnType<typeof analyzeSession>} analysis\n * @param {{ maxAnomalies?: number, maxFiles?: number }} [options]\n */\nexport function formatReport(analysis, options = {}) {",
+              "newText": "/**\n * Convenience helper for callers that want parse + analyze in one step while\n * still receiving both the raw parse diagnostics and structured analysis.\n *\n * @param {string|Buffer} text\n * @param {{ parse?: object, analysis?: object, report?: object }} [options]\n */\nexport function inspectSessionJsonl(text, options = {}) {\n  const parsed = parseSessionJsonl(text, options.parse ?? {});\n  const analysis = analyzeSession(parsed, options.analysis ?? {});\n  return {\n    parsed,\n    analysis,\n    report: formatReport(analysis, options.report ?? {})\n  };\n}\n\n/**\n * Format a concise human-readable session report.\n *\n * @param {ReturnType<typeof analyzeSession>} analysis\n * @param {{ maxAnomalies?: number, maxFiles?: number }} [options]\n */\nexport function formatReport(analysis, options = {}) {"
+            }
+          ]
+        },
+        "raw": {
+          "type": "toolCall",
+          "id": "call_ABB479l3khBM3c6UmPx73WQJ|fc_089a3eb9c01580ba0169edc29a682c8193943cf1a920efe297",
+          "name": "edit",
+          "arguments": {
+            "path": "session-inspector.js",
+            "edits": [
+              {
+                "oldText": "/**\n * Format a concise human-readable session report.\n *\n * @param {ReturnType<typeof analyzeSession>} analysis\n * @param {{ maxAnomalies?: number, maxFiles?: number }} [options]\n */\nexport function formatReport(analysis, options = {}) {",
+                "newText": "/**\n * Convenience helper for callers that want parse + analyze in one step while\n * still receiving both the raw parse diagnostics and structured analysis.\n *\n * @param {string|Buffer} text\n * @param {{ parse?: object, analysis?: object, report?: object }} [options]\n */\nexport function inspectSessionJsonl(text, options = {}) {\n  const parsed = parseSessionJsonl(text, options.parse ?? {});\n  const analysis = analyzeSession(parsed, options.analysis ?? {});\n  return {\n    parsed,\n    analysis,\n    report: formatReport(analysis, options.report ?? {})\n  };\n}\n\n/**\n * Format a concise human-readable session report.\n *\n * @param {ReturnType<typeof analyzeSession>} analysis\n * @param {{ maxAnomalies?: number, maxFiles?: number }} [options]\n */\nexport function formatReport(analysis, options = {}) {"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "id": "call_WGNgIsYUmLpeWeXkc46UGNaG|fc_089a3eb9c01580ba0169edc2a401188193b2ba3e249b16e94c",
+        "name": "bash",
+        "arguments": {
+          "command": "node --test",
+          "timeout": 120
+        },
+        "raw": {
+          "type": "toolCall",
+          "id": "call_WGNgIsYUmLpeWeXkc46UGNaG|fc_089a3eb9c01580ba0169edc2a401188193b2ba3e249b16e94c",
+          "name": "bash",
+          "arguments": {
+            "command": "node --test",
+            "timeout": 120
+          }
+        }
+      },
+      {
+        "id": "call_6usNvV8h3K8GEaed92z6XgPS|fc_089a3eb9c01580ba0169edc2a95b648193b2d18061e6b159c7",
+        "name": "bash",
+        "arguments": {
+          "command": "git diff -- session-inspector.js session-inspector.test.js"
+        },
+        "raw": {
+          "type": "toolCall",
+          "id": "call_6usNvV8h3K8GEaed92z6XgPS|fc_089a3eb9c01580ba0169edc2a95b648193b2d18061e6b159c7",
+          "name": "bash",
+          "arguments": {
+            "command": "git diff -- session-inspector.js session-inspector.test.js"
+          }
+        }
+      },
+      {
+        "id": "call_feCwPlS95r9c8n9vNtXGMA7Z|fc_089a3eb9c01580ba0169edc2acbb58819396a7d241af7ff4ef",
+        "name": "edit",
+        "arguments": {
+          "path": "session-inspector.js",
+          "edits": [
+            {
+              "oldText": " * @param {Array<object>} [diagnostics]\n * @param {{ activeLeafId?: string }} [options]",
+              "newText": " * @param {Array<object>|{ activeLeafId?: string }} [diagnostics]\n * @param {{ activeLeafId?: string }} [options]"
+            }
+          ]
+        },
+        "raw": {
+          "type": "toolCall",
+          "id": "call_feCwPlS95r9c8n9vNtXGMA7Z|fc_089a3eb9c01580ba0169edc2acbb58819396a7d241af7ff4ef",
+          "name": "edit",
+          "arguments": {
+            "path": "session-inspector.js",
+            "edits": [
+              {
+                "oldText": " * @param {Array<object>} [diagnostics]\n * @param {{ activeLeafId?: string }} [options]",
+                "newText": " * @param {Array<object>|{ activeLeafId?: string }} [diagnostics]\n * @param {{ activeLeafId?: string }} [options]"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "id": "call_KssL550suaX2PRjChSNof5rz|fc_089a3eb9c01580ba0169edc2b10a508193bbca46ae9c426802",
+        "name": "bash",
+        "arguments": {
+          "command": "node --test",
+          "timeout": 120
+        },
+        "raw": {
+          "type": "toolCall",
+          "id": "call_KssL550suaX2PRjChSNof5rz|fc_089a3eb9c01580ba0169edc2b10a508193bbca46ae9c426802",
+          "name": "bash",
+          "arguments": {
+            "command": "node --test",
+            "timeout": 120
+          }
+        }
+      }
+    ],
+    "toolResultsDetailed": [
+      {
+        "toolCallId": "call_HEHhtP87x3bWB78IaJxN1ST9|fc_089a3eb9c01580ba0169edc212847c81939adbe3c34e7c5771",
+        "toolName": "bash",
+        "isError": false,
+        "raw": {
+          "role": "toolResult",
+          "toolCallId": "call_HEHhtP87x3bWB78IaJxN1ST9|fc_089a3eb9c01580ba0169edc212847c81939adbe3c34e7c5771",
+          "toolName": "bash",
+          "content": [
+            {
+              "type": "text",
+              "text": "EVALUATION_RUBRIC.md\npackage.json\nsession-inspector.js\nsession-inspector.test.js\n"
+            }
+          ],
+          "isError": false,
+          "timestamp": 1777189394625
+        }
+      },
+      {
+        "toolCallId": "call_D9JkaKyHdIJQDbfu8sM12Osa|fc_089a3eb9c01580ba0169edc213ee48819382fb2115cc8c8f09",
+        "toolName": "read",
+        "isError": false,
+        "raw": {
+          "role": "toolResult",
+          "toolCallId": "call_D9JkaKyHdIJQDbfu8sM12Osa|fc_089a3eb9c01580ba0169edc213ee48819382fb2115cc8c8f09",
+          "toolName": "read",
+          "content": [
+            {
+              "type": "text",
+              "text": "export function parseSessionJsonl(text) {\n  return text.trim().split('\\n').map(line => JSON.parse(line));\n}\n\nexport function analyzeSession(entries) {\n  return {\n    entries,\n    metrics: {\n      assistantTurns: 0,\n      totalTokens: 0,\n      cost: 0,\n      toolCalls: {}\n    }\n  };\n}\n\nexport function formatReport(analysis) {\n  return 'Session report';\n}\n"
+            }
+          ],
+          "isError": false,
+          "timestamp": 1777189396036
+        }
+      },
+      {
+        "toolCallId": "call_7FTItW4MpKT7YSH13igaP3oD|fc_089a3eb9c01580ba0169edc213ee588193b7776ca84b567c44",
+        "toolName": "read",
+        "isError": false,
+        "raw": {
+          "role": "toolResult",
+          "toolCallId": "call_7FTItW4MpKT7YSH13igaP3oD|fc_089a3eb9c01580ba0169edc213ee588193b7776ca84b567c44",
+          "toolName": "read",
+          "content": [
+            {
+              "type": "text",
+              "text": "import test from 'node:test';\nimport assert from 'node:assert/strict';\nimport { parseSessionJsonl, analyzeSession, formatReport } from './session-inspector.js';\n\nconst fixture = [\n  '{\"type\":\"session\",\"version\":3,\"id\":\"s1\",\"timestamp\":\"2026-01-01T00:00:00.000Z\",\"cwd\":\"/tmp/project\"}',\n  '{\"type\":\"message\",\"id\":\"u1\",\"parentId\":null,\"timestamp\":\"2026-01-01T00:00:01.000Z\",\"message\":{\"role\":\"user\",\"content\":\"fix tests\",\"timestamp\":1767225601000}}',\n  '{\"type\":\"message\",\"id\":\"a1\",\"parentId\":\"u1\",\"timestamp\":\"2026-01-01T00:00:03.000Z\",\"message\":{\"role\":\"assistant\",\"content\":[{\"type\":\"toolCall\",\"id\":\"tc1\",\"name\":\"read\",\"arguments\":{\"path\":\"a.js\"}}],\"usage\":{\"input\":100,\"output\":20,\"cacheRead\":0,\"cacheWrite\":0,\"totalTokens\":120,\"cost\":{\"total\":0.01}},\"stopReason\":\"toolUse\",\"timestamp\":1767225603000}}',\n  '{\"type\":\"message\",\"id\":\"tr1\",\"parentId\":\"a1\",\"timestamp\":\"2026-01-01T00:00:04.000Z\",\"message\":{\"role\":\"toolResult\",\"toolCallId\":\"tc1\",\"toolName\":\"read\",\"content\":[{\"type\":\"text\",\"text\":\"file\"}],\"isError\":false,\"timestamp\":1767225604000}}',\n  '{\"type\":\"message\",\"id\":\"a2\",\"parentId\":\"tr1\",\"timestamp\":\"2026-01-01T00:00:07.000Z\",\"message\":{\"role\":\"assistant\",\"content\":[{\"type\":\"text\",\"text\":\"done\"}],\"usage\":{\"input\":150,\"output\":30,\"cacheRead\":10,\"cacheWrite\":0,\"totalTokens\":190,\"cost\":{\"total\":0.02}},\"stopReason\":\"stop\",\"timestamp\":1767225607000}}',\n  'not valid json'\n].join('\\n');\n\ntest('parses jsonl while preserving malformed-line diagnostics', () => {\n  const parsed = parseSessionJsonl(fixture);\n  assert.equal(parsed.entries.length, 5);\n  assert.equal(parsed.diagnostics.length, 1);\n  assert.equal(parsed.diagnostics[0].line, 6);\n});\n\ntest('computes useful session metrics', () => {\n  const parsed = parseSessionJsonl(fixture);\n  const analysis = analyzeSession(parsed.entries);\n  assert.equal(analysis.metrics.assistantTurns, 2);\n  assert.equal(analysis.metrics.totalTokens, 310);\n  assert.equal(analysis.metrics.cost, 0.03);\n  assert.equal(analysis.metrics.toolCalls.read, 1);\n  assert.equal(analysis.metrics.durationMs, 6000);\n});\n\ntest('formats a human-readable report with anomalies', () => {\n  const parsed = parseSessionJsonl(fixture);\n  const report = formatReport(analyzeSession(parsed.entries, parsed.diagnostics));\n  assert.match(report, /assistant turns/i);\n  assert.match(report, /tokens/i);\n  assert.match(report, /malformed/i);\n});\n"
+            }
+          ],
+          "isError": false,
+          "timestamp": 1777189396036
+        }
+      },
+      {
+        "toolCallId": "call_GEMg4hJwKfgDk88CenNXW7NU|fc_089a3eb9c01580ba0169edc213ee6481939a2e7f81c0aa3990",
+        "toolName": "read",
+        "isError": false,
+        "raw": {
+          "role": "toolResult",
+          "toolCallId": "call_GEMg4hJwKfgDk88CenNXW7NU|fc_089a3eb9c01580ba0169edc213ee6481939a2e7f81c0aa3990",
+          "toolName": "read",
+          "content": [
+            {
+              "type": "text",
+              "text": "{\n  \"name\": \"agent-session-inspector-task\",\n  \"type\": \"module\",\n  \"scripts\": {\"test\": \"node --test\"}\n}\n"
+            }
+          ],
+          "isError": false,
+          "timestamp": 1777189396037
+        }
+      },
+      {
+        "toolCallId": "call_u45K2ycwRYuwaetxk87LC5Qj|fc_089a3eb9c01580ba0169edc213ee6c81939804551102668d2c",
+        "toolName": "read",
+        "isError": false,
+        "raw": {
+          "role": "toolResult",
+          "toolCallId": "call_u45K2ycwRYuwaetxk87LC5Qj|fc_089a3eb9c01580ba0169edc213ee6c81939804551102668d2c",
+          "toolName": "read",
+          "content": [
+            {
+              "type": "text",
+              "text": "# Human evaluation rubric\n\n- Robust JSONL parsing diagnostics\n- Tree/active path reconstruction\n- Useful session metrics\n- Meaningful human report\n- Clean reusable API\n- Real-world Pi variation handling\n"
+            }
+          ],
+          "isError": false,
+          "timestamp": 1777189396039
+        }
+      },
+      {
+        "toolCallId": "call_sM0PjKNaWVfaP2IGfH7dXxf7|fc_089a3eb9c01580ba0169edc21b864881938a8740107d92972f",
+        "toolName": "bash",
+        "isError": false,
+        "raw": {
+          "role": "toolResult",
+          "toolCallId": "call_sM0PjKNaWVfaP2IGfH7dXxf7|fc_089a3eb9c01580ba0169edc21b864881938a8740107d92972f",
+          "toolName": "bash",
+          "content": [
+            {
+              "type": "text",
+              "text": "0.03\n"
+            }
+          ],
+          "isError": false,
+          "timestamp": 1777189403975
+        }
+      },
+      {
+        "toolCallId": "call_Lak8nGBezONDUWAUNfFXOBhw|fc_089a3eb9c01580ba0169edc23789d48193b13213ef690f651c",
+        "toolName": "write",
+        "isError": false,
+        "raw": {
+          "role": "toolResult",
+          "toolCallId": "call_Lak8nGBezONDUWAUNfFXOBhw|fc_089a3eb9c01580ba0169edc23789d48193b13213ef690f651c",
+          "toolName": "write",
+          "content": [
+            {
+              "type": "text",
+              "text": "Successfully wrote 28403 bytes to session-inspector.js"
+            }
+          ],
+          "isError": false,
+          "timestamp": 1777189488846
+        }
+      },
+      {
+        "toolCallId": "call_P61zBdQtXAMtOFNaVaLpdtxs|fc_089a3eb9c01580ba0169edc271e6288193ad6a5091df108afd",
+        "toolName": "bash",
+        "isError": true,
+        "raw": {
+          "role": "toolResult",
+          "toolCallId": "call_P61zBdQtXAMtOFNaVaLpdtxs|fc_089a3eb9c01580ba0169edc271e6288193ad6a5091df108afd",
+          "toolName": "bash",
+          "content": [
+            {
+              "type": "text",
+              "text": "TAP version 13\n# Subtest: parses jsonl while preserving malformed-line diagnostics\nok 1 - parses jsonl while preserving malformed-line diagnostics\n  ---\n  duration_ms: 0.525583\n  type: 'test'\n  ...\n# Subtest: computes useful session metrics\nok 2 - computes useful session metrics\n  ---\n  duration_ms: 2.150875\n  type: 'test'\n  ...\n# Subtest: formats a human-readable report with anomalies\nnot ok 3 - formats a human-readable report with anomalies\n  ---\n  duration_ms: 9.144166\n  type: 'test'\n  location: '/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/workspaces/js-agent-session-inspector-open-ended__high__r1/session-inspector.test.js:31:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    The input did not match the regular expression /malformed/i. Input:\n    \n    'Session report\\n' +\n      '- Session: id s1; cwd /tmp/project; version 3\\n' +\n      '- Time range: 2026-01-01T00:00:01.000Z → 2026-01-01T00:00:07.000Z (6s)\\n' +\n      '- Messages: 1 user, 2 assistant turns, 1 tool results (4 messages on active branch)\\n' +\n      '- Branching: 4 message nodes, 1 leaves, 0 branch points, max depth 3\\n' +\n      '- Usage: 310 tokens (in 250, out 50, cache 10); cost $0.03\\n' +\n      '- Tools: read×1; 0 tool errors; 0 pending results\\n' +\n      '- Files touched: a.js (read)\\n' +\n      '- Productivity signals: 155 tokens/assistant turn; 1/1 tool calls without reported errors; 3s per assistant turn elapsed; 1 error-level anomaly to inspect\\n' +\n      '- Anomalies (1):\\n' +\n      `  • line 6: Unexpected token 'o', \"not valid json\" is not valid JSON\\n`\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected:\n  actual: |-\n    Session report\n    - Session: id s1; cwd /tmp/project; version 3\n    - Time range: 2026-01-01T00:00:01.000Z → 2026-01-01T00:00:07.000Z (6s)\n    - Messages: 1 user, 2 assistant turns, 1 tool results (4 messages on active branch)\n    - Branching: 4 message nodes, 1 leaves, 0 branch points, max depth 3\n    - Usage: 310 tokens (in 250, out 50, cache 10); cost $0.03\n    - Tools: read×1; 0 tool errors; 0 pending results\n    - Files touched: a.js (read)\n    - Productivity signals: 155 tokens/assistant turn; 1/1 tool calls without reported errors; 3s per assistant turn elapsed; 1 error-level anomaly to inspect\n    - Anomalies (1):\n      • line 6: Unexpected token 'o', \"not valid json\" is not valid JSON\n    \n  operator: 'match'\n  stack: |-\n    TestContext.<anonymous> (file:///Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/workspaces/js-agent-session-inspector-open-ended__high__r1/session-inspector.test.js:36:10)\n    Test.runInAsyncScope (node:async_hooks:214:14)\n    Test.run (node:internal/test_runner/test:1047:25)\n    Test.processPendingSubtests (node:internal/test_runner/test:744:18)\n    Test.postRun (node:internal/test_runner/test:1173:19)\n    Test.run (node:internal/test_runner/test:1101:12)\n    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)\n  ...\n1..3\n# tests 3\n# suites 0\n# pass 2\n# fail 1\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 54.8975\n\n\nCommand exited with code 1"
+            }
+          ],
+          "details": {},
+          "isError": true,
+          "timestamp": 1777189490108
+        }
+      },
+      {
+        "toolCallId": "call_x1u8uf3mMdVzvLb4zdNOtTYY|fc_089a3eb9c01580ba0169edc2745d288193a7cf24a795463536",
+        "toolName": "edit",
+        "isError": false,
+        "raw": {
+          "role": "toolResult",
+          "toolCallId": "call_x1u8uf3mMdVzvLb4zdNOtTYY|fc_089a3eb9c01580ba0169edc2745d288193a7cf24a795463536",
+          "toolName": "edit",
+          "content": [
+            {
+              "type": "text",
+              "text": "Successfully replaced 1 block(s) in session-inspector.js."
+            }
+          ],
+          "details": {
+            "diff": "     ...\n 164   if (anomalies.length > 0) {\n 165     lines.push(`- Anomalies (${anomalies.length}):`);\n 166     for (const anomaly of anomalies.slice(0, maxAnomalies)) {\n 167       const location = anomaly.line ? `line ${anomaly.line}: ` : '';\n-168       lines.push(`  • ${location}${anomaly.message}`);\n+168       const label = anomaly.type ? `${humanizeAnomalyType(anomaly.type)}: ` : '';\n+169       lines.push(`  • ${location}${label}${anomaly.message}`);\n 169     }\n 170     if (anomalies.length > maxAnomalies) lines.push(`  • … ${anomalies.length - maxAnomalies} more`);\n 171   } else {\n 172     lines.push('- Anomalies: none detected');\n     ...",
+            "firstChangedLine": 168
+          },
+          "isError": false,
+          "timestamp": 1777189492951
+        }
+      },
+      {
+        "toolCallId": "call_YTKtPA0vaNKBkgGVspP1d5IB|fc_089a3eb9c01580ba0169edc276a14c819383018b0b9b83082c",
+        "toolName": "edit",
+        "isError": false,
+        "raw": {
+          "role": "toolResult",
+          "toolCallId": "call_YTKtPA0vaNKBkgGVspP1d5IB|fc_089a3eb9c01580ba0169edc276a14c819383018b0b9b83082c",
+          "toolName": "edit",
+          "content": [
+            {
+              "type": "text",
+              "text": "Successfully replaced 1 block(s) in session-inspector.js."
+            }
+          ],
+          "details": {
+            "diff": "     ...\n 810   const entries = Object.entries(toolCalls).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));\n 811   if (entries.length === 0) return 'none';\n 812   return entries.map(([name, count]) => `${name}×${count}`).join(', ');\n 813 }\n+814 \n+815 function humanizeAnomalyType(type) {\n+816   return String(type).replace(/-/g, ' ');\n+817 }",
+            "firstChangedLine": 814
+          },
+          "isError": false,
+          "timestamp": 1777189495428
+        }
+      },
+      {
+        "toolCallId": "call_pFjGLBlj9Q73V8KszKG977pS|fc_089a3eb9c01580ba0169edc27829bc8193ba928cc564a69bca",
+        "toolName": "bash",
+        "isError": false,
+        "raw": {
+          "role": "toolResult",
+          "toolCallId": "call_pFjGLBlj9Q73V8KszKG977pS|fc_089a3eb9c01580ba0169edc27829bc8193ba928cc564a69bca",
+          "toolName": "bash",
+          "content": [
+            {
+              "type": "text",
+              "text": "TAP version 13\n# Subtest: parses jsonl while preserving malformed-line diagnostics\nok 1 - parses jsonl while preserving malformed-line diagnostics\n  ---\n  duration_ms: 0.466125\n  type: 'test'\n  ...\n# Subtest: computes useful session metrics\nok 2 - computes useful session metrics\n  ---\n  duration_ms: 1.862833\n  type: 'test'\n  ...\n# Subtest: formats a human-readable report with anomalies\nok 3 - formats a human-readable report with anomalies\n  ---\n  duration_ms: 8.50575\n  type: 'test'\n  ...\n1..3\n# tests 3\n# suites 0\n# pass 3\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 52.051458\n"
+            }
+          ],
+          "isError": false,
+          "timestamp": 1777189496428
+        }
+      },
+      {
+        "toolCallId": "call_pTxhryckgXx0ZHV5pmi2W0AS|fc_089a3eb9c01580ba0169edc27cf4648193bcbfff45c59cc3f6",
+        "toolName": "edit",
+        "isError": false,
+        "raw": {
+          "role": "toolResult",
+          "toolCallId": "call_pTxhryckgXx0ZHV5pmi2W0AS|fc_089a3eb9c01580ba0169edc27cf4648193bcbfff45c59cc3f6",
+          "toolName": "edit",
+          "content": [
+            {
+              "type": "text",
+              "text": "Successfully replaced 1 block(s) in session-inspector.test.js."
+            }
+          ],
+          "details": {
+            "diff": "    ...\n 34   assert.match(report, /assistant turns/i);\n 35   assert.match(report, /tokens/i);\n 36   assert.match(report, /malformed/i);\n 37 });\n+38 \n+39 test('reconstructs branches and chooses the latest active leaf', () => {\n+40   const entries = [\n+41     { type: 'message', id: 'root', parentId: null, timestamp: '2026-01-01T00:00:00.000Z', message: { role: 'user' } },\n+42     { type: 'message', id: 'old', parentId: 'root', timestamp: '2026-01-01T00:00:01.000Z', message: { role: 'assistant' } },\n+43     { type: 'message', id: 'new', parentId: 'root', timestamp: '2026-01-01T00:00:02.000Z', message: { role: 'assistant' } }\n+44   ];\n+45 \n+46   const analysis = analyzeSession(entries);\n+47   assert.equal(analysis.tree.branchCount, 1);\n+48   assert.deepEqual(analysis.tree.activePathIds, ['root', 'new']);\n+49   assert.match(formatReport(analysis), /branched conversation history/i);\n+50 });\n+51 \n+52 test('infers file touches and tool anomalies from common variants', () => {\n+53   const parsed = parseSessionJsonl([\n+54     JSON.stringify({ type: 'message', id: 'a', timestamp: 1767225600, message: { role: 'assistant', tool_calls: [{ id: 'call-1', function: { name: 'write', arguments: '{\"path\":\"src/app.js\"}' } }] } }),\n+55     JSON.stringify({ type: 'message', id: 't', parentId: 'a', timestamp: 1767225601, message: { role: 'tool', tool_call_id: 'call-1', is_error: true } })\n+56   ].join('\\n'));\n+57 \n+58   const analysis = analyzeSession(parsed);\n+59   assert.equal(analysis.metrics.toolCalls.write, 1);\n+60   assert.equal(analysis.metrics.toolErrors, 1);\n+61   assert.deepEqual(analysis.metrics.filesTouched, ['src/app.js']);\n+62   assert.equal(analysis.metrics.fileTouchDetails['src/app.js'].operations[0], 'write');\n+63 });",
+            "firstChangedLine": 38
+          },
+          "isError": false,
+          "timestamp": 1777189504447
+        }
+      },
+      {
+        "toolCallId": "call_WMe889DTIS46GkG3hGe3FwWR|fc_089a3eb9c01580ba0169edc281f7a881939bb5efd0d72ec82f",
+        "toolName": "bash",
+        "isError": false,
+        "raw": {
+          "role": "toolResult",
+          "toolCallId": "call_WMe889DTIS46GkG3hGe3FwWR|fc_089a3eb9c01580ba0169edc281f7a881939bb5efd0d72ec82f",
+          "toolName": "bash",
+          "content": [
+            {
+              "type": "text",
+              "text": "TAP version 13\n# Subtest: parses jsonl while preserving malformed-line diagnostics\nok 1 - parses jsonl while preserving malformed-line diagnostics\n  ---\n  duration_ms: 0.722125\n  type: 'test'\n  ...\n# Subtest: computes useful session metrics\nok 2 - computes useful session metrics\n  ---\n  duration_ms: 1.508083\n  type: 'test'\n  ...\n# Subtest: formats a human-readable report with anomalies\nok 3 - formats a human-readable report with anomalies\n  ---\n  duration_ms: 8.484084\n  type: 'test'\n  ...\n# Subtest: reconstructs branches and chooses the latest active leaf\nok 4 - reconstructs branches and chooses the latest active leaf\n  ---\n  duration_ms: 0.556708\n  type: 'test'\n  ...\n# Subtest: infers file touches and tool anomalies from common variants\nok 5 - infers file touches and tool anomalies from common variants\n  ---\n  duration_ms: 0.166125\n  type: 'test'\n  ...\n1..5\n# tests 5\n# suites 0\n# pass 5\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 51.537917\n"
+            }
+          ],
+          "isError": false,
+          "timestamp": 1777189506526
+        }
+      },
+      {
+        "toolCallId": "call_ea0QaOC3t4GnWPgyOimp0zZh|fc_089a3eb9c01580ba0169edc28842f88193abdc3bac8f16c289",
+        "toolName": "edit",
+        "isError": false,
+        "raw": {
+          "role": "toolResult",
+          "toolCallId": "call_ea0QaOC3t4GnWPgyOimp0zZh|fc_089a3eb9c01580ba0169edc28842f88193abdc3bac8f16c289",
+          "toolName": "edit",
+          "content": [
+            {
+              "type": "text",
+              "text": "Successfully replaced 2 block(s) in session-inspector.js."
+            }
+          ],
+          "details": {
+            "diff": "     ...\n  72  * @param {Array<object>} [diagnostics]\n  73  * @param {{ activeLeafId?: string }} [options]\n  74  */\n  75 export function analyzeSession(entriesOrParsed, diagnostics = [], options = {}) {\n+ 76   const diagnosticsAreArray = Array.isArray(diagnostics);\n+ 77   const analysisOptions = diagnosticsAreArray ? options : diagnostics;\n  76   const parsedInput = Array.isArray(entriesOrParsed)\n- 77     ? { entries: entriesOrParsed, diagnostics }\n- 78     : { entries: entriesOrParsed?.entries ?? [], diagnostics: entriesOrParsed?.diagnostics ?? diagnostics };\n+ 79     ? { entries: entriesOrParsed, diagnostics: diagnosticsAreArray ? diagnostics : [] }\n+ 80     : { entries: entriesOrParsed?.entries ?? [], diagnostics: entriesOrParsed?.diagnostics ?? (diagnosticsAreArray ? diagnostics : []) };\n  79 \n  80   const entries = parsedInput.entries;\n- 81   const parseDiagnostics = parsedInput.diagnostics ?? [];\n+ 83   const parseDiagnostics = Array.isArray(parsedInput.diagnostics) ? parsedInput.diagnostics : [];\n  82   const anomalies = parseDiagnostics.map(diagnostic => ({\n  83     type: diagnostic.type ?? 'diagnostic',\n  84     severity: diagnostic.severity ?? 'warning',\n  85     line: diagnostic.line,\n     ...\n  87     diagnostic\n  88   }));\n  89 \n  90   const session = extractSessionInfo(entries);\n- 91   const tree = buildMessageTree(entries, anomalies, options);\n+ 93   const tree = buildMessageTree(entries, anomalies, analysisOptions);\n  92   const metrics = computeMetrics(entries, tree, parseDiagnostics, anomalies);\n  93   const signals = computeSignals(metrics, tree, anomalies);\n  94 \n  95   return {\n     ...",
+            "firstChangedLine": 76
+          },
+          "isError": false,
+          "timestamp": 1777189513347
+        }
+      },
+      {
+        "toolCallId": "call_uQZsXqsRZbsCGRvCwo67NOJv|fc_089a3eb9c01580ba0169edc28c4b2c8193a88b87c28afbdce8",
+        "toolName": "bash",
+        "isError": false,
+        "raw": {
+          "role": "toolResult",
+          "toolCallId": "call_uQZsXqsRZbsCGRvCwo67NOJv|fc_089a3eb9c01580ba0169edc28c4b2c8193a88b87c28afbdce8",
+          "toolName": "bash",
+          "content": [
+            {
+              "type": "text",
+              "text": "TAP version 13\n# Subtest: parses jsonl while preserving malformed-line diagnostics\nok 1 - parses jsonl while preserving malformed-line diagnostics\n  ---\n  duration_ms: 0.693292\n  type: 'test'\n  ...\n# Subtest: computes useful session metrics\nok 2 - computes useful session metrics\n  ---\n  duration_ms: 1.528041\n  type: 'test'\n  ...\n# Subtest: formats a human-readable report with anomalies\nok 3 - formats a human-readable report with anomalies\n  ---\n  duration_ms: 8.4485\n  type: 'test'\n  ...\n# Subtest: reconstructs branches and chooses the latest active leaf\nok 4 - reconstructs branches and chooses the latest active leaf\n  ---\n  duration_ms: 0.564\n  type: 'test'\n  ...\n# Subtest: infers file touches and tool anomalies from common variants\nok 5 - infers file touches and tool anomalies from common variants\n  ---\n  duration_ms: 0.16675\n  type: 'test'\n  ...\n1..5\n# tests 5\n# suites 0\n# pass 5\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 50.114667\n"
+            }
+          ],
+          "isError": false,
+          "timestamp": 1777189516557
+        }
+      },
+      {
+        "toolCallId": "call_C9VI6LRWNr4SjeWh4X3v1VX2|fc_089a3eb9c01580ba0169edc2939c1c8193942695ed742973b4",
+        "toolName": "edit",
+        "isError": false,
+        "raw": {
+          "role": "toolResult",
+          "toolCallId": "call_C9VI6LRWNr4SjeWh4X3v1VX2|fc_089a3eb9c01580ba0169edc2939c1c8193942695ed742973b4",
+          "toolName": "edit",
+          "content": [
+            {
+              "type": "text",
+              "text": "Successfully replaced 2 block(s) in session-inspector.js."
+            }
+          ],
+          "details": {
+            "diff": "     ...\n 368           message: `Tool ${result.toolName ?? result.toolCallId ?? 'unknown'} returned an error`,\n 369           entry\n 370         });\n 371       }\n-372       if (result.toolCallId && !toolCallIds.has(result.toolCallId)) {\n-373         metrics.unmatchedToolResults += 1;\n-374         anomalies.push({\n-375           type: 'unmatched-tool-result',\n-376           severity: 'warning',\n-377           message: `Tool result ${result.toolCallId} has no matching tool call in parsed entries`,\n-378           entry\n-379         });\n-380       }\n 381     }\n 382   }\n 383 \n+375   for (const result of metrics.toolResultsDetailed) {\n+376     if (result.toolCallId && !toolCallIds.has(result.toolCallId)) {\n+377       metrics.unmatchedToolResults += 1;\n+378       anomalies.push({\n+379         type: 'unmatched-tool-result',\n+380         severity: 'warning',\n+381         message: `Tool result ${result.toolCallId} has no matching tool call in parsed entries`,\n+382         result\n+383       });\n+384     }\n+385   }\n+386 \n 384   for (const [id, call] of toolCallIds) {\n 385     if (!completedToolCallIds.has(id)) {\n 386       metrics.pendingToolCalls += 1;\n 387       anomalies.push({\n     ...",
+            "firstChangedLine": 372
+          },
+          "isError": false,
+          "timestamp": 1777189525691
+        }
+      },
+      {
+        "toolCallId": "call_YTohHkQfUEaEY5GAdE5zxDK2|fc_089a3eb9c01580ba0169edc2966d9c8193a77888f17df9c772",
+        "toolName": "bash",
+        "isError": false,
+        "raw": {
+          "role": "toolResult",
+          "toolCallId": "call_YTohHkQfUEaEY5GAdE5zxDK2|fc_089a3eb9c01580ba0169edc2966d9c8193a77888f17df9c772",
+          "toolName": "bash",
+          "content": [
+            {
+              "type": "text",
+              "text": "TAP version 13\n# Subtest: parses jsonl while preserving malformed-line diagnostics\nok 1 - parses jsonl while preserving malformed-line diagnostics\n  ---\n  duration_ms: 0.846667\n  type: 'test'\n  ...\n# Subtest: computes useful session metrics\nok 2 - computes useful session metrics\n  ---\n  duration_ms: 1.650417\n  type: 'test'\n  ...\n# Subtest: formats a human-readable report with anomalies\nok 3 - formats a human-readable report with anomalies\n  ---\n  duration_ms: 8.680292\n  type: 'test'\n  ...\n# Subtest: reconstructs branches and chooses the latest active leaf\nok 4 - reconstructs branches and chooses the latest active leaf\n  ---\n  duration_ms: 0.659042\n  type: 'test'\n  ...\n# Subtest: infers file touches and tool anomalies from common variants\nok 5 - infers file touches and tool anomalies from common variants\n  ---\n  duration_ms: 0.198084\n  type: 'test'\n  ...\n1..5\n# tests 5\n# suites 0\n# pass 5\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 57.614792\n"
+            }
+          ],
+          "isError": false,
+          "timestamp": 1777189526689
+        }
+      },
+      {
+        "toolCallId": "call_ABB479l3khBM3c6UmPx73WQJ|fc_089a3eb9c01580ba0169edc29a682c8193943cf1a920efe297",
+        "toolName": "edit",
+        "isError": false,
+        "raw": {
+          "role": "toolResult",
+          "toolCallId": "call_ABB479l3khBM3c6UmPx73WQJ|fc_089a3eb9c01580ba0169edc29a682c8193943cf1a920efe297",
+          "toolName": "edit",
+          "content": [
+            {
+              "type": "text",
+              "text": "Successfully replaced 1 block(s) in session-inspector.js."
+            }
+          ],
+          "details": {
+            "diff": "     ...\n 105   };\n 106 }\n 107 \n 108 /**\n+109  * Convenience helper for callers that want parse + analyze in one step while\n+110  * still receiving both the raw parse diagnostics and structured analysis.\n+111  *\n+112  * @param {string|Buffer} text\n+113  * @param {{ parse?: object, analysis?: object, report?: object }} [options]\n+114  */\n+115 export function inspectSessionJsonl(text, options = {}) {\n+116   const parsed = parseSessionJsonl(text, options.parse ?? {});\n+117   const analysis = analyzeSession(parsed, options.analysis ?? {});\n+118   return {\n+119     parsed,\n+120     analysis,\n+121     report: formatReport(analysis, options.report ?? {})\n+122   };\n+123 }\n+124 \n+125 /**\n 109  * Format a concise human-readable session report.\n 110  *\n 111  * @param {ReturnType<typeof analyzeSession>} analysis\n 112  * @param {{ maxAnomalies?: number, maxFiles?: number }} [options]\n     ...",
+            "firstChangedLine": 109
+          },
+          "isError": false,
+          "timestamp": 1777189539026
+        }
+      },
+      {
+        "toolCallId": "call_WGNgIsYUmLpeWeXkc46UGNaG|fc_089a3eb9c01580ba0169edc2a401188193b2ba3e249b16e94c",
+        "toolName": "bash",
+        "isError": false,
+        "raw": {
+          "role": "toolResult",
+          "toolCallId": "call_WGNgIsYUmLpeWeXkc46UGNaG|fc_089a3eb9c01580ba0169edc2a401188193b2ba3e249b16e94c",
+          "toolName": "bash",
+          "content": [
+            {
+              "type": "text",
+              "text": "TAP version 13\n# Subtest: parses jsonl while preserving malformed-line diagnostics\nok 1 - parses jsonl while preserving malformed-line diagnostics\n  ---\n  duration_ms: 1.219166\n  type: 'test'\n  ...\n# Subtest: computes useful session metrics\nok 2 - computes useful session metrics\n  ---\n  duration_ms: 6.413791\n  type: 'test'\n  ...\n# Subtest: formats a human-readable report with anomalies\nok 3 - formats a human-readable report with anomalies\n  ---\n  duration_ms: 9.976666\n  type: 'test'\n  ...\n# Subtest: reconstructs branches and chooses the latest active leaf\nok 4 - reconstructs branches and chooses the latest active leaf\n  ---\n  duration_ms: 0.797833\n  type: 'test'\n  ...\n# Subtest: infers file touches and tool anomalies from common variants\nok 5 - infers file touches and tool anomalies from common variants\n  ---\n  duration_ms: 0.217125\n  type: 'test'\n  ...\n1..5\n# tests 5\n# suites 0\n# pass 5\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 166.393916\n"
+            }
+          ],
+          "isError": false,
+          "timestamp": 1777189541598
+        }
+      },
+      {
+        "toolCallId": "call_6usNvV8h3K8GEaed92z6XgPS|fc_089a3eb9c01580ba0169edc2a95b648193b2d18061e6b159c7",
+        "toolName": "bash",
+        "isError": false,
+        "raw": {
+          "role": "toolResult",
+          "toolCallId": "call_6usNvV8h3K8GEaed92z6XgPS|fc_089a3eb9c01580ba0169edc2a95b648193b2d18061e6b159c7",
+          "toolName": "bash",
+          "content": [
+            {
+              "type": "text",
+              "text": "diff --git a/session-inspector.js b/session-inspector.js\nindex 09b89d5..bcbfb02 100644\n--- a/session-inspector.js\n+++ b/session-inspector.js\n@@ -1,19 +1,839 @@\n-export function parseSessionJsonl(text) {\n-  return text.trim().split('\\n').map(line => JSON.parse(line));\n+const ROLE_ASSISTANT = 'assistant';\n+const ROLE_USER = 'user';\n+const ROLE_TOOL_RESULT = 'toolResult';\n+\n+/**\n+ * Parse a Pi-style JSONL session.\n+ *\n+ * The parser is deliberately forgiving: malformed records are skipped and\n+ * reported with line numbers, while valid lines are returned unchanged. Blank\n+ * lines are ignored by default because real logs often end with a newline or\n+ * contain occasional spacing from manual edits.\n+ *\n+ * @param {string|Buffer} text JSONL text\n+ * @param {{ includeBlankDiagnostics?: boolean }} [options]\n+ * @returns {{ entries: any[], diagnostics: Array<object>, lineMap: Array<object> }}\n+ */\n+export function parseSessionJsonl(text, options = {}) {\n+  const source = Buffer.isBuffer(text) ? text.toString('utf8') : String(text ?? '');\n+  const lines = source.split(/\\r?\\n/);\n+  const entries = [];\n+  const diagnostics = [];\n+  const lineMap = [];\n+\n+  for (let index = 0; index < lines.length; index += 1) {\n+    const line = lines[index];\n+    const lineNumber = index + 1;\n+\n+    // Ignore the final empty line from a trailing newline, and by default all\n+    // blank lines. Keep an opt-in diagnostic for callers that need strict JSONL.\n+    if (line.trim() === '') {\n+      if (options.includeBlankDiagnostics && !(index === lines.length - 1 && line === '')) {\n+        diagnostics.push({\n+          type: 'blank-line',\n+          severity: 'info',\n+          line: lineNumber,\n+          message: 'Blank line ignored',\n+          raw: line\n+        });\n+      }\n+      lineMap.push({ line: lineNumber, raw: line, skipped: true });\n+      continue;\n+    }\n+\n+    try {\n+      const entry = JSON.parse(line);\n+      entries.push(entry);\n+      lineMap.push({ line: lineNumber, raw: line, entry });\n+    } catch (error) {\n+      diagnostics.push({\n+        type: 'malformed-json',\n+        severity: 'error',\n+        line: lineNumber,\n+        column: extractJsonErrorColumn(error),\n+        message: error instanceof Error ? error.message : String(error),\n+        raw: line\n+      });\n+      lineMap.push({ line: lineNumber, raw: line, error });\n+    }\n+  }\n+\n+  return { entries, diagnostics, lineMap };\n }\n \n-export function analyzeSession(entries) {\n+/**\n+ * Analyze parsed session entries and derive branch/tree, metrics and anomalies.\n+ *\n+ * Accepts either an array of entries or the full object returned by\n+ * parseSessionJsonl(). Diagnostics may be passed separately for backwards- and\n+ * test-friendly usage.\n+ *\n+ * @param {any[]|{ entries: any[], diagnostics?: Array<object> }} entriesOrParsed\n+ * @param {Array<object>} [diagnostics]\n+ * @param {{ activeLeafId?: string }} [options]\n+ */\n+export function analyzeSession(entriesOrParsed, diagnostics = [], options = {}) {\n+  const diagnosticsAreArray = Array.isArray(diagnostics);\n+  const analysisOptions = diagnosticsAreArray ? options : diagnostics;\n+  const parsedInput = Array.isArray(entriesOrParsed)\n+    ? { entries: entriesOrParsed, diagnostics: diagnosticsAreArray ? diagnostics : [] }\n+    : { entries: entriesOrParsed?.entries ?? [], diagnostics: entriesOrParsed?.diagnostics ?? (diagnosticsAreArray ? diagnostics : []) };\n+\n+  const entries = parsedInput.entries;\n+  const parseDiagnostics = Array.isArray(parsedInput.diagnostics) ? parsedInput.diagnostics : [];\n+  const anomalies = parseDiagnostics.map(diagnostic => ({\n+    type: diagnostic.type ?? 'diagnostic',\n+    severity: diagnostic.severity ?? 'warning',\n+    line: diagnostic.line,\n+    message: diagnostic.message ?? String(diagnostic),\n+    diagnostic\n+  }));\n+\n+  const session = extractSessionInfo(entries);\n+  const tree = buildMessageTree(entries, anomalies, analysisOptions);\n+  const metrics = computeMetrics(entries, tree, parseDiagnostics, anomalies);\n+  const signals = computeSignals(metrics, tree, anomalies);\n+\n   return {\n     entries,\n-    metrics: {\n-      assistantTurns: 0,\n-      totalTokens: 0,\n-      cost: 0,\n-      toolCalls: {}\n+    diagnostics: parseDiagnostics,\n+    session,\n+    tree,\n+    metrics,\n+    anomalies,\n+    signals\n+  };\n+}\n+\n+/**\n+ * Convenience helper for callers that want parse + analyze in one step while\n+ * still receiving both the raw parse diagnostics and structured analysis.\n+ *\n+ * @param {string|Buffer} text\n+ * @param {{ parse?: object, analysis?: object, report?: object }} [options]\n+ */\n+export function inspectSessionJsonl(text, options = {}) {\n+  const parsed = parseSessionJsonl(text, options.parse ?? {});\n+  const analysis = analyzeSession(parsed, options.analysis ?? {});\n+  return {\n+    parsed,\n+    analysis,\n+    report: formatReport(analysis, options.report ?? {})\n+  };\n+}\n+\n+/**\n+ * Format a concise human-readable session report.\n+ *\n+ * @param {ReturnType<typeof analyzeSession>} analysis\n+ * @param {{ maxAnomalies?: number, maxFiles?: number }} [options]\n+ */\n+export function formatReport(analysis, options = {}) {\n+  const maxAnomalies = options.maxAnomalies ?? 8;\n+  const maxFiles = options.maxFiles ?? 10;\n+  const metrics = analysis?.metrics ?? {};\n+  const tree = analysis?.tree ?? {};\n+  const session = analysis?.session ?? {};\n+  const anomalies = analysis?.anomalies ?? [];\n+  const signals = analysis?.signals ?? [];\n+\n+  const lines = [];\n+  lines.push('Session report');\n+\n+  const sessionParts = [];\n+  if (session.id) sessionParts.push(`id ${session.id}`);\n+  if (session.cwd) sessionParts.push(`cwd ${session.cwd}`);\n+  if (session.version !== undefined) sessionParts.push(`version ${session.version}`);\n+  if (sessionParts.length > 0) lines.push(`- Session: ${sessionParts.join('; ')}`);\n+\n+  lines.push(`- Time range: ${formatTimeRange(metrics.startTime, metrics.endTime, metrics.durationMs)}`);\n+  lines.push(\n+    `- Messages: ${metrics.userTurns ?? 0} user, ${metrics.assistantTurns ?? 0} assistant turns, ` +\n+    `${metrics.toolResults ?? 0} tool results (${metrics.activeBranchMessages ?? 0} messages on active branch)`\n+  );\n+  lines.push(\n+    `- Branching: ${tree.nodeCount ?? 0} message nodes, ${tree.leafCount ?? 0} leaves, ` +\n+    `${tree.branchCount ?? 0} branch points, max depth ${tree.maxDepth ?? 0}`\n+  );\n+\n+  const tokens = metrics.tokens ?? {};\n+  lines.push(\n+    `- Usage: ${formatNumber(metrics.totalTokens ?? tokens.total ?? 0)} tokens` +\n+    ` (in ${formatNumber(tokens.input ?? 0)}, out ${formatNumber(tokens.output ?? 0)}, cache ${formatNumber((tokens.cacheRead ?? 0) + (tokens.cacheWrite ?? 0))}); ` +\n+    `cost ${formatCurrency(metrics.cost ?? 0)}`\n+  );\n+\n+  lines.push(`- Tools: ${formatToolCalls(metrics.toolCalls)}; ${metrics.toolErrors ?? 0} tool errors; ${metrics.pendingToolCalls ?? 0} pending results`);\n+\n+  const files = metrics.filesTouched ?? [];\n+  if (files.length > 0) {\n+    const rendered = files.slice(0, maxFiles).map(file => {\n+      const detail = metrics.fileTouchDetails?.[file];\n+      const ops = detail?.operations?.length ? ` (${detail.operations.join('/')})` : '';\n+      return `${file}${ops}`;\n+    });\n+    const suffix = files.length > maxFiles ? `, +${files.length - maxFiles} more` : '';\n+    lines.push(`- Files touched: ${rendered.join(', ')}${suffix}`);\n+  } else {\n+    lines.push('- Files touched: none inferred');\n+  }\n+\n+  if (signals.length > 0) lines.push(`- Productivity signals: ${signals.join('; ')}`);\n+\n+  if (anomalies.length > 0) {\n+    lines.push(`- Anomalies (${anomalies.length}):`);\n+    for (const anomaly of anomalies.slice(0, maxAnomalies)) {\n+      const location = anomaly.line ? `line ${anomaly.line}: ` : '';\n+      const label = anomaly.type ? `${humanizeAnomalyType(anomaly.type)}: ` : '';\n+      lines.push(`  • ${location}${label}${anomaly.message}`);\n+    }\n+    if (anomalies.length > maxAnomalies) lines.push(`  • … ${anomalies.length - maxAnomalies} more`);\n+  } else {\n+    lines.push('- Anomalies: none detected');\n+  }\n+\n+  return `${lines.join('\\n')}\\n`;\n+}\n+\n+export function buildMessageTree(entries, anomalies = [], options = {}) {\n+  const nodes = [];\n+  const idToNode = new Map();\n+  const duplicateCounts = new Map();\n+\n+  entries.forEach((entry, order) => {\n+    if (!isMessageEntry(entry)) return;\n+\n+    const message = getMessage(entry);\n+    const originalId = firstString(entry.id, message.id, entry.messageId, message.messageId);\n+    const id = originalId ?? `__message_${order + 1}`;\n+    const duplicateNumber = duplicateCounts.get(id) ?? 0;\n+    duplicateCounts.set(id, duplicateNumber + 1);\n+\n+    if (duplicateNumber > 0) {\n+      anomalies.push({\n+        type: 'duplicate-id',\n+        severity: 'warning',\n+        message: `Duplicate message id \"${id}\" encountered; keeping both nodes but parent links target the first occurrence`,\n+        entry\n+      });\n+    }\n+\n+    if (!originalId) {\n+      anomalies.push({\n+        type: 'missing-id',\n+        severity: 'warning',\n+        message: `Message at entry ${order + 1} has no id; generated ${id}`,\n+        entry\n+      });\n+    }\n+\n+    const node = {\n+      key: duplicateNumber > 0 ? `${id}#${duplicateNumber + 1}` : id,\n+      id,\n+      parentId: normalizeParentId(entry.parentId ?? message.parentId ?? entry.parent_id ?? message.parent_id),\n+      entry,\n+      message,\n+      role: normalizeRole(message.role ?? entry.role ?? entry.type),\n+      timestampMs: extractTimestampMs(entry, message),\n+      order,\n+      children: [],\n+      parent: null,\n+      depth: 0\n+    };\n+\n+    nodes.push(node);\n+    if (!idToNode.has(id)) idToNode.set(id, node);\n+  });\n+\n+  for (const node of nodes) {\n+    if (!node.parentId) continue;\n+    const parent = idToNode.get(node.parentId);\n+    if (!parent) {\n+      anomalies.push({\n+        type: 'orphan-node',\n+        severity: 'warning',\n+        message: `Message ${node.id} references missing parent ${node.parentId}`,\n+        entry: node.entry\n+      });\n+      continue;\n     }\n+    node.parent = parent;\n+    parent.children.push(node);\n+  }\n+\n+  for (const node of nodes) {\n+    node.children.sort(compareNodesChronologically);\n+  }\n+\n+  const roots = nodes.filter(node => !node.parent);\n+  for (const root of roots) assignDepths(root, 0, new Set(), anomalies);\n+\n+  const leaves = nodes.filter(node => node.children.length === 0);\n+  const branchPoints = nodes.filter(node => node.children.length > 1);\n+  const requestedActiveId = options.activeLeafId ?? findSessionActiveLeafId(entries);\n+  const activeLeaf = requestedActiveId ? (idToNode.get(requestedActiveId) ?? null) : chooseLatestLeaf(leaves);\n+  const activePath = activeLeaf ? pathToRoot(activeLeaf) : [];\n+\n+  if (requestedActiveId && !activeLeaf) {\n+    anomalies.push({\n+      type: 'missing-active-leaf',\n+      severity: 'warning',\n+      message: `Requested active leaf ${requestedActiveId} was not found in the message tree`\n+    });\n+  }\n+\n+  return {\n+    nodes,\n+    roots,\n+    leaves,\n+    branchPoints,\n+    activeLeaf,\n+    activePath,\n+    activePathIds: activePath.map(node => node.id),\n+    nodeCount: nodes.length,\n+    leafCount: leaves.length,\n+    branchCount: branchPoints.length,\n+    maxDepth: nodes.reduce((max, node) => Math.max(max, node.depth), 0),\n+    byId: idToNode\n+  };\n+}\n+\n+function computeMetrics(entries, tree, parseDiagnostics, anomalies) {\n+  const metrics = {\n+    entryCount: entries.length,\n+    messageCount: tree.nodeCount,\n+    activeBranchMessages: tree.activePath?.length ?? 0,\n+    userTurns: 0,\n+    assistantTurns: 0,\n+    toolResults: 0,\n+    toolCallCount: 0,\n+    toolCalls: {},\n+    toolCallsByName: {},\n+    toolErrors: 0,\n+    pendingToolCalls: 0,\n+    unmatchedToolResults: 0,\n+    errorCount: 0,\n+    parseErrorCount: parseDiagnostics.filter(d => (d.severity ?? 'error') === 'error').length,\n+    tokens: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0, total: 0 },\n+    totalTokens: 0,\n+    cost: 0,\n+    startTime: null,\n+    endTime: null,\n+    durationMs: 0,\n+    toolCallsDetailed: [],\n+    toolResultsDetailed: [],\n+    filesTouched: [],\n+    fileTouchDetails: {}\n   };\n+\n+  const toolCallIds = new Map();\n+  const completedToolCallIds = new Set();\n+  const messageTimes = [];\n+  const allTimes = [];\n+  const fileTouches = new Map();\n+\n+  for (const entry of entries) {\n+    const message = getMessage(entry);\n+    const timestamp = extractTimestampMs(entry, message);\n+    if (timestamp !== null) {\n+      allTimes.push(timestamp);\n+      if (isMessageEntry(entry)) messageTimes.push(timestamp);\n+    }\n+\n+    if (isErrorEntry(entry, message)) {\n+      metrics.errorCount += 1;\n+      anomalies.push({\n+        type: 'error-entry',\n+        severity: 'error',\n+        message: describeErrorEntry(entry, message),\n+        entry\n+      });\n+    }\n+\n+    if (!isMessageEntry(entry)) continue;\n+\n+    const role = normalizeRole(message.role ?? entry.role ?? entry.type);\n+    if (role === ROLE_USER) metrics.userTurns += 1;\n+    if (role === ROLE_ASSISTANT) metrics.assistantTurns += 1;\n+    if (role === ROLE_TOOL_RESULT) metrics.toolResults += 1;\n+\n+    const usage = extractUsage(entry, message);\n+    if (usage) addUsage(metrics, usage);\n+\n+    const calls = extractToolCalls(message, entry);\n+    for (const call of calls) {\n+      metrics.toolCallCount += 1;\n+      increment(metrics.toolCalls, call.name);\n+      increment(metrics.toolCallsByName, call.name);\n+      metrics.toolCallsDetailed.push(call);\n+      if (call.id) toolCallIds.set(call.id, call);\n+      for (const touch of inferFileTouchesFromToolCall(call)) {\n+        addFileTouch(fileTouches, touch.path, touch.operation, call.name);\n+      }\n+    }\n+\n+    const result = extractToolResult(message, entry);\n+    if (result) {\n+      metrics.toolResultsDetailed.push(result);\n+      if (result.toolCallId) completedToolCallIds.add(result.toolCallId);\n+      if (result.isError) {\n+        metrics.toolErrors += 1;\n+        metrics.errorCount += 1;\n+        anomalies.push({\n+          type: 'tool-error',\n+          severity: 'error',\n+          message: `Tool ${result.toolName ?? result.toolCallId ?? 'unknown'} returned an error`,\n+          entry\n+        });\n+      }\n+    }\n+  }\n+\n+  for (const result of metrics.toolResultsDetailed) {\n+    if (result.toolCallId && !toolCallIds.has(result.toolCallId)) {\n+      metrics.unmatchedToolResults += 1;\n+      anomalies.push({\n+        type: 'unmatched-tool-result',\n+        severity: 'warning',\n+        message: `Tool result ${result.toolCallId} has no matching tool call in parsed entries`,\n+        result\n+      });\n+    }\n+  }\n+\n+  for (const [id, call] of toolCallIds) {\n+    if (!completedToolCallIds.has(id)) {\n+      metrics.pendingToolCalls += 1;\n+      anomalies.push({\n+        type: 'pending-tool-call',\n+        severity: 'warning',\n+        message: `Tool call ${call.name}${id ? ` (${id})` : ''} has no parsed result`,\n+        call\n+      });\n+    }\n+  }\n+\n+  const rangeTimes = messageTimes.length > 0 ? messageTimes : allTimes;\n+  if (rangeTimes.length > 0) {\n+    metrics.startTime = new Date(Math.min(...rangeTimes)).toISOString();\n+    metrics.endTime = new Date(Math.max(...rangeTimes)).toISOString();\n+    metrics.durationMs = Math.max(...rangeTimes) - Math.min(...rangeTimes);\n+  }\n+\n+  metrics.totalTokens = metrics.tokens.total;\n+  metrics.cost = roundMoney(metrics.cost);\n+  metrics.filesTouched = [...fileTouches.keys()].sort();\n+  metrics.fileTouchDetails = Object.fromEntries(\n+    [...fileTouches.entries()].sort(([a], [b]) => a.localeCompare(b)).map(([path, detail]) => [\n+      path,\n+      {\n+        operations: [...detail.operations].sort(),\n+        tools: [...detail.tools].sort(),\n+        count: detail.count\n+      }\n+    ])\n+  );\n+\n+  return metrics;\n+}\n+\n+function computeSignals(metrics, tree, anomalies) {\n+  const signals = [];\n+  if (metrics.assistantTurns > 0) {\n+    const avgTokens = Math.round((metrics.totalTokens || 0) / metrics.assistantTurns);\n+    signals.push(`${avgTokens} tokens/assistant turn`);\n+  }\n+  if (metrics.toolCallCount > 0) {\n+    const success = metrics.toolCallCount - metrics.toolErrors;\n+    signals.push(`${success}/${metrics.toolCallCount} tool calls without reported errors`);\n+  }\n+  const writeLikeFiles = (metrics.filesTouched ?? []).filter(file => {\n+    const operations = metrics.fileTouchDetails?.[file]?.operations ?? [];\n+    return operations.some(op => ['write', 'edit', 'delete', 'move'].includes(op));\n+  });\n+  if (writeLikeFiles.length > 0) signals.push(`${writeLikeFiles.length} file(s) likely modified`);\n+  if ((tree.branchCount ?? 0) > 0) signals.push('branched conversation history detected');\n+  if (metrics.durationMs > 0 && metrics.assistantTurns > 1) {\n+    signals.push(`${formatDuration(metrics.durationMs / metrics.assistantTurns)} per assistant turn elapsed`);\n+  }\n+  const severe = anomalies.filter(a => a.severity === 'error').length;\n+  if (severe > 0) signals.push(`${severe} error-level anomal${severe === 1 ? 'y' : 'ies'} to inspect`);\n+  return signals;\n+}\n+\n+function extractSessionInfo(entries) {\n+  const sessionEntry = entries.find(entry => entry?.type === 'session') ?? {};\n+  return {\n+    id: firstString(sessionEntry.id, sessionEntry.sessionId, sessionEntry.session_id),\n+    version: sessionEntry.version,\n+    cwd: firstString(sessionEntry.cwd, sessionEntry.workingDirectory, sessionEntry.projectDir),\n+    timestamp: sessionEntry.timestamp ?? sessionEntry.createdAt,\n+    model: firstString(sessionEntry.model, sessionEntry.modelId, sessionEntry.providerModel)\n+  };\n+}\n+\n+function extractJsonErrorColumn(error) {\n+  const match = /position\\s+(\\d+)/i.exec(error?.message ?? '');\n+  return match ? Number(match[1]) + 1 : undefined;\n+}\n+\n+function isMessageEntry(entry) {\n+  if (!entry || typeof entry !== 'object') return false;\n+  if (entry.type === 'message') return true;\n+  const message = getMessage(entry);\n+  return typeof message?.role === 'string' && (entry.id !== undefined || message.id !== undefined);\n+}\n+\n+function getMessage(entry) {\n+  if (!entry || typeof entry !== 'object') return {};\n+  return entry.message && typeof entry.message === 'object' ? entry.message : entry;\n+}\n+\n+function normalizeRole(role) {\n+  if (role === 'tool_result' || role === 'tool' || role === 'toolResult') return ROLE_TOOL_RESULT;\n+  if (role === 'assistant') return ROLE_ASSISTANT;\n+  if (role === 'user') return ROLE_USER;\n+  return role ?? 'unknown';\n+}\n+\n+function normalizeParentId(parentId) {\n+  if (parentId === null || parentId === undefined || parentId === '') return null;\n+  return String(parentId);\n+}\n+\n+function firstString(...values) {\n+  for (const value of values) {\n+    if (typeof value === 'string' && value.length > 0) return value;\n+  }\n+  return undefined;\n+}\n+\n+function extractTimestampMs(entry, message = getMessage(entry)) {\n+  const candidates = [\n+    entry?.timestamp,\n+    entry?.createdAt,\n+    entry?.time,\n+    message?.timestamp,\n+    message?.createdAt,\n+    message?.time\n+  ];\n+  for (const candidate of candidates) {\n+    const parsed = parseTimestamp(candidate);\n+    if (parsed !== null) return parsed;\n+  }\n+  return null;\n+}\n+\n+function parseTimestamp(value) {\n+  if (value === null || value === undefined || value === '') return null;\n+  if (typeof value === 'number' && Number.isFinite(value)) {\n+    // Pi message timestamps are generally milliseconds, but tolerate seconds.\n+    return value < 10_000_000_000 ? Math.round(value * 1000) : Math.round(value);\n+  }\n+  if (typeof value === 'string') {\n+    const numeric = Number(value);\n+    if (Number.isFinite(numeric) && value.trim() !== '') return parseTimestamp(numeric);\n+    const date = Date.parse(value);\n+    if (Number.isFinite(date)) return date;\n+  }\n+  return null;\n+}\n+\n+function compareNodesChronologically(a, b) {\n+  const aTime = a.timestampMs ?? Number.POSITIVE_INFINITY;\n+  const bTime = b.timestampMs ?? Number.POSITIVE_INFINITY;\n+  if (aTime !== bTime) return aTime - bTime;\n+  return a.order - b.order;\n+}\n+\n+function assignDepths(node, depth, seen, anomalies) {\n+  if (seen.has(node.key)) {\n+    anomalies.push({\n+      type: 'cycle',\n+      severity: 'error',\n+      message: `Cycle detected at message ${node.id}`,\n+      entry: node.entry\n+    });\n+    return;\n+  }\n+  node.depth = depth;\n+  const nextSeen = new Set(seen);\n+  nextSeen.add(node.key);\n+  for (const child of node.children) assignDepths(child, depth + 1, nextSeen, anomalies);\n+}\n+\n+function chooseLatestLeaf(leaves) {\n+  if (leaves.length === 0) return null;\n+  return [...leaves].sort((a, b) => {\n+    const aTime = a.timestampMs ?? Number.NEGATIVE_INFINITY;\n+    const bTime = b.timestampMs ?? Number.NEGATIVE_INFINITY;\n+    if (aTime !== bTime) return bTime - aTime;\n+    return b.order - a.order;\n+  })[0];\n+}\n+\n+function pathToRoot(node) {\n+  const path = [];\n+  const seen = new Set();\n+  let current = node;\n+  while (current && !seen.has(current.key)) {\n+    path.push(current);\n+    seen.add(current.key);\n+    current = current.parent;\n+  }\n+  return path.reverse();\n+}\n+\n+function findSessionActiveLeafId(entries) {\n+  for (const entry of entries) {\n+    const candidates = [\n+      entry?.activeLeafId,\n+      entry?.activeMessageId,\n+      entry?.currentMessageId,\n+      entry?.headId,\n+      entry?.lastMessageId,\n+      entry?.session?.activeLeafId,\n+      entry?.session?.activeMessageId,\n+      entry?.session?.currentMessageId\n+    ];\n+    const found = firstString(...candidates);\n+    if (found) return found;\n+  }\n+  return undefined;\n+}\n+\n+function extractUsage(entry, message) {\n+  return message?.usage ?? entry?.usage ?? message?.metadata?.usage ?? entry?.metadata?.usage ?? null;\n+}\n+\n+function addUsage(metrics, usage) {\n+  const input = readNumber(usage, ['input', 'inputTokens', 'input_tokens', 'promptTokens', 'prompt_tokens']);\n+  const output = readNumber(usage, ['output', 'outputTokens', 'output_tokens', 'completionTokens', 'completion_tokens']);\n+  const cacheRead = readNumber(usage, ['cacheRead', 'cache_read', 'cachedInputTokens', 'cache_read_tokens']);\n+  const cacheWrite = readNumber(usage, ['cacheWrite', 'cache_write', 'cacheCreationTokens', 'cache_write_tokens']);\n+  let total = readNumber(usage, ['totalTokens', 'total_tokens', 'total']);\n+  if (total === 0) total = input + output + cacheRead + cacheWrite;\n+\n+  metrics.tokens.input += input;\n+  metrics.tokens.output += output;\n+  metrics.tokens.cacheRead += cacheRead;\n+  metrics.tokens.cacheWrite += cacheWrite;\n+  metrics.tokens.total += total;\n+  metrics.cost += extractCost(usage);\n+}\n+\n+function readNumber(object, keys) {\n+  for (const key of keys) {\n+    const value = object?.[key];\n+    if (typeof value === 'number' && Number.isFinite(value)) return value;\n+    if (typeof value === 'string' && Number.isFinite(Number(value))) return Number(value);\n+  }\n+  return 0;\n+}\n+\n+function extractCost(usage) {\n+  const cost = usage?.cost ?? usage?.costs;\n+  if (typeof cost === 'number' && Number.isFinite(cost)) return cost;\n+  if (typeof cost === 'string' && Number.isFinite(Number(cost))) return Number(cost);\n+  if (cost && typeof cost === 'object') {\n+    return readNumber(cost, ['total', 'totalCost', 'amount', 'usd']);\n+  }\n+  return readNumber(usage, ['costTotal', 'totalCost', 'costUsd']);\n+}\n+\n+function roundMoney(value) {\n+  return Number((value || 0).toFixed(12));\n+}\n+\n+function extractToolCalls(message, entry) {\n+  const calls = [];\n+  const sources = [];\n+  if (Array.isArray(message?.content)) sources.push(...message.content);\n+  if (Array.isArray(message?.toolCalls)) sources.push(...message.toolCalls);\n+  if (Array.isArray(message?.tool_calls)) sources.push(...message.tool_calls);\n+  if (Array.isArray(entry?.toolCalls)) sources.push(...entry.toolCalls);\n+\n+  for (const item of sources) {\n+    if (!item || typeof item !== 'object') continue;\n+    const isCall = ['toolCall', 'tool_call', 'tool_use'].includes(item.type) || item.function || item.toolName || item.name;\n+    if (!isCall) continue;\n+    const name = firstString(item.name, item.toolName, item.function?.name, item.tool?.name) ?? 'unknown';\n+    const id = firstString(item.id, item.toolCallId, item.tool_call_id, item.callId);\n+    const args = parseArguments(item.arguments ?? item.input ?? item.args ?? item.function?.arguments ?? {});\n+    calls.push({ id, name, arguments: args, raw: item });\n+  }\n+\n+  return calls;\n+}\n+\n+function parseArguments(value) {\n+  if (value === null || value === undefined) return {};\n+  if (typeof value === 'string') {\n+    try {\n+      const parsed = JSON.parse(value);\n+      return parsed && typeof parsed === 'object' ? parsed : { value: parsed };\n+    } catch {\n+      return { value };\n+    }\n+  }\n+  if (typeof value === 'object') return value;\n+  return { value };\n+}\n+\n+function extractToolResult(message, entry) {\n+  const role = normalizeRole(message?.role ?? entry?.role ?? entry?.type);\n+  const looksLikeResult = role === ROLE_TOOL_RESULT || message?.toolCallId || message?.tool_call_id || message?.toolName || entry?.toolCallId;\n+  if (!looksLikeResult) return null;\n+  return {\n+    toolCallId: firstString(message?.toolCallId, message?.tool_call_id, entry?.toolCallId, entry?.tool_call_id),\n+    toolName: firstString(message?.toolName, message?.name, entry?.toolName, entry?.name),\n+    isError: Boolean(message?.isError ?? message?.is_error ?? entry?.isError ?? entry?.error),\n+    raw: message\n+  };\n+}\n+\n+function isErrorEntry(entry, message) {\n+  if (entry?.type === 'error') return true;\n+  if (entry?.level === 'error' || entry?.severity === 'error') return true;\n+  if (message?.role === 'error') return true;\n+  if (message?.error && normalizeRole(message?.role) !== ROLE_TOOL_RESULT) return true;\n+  return false;\n+}\n+\n+function describeErrorEntry(entry, message) {\n+  const text = firstString(entry?.message, message?.message, entry?.error?.message, message?.error?.message, entry?.type);\n+  return text ? `Error entry: ${text}` : 'Error entry encountered';\n+}\n+\n+function increment(object, key) {\n+  const safeKey = key || 'unknown';\n+  object[safeKey] = (object[safeKey] ?? 0) + 1;\n+}\n+\n+function inferFileTouchesFromToolCall(call) {\n+  const name = (call.name ?? '').toLowerCase();\n+  const operation = operationForTool(name);\n+  const paths = new Set();\n+  collectPaths(call.arguments, paths);\n+\n+  const command = firstString(call.arguments?.command, call.arguments?.cmd, call.arguments?.value);\n+  if (name.includes('bash') || name.includes('shell') || command) {\n+    for (const path of inferPathsFromCommand(command ?? '')) paths.add(path);\n+  }\n+\n+  return [...paths].map(path => ({ path, operation }));\n+}\n+\n+function operationForTool(name) {\n+  if (/delete|remove|rm/.test(name)) return 'delete';\n+  if (/move|rename|mv/.test(name)) return 'move';\n+  if (/write|create|save/.test(name)) return 'write';\n+  if (/edit|patch|replace|apply/.test(name)) return 'edit';\n+  if (/grep|search|find|rg|glob|ls|list/.test(name)) return 'search';\n+  if (/read|cat|open|view/.test(name)) return 'read';\n+  if (/bash|shell|exec|command/.test(name)) return 'command';\n+  return 'unknown';\n+}\n+\n+function collectPaths(value, paths, key = '', depth = 0) {\n+  if (depth > 4 || value === null || value === undefined) return;\n+  if (typeof value === 'string') {\n+    if (looksLikePathKey(key) || looksLikePath(value)) paths.add(value);\n+    return;\n+  }\n+  if (Array.isArray(value)) {\n+    for (const item of value) collectPaths(item, paths, key, depth + 1);\n+    return;\n+  }\n+  if (typeof value === 'object') {\n+    for (const [childKey, childValue] of Object.entries(value)) {\n+      if (childKey === 'content' || childKey === 'text' || childKey === 'oldText' || childKey === 'newText') continue;\n+      collectPaths(childValue, paths, childKey, depth + 1);\n+    }\n+  }\n+}\n+\n+function looksLikePathKey(key) {\n+  return /(^|_)(path|paths|file|files|filename|source|destination|target|dir|cwd)(_|$)/i.test(key);\n+}\n+\n+function looksLikePath(value) {\n+  if (value.length === 0 || value.length > 400) return false;\n+  if (/\\n/.test(value)) return false;\n+  if (/^(https?:|data:)/i.test(value)) return false;\n+  if (/^(\\.\\.?\\/|\\/|~\\/)/.test(value)) return true;\n+  if (/[\\\\/]/.test(value)) return true;\n+  if (/^[\\w.-]+\\.[A-Za-z0-9]{1,8}$/.test(value)) return true;\n+  return false;\n+}\n+\n+function inferPathsFromCommand(command) {\n+  if (!command || typeof command !== 'string') return [];\n+  const paths = new Set();\n+  const tokenPattern = /(?:'([^']+)'|\"([^\"]+)\"|([^\\s;&|`$()<>]+))/g;\n+  let match;\n+  while ((match = tokenPattern.exec(command)) !== null) {\n+    const token = match[1] ?? match[2] ?? match[3] ?? '';\n+    const cleaned = token.replace(/^[,=:]+|[,=:]+$/g, '');\n+    if (looksLikePath(cleaned) && !isLikelyCliFlag(cleaned)) paths.add(cleaned);\n+  }\n+  return [...paths];\n+}\n+\n+function isLikelyCliFlag(token) {\n+  return token.startsWith('-');\n+}\n+\n+function addFileTouch(fileTouches, path, operation, tool) {\n+  if (!path || typeof path !== 'string') return;\n+  const normalized = path.trim();\n+  if (!normalized) return;\n+  if (!fileTouches.has(normalized)) {\n+    fileTouches.set(normalized, { operations: new Set(), tools: new Set(), count: 0 });\n+  }\n+  const detail = fileTouches.get(normalized);\n+  detail.operations.add(operation);\n+  detail.tools.add(tool);\n+  detail.count += 1;\n+}\n+\n+function formatTimeRange(start, end, durationMs) {\n+  if (!start || !end) return 'unknown';\n+  return `${start} → ${end} (${formatDuration(durationMs)})`;\n+}\n+\n+function formatDuration(ms) {\n+  if (!Number.isFinite(ms) || ms < 0) return 'unknown';\n+  if (ms < 1000) return `${Math.round(ms)}ms`;\n+  const seconds = ms / 1000;\n+  if (seconds < 60) return `${round(seconds, 1)}s`;\n+  const minutes = seconds / 60;\n+  if (minutes < 60) return `${round(minutes, 1)}m`;\n+  const hours = minutes / 60;\n+  return `${round(hours, 1)}h`;\n+}\n+\n+function round(value, decimals) {\n+  const factor = 10 ** decimals;\n+  return Math.round(value * factor) / factor;\n+}\n+\n+function formatNumber(value) {\n+  return new Intl.NumberFormat('en-US').format(value ?? 0);\n+}\n+\n+function formatCurrency(value) {\n+  if (!value) return '$0.00';\n+  if (Math.abs(value) < 0.01) return `$${value.toFixed(4)}`;\n+  return `$${value.toFixed(2)}`;\n+}\n+\n+function formatToolCalls(toolCalls = {}) {\n+  const entries = Object.entries(toolCalls).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));\n+  if (entries.length === 0) return 'none';\n+  return entries.map(([name, count]) => `${name}×${count}`).join(', ');\n }\n \n-export function formatReport(analysis) {\n-  return 'Session report';\n+function humanizeAnomalyType(type) {\n+  return String(type).replace(/-/g, ' ');\n }\ndiff --git a/session-inspector.test.js b/session-inspector.test.js\nindex 7afe4d1..202ba0c 100644\n--- a/session-inspector.test.js\n+++ b/session-inspector.test.js\n@@ -35,3 +35,29 @@ test('formats a human-readable report with anomalies', () => {\n   assert.match(report, /tokens/i);\n   assert.match(report, /malformed/i);\n });\n+\n+test('reconstructs branches and chooses the latest active leaf', () => {\n+  const entries = [\n+    { type: 'message', id: 'root', parentId: null, timestamp: '2026-01-01T00:00:00.000Z', message: { role: 'user' } },\n+    { type: 'message', id: 'old', parentId: 'root', timestamp: '2026-01-01T00:00:01.000Z', message: { role: 'assistant' } },\n+    { type: 'message', id: 'new', parentId: 'root', timestamp: '2026-01-01T00:00:02.000Z', message: { role: 'assistant' } }\n+  ];\n+\n+  const analysis = analyzeSession(entries);\n+  assert.equal(analysis.tree.branchCount, 1);\n+  assert.deepEqual(analysis.tree.activePathIds, ['root', 'new']);\n+  assert.match(formatReport(analysis), /branched conversation history/i);\n+});\n+\n+test('infers file touches and tool anomalies from common variants', () => {\n+  const parsed = parseSessionJsonl([\n+    JSON.stringify({ type: 'message', id: 'a', timestamp: 1767225600, message: { role: 'assistant', tool_calls: [{ id: 'call-1', function: { name: 'write', arguments: '{\"path\":\"src/app.js\"}' } }] } }),\n+    JSON.stringify({ type: 'message', id: 't', parentId: 'a', timestamp: 1767225601, message: { role: 'tool', tool_call_id: 'call-1', is_error: true } })\n+  ].join('\\n'));\n+\n+  const analysis = analyzeSession(parsed);\n+  assert.equal(analysis.metrics.toolCalls.write, 1);\n+  assert.equal(analysis.metrics.toolErrors, 1);\n+  assert.deepEqual(analysis.metrics.filesTouched, ['src/app.js']);\n+  assert.equal(analysis.metrics.fileTouchDetails['src/app.js'].operations[0], 'write');\n+});\n"
+            }
+          ],
+          "isError": false,
+          "timestamp": 1777189545580
+        }
+      },
+      {
+        "toolCallId": "call_feCwPlS95r9c8n9vNtXGMA7Z|fc_089a3eb9c01580ba0169edc2acbb58819396a7d241af7ff4ef",
+        "toolName": "edit",
+        "isError": false,
+        "raw": {
+          "role": "toolResult",
+          "toolCallId": "call_feCwPlS95r9c8n9vNtXGMA7Z|fc_089a3eb9c01580ba0169edc2acbb58819396a7d241af7ff4ef",
+          "toolName": "edit",
+          "content": [
+            {
+              "type": "text",
+              "text": "Successfully replaced 1 block(s) in session-inspector.js."
+            }
+          ],
+          "details": {
+            "diff": "     ...\n  68  * parseSessionJsonl(). Diagnostics may be passed separately for backwards- and\n  69  * test-friendly usage.\n  70  *\n  71  * @param {any[]|{ entries: any[], diagnostics?: Array<object> }} entriesOrParsed\n- 72  * @param {Array<object>} [diagnostics]\n+ 72  * @param {Array<object>|{ activeLeafId?: string }} [diagnostics]\n  73  * @param {{ activeLeafId?: string }} [options]\n  74  */\n  75 export function analyzeSession(entriesOrParsed, diagnostics = [], options = {}) {\n  76   const diagnosticsAreArray = Array.isArray(diagnostics);\n     ...",
+            "firstChangedLine": 72
+          },
+          "isError": false,
+          "timestamp": 1777189549435
+        }
+      },
+      {
+        "toolCallId": "call_KssL550suaX2PRjChSNof5rz|fc_089a3eb9c01580ba0169edc2b10a508193bbca46ae9c426802",
+        "toolName": "bash",
+        "isError": false,
+        "raw": {
+          "role": "toolResult",
+          "toolCallId": "call_KssL550suaX2PRjChSNof5rz|fc_089a3eb9c01580ba0169edc2b10a508193bbca46ae9c426802",
+          "toolName": "bash",
+          "content": [
+            {
+              "type": "text",
+              "text": "TAP version 13\n# Subtest: parses jsonl while preserving malformed-line diagnostics\nok 1 - parses jsonl while preserving malformed-line diagnostics\n  ---\n  duration_ms: 0.784959\n  type: 'test'\n  ...\n# Subtest: computes useful session metrics\nok 2 - computes useful session metrics\n  ---\n  duration_ms: 1.660041\n  type: 'test'\n  ...\n# Subtest: formats a human-readable report with anomalies\nok 3 - formats a human-readable report with anomalies\n  ---\n  duration_ms: 8.59325\n  type: 'test'\n  ...\n# Subtest: reconstructs branches and chooses the latest active leaf\nok 4 - reconstructs branches and chooses the latest active leaf\n  ---\n  duration_ms: 0.653542\n  type: 'test'\n  ...\n# Subtest: infers file touches and tool anomalies from common variants\nok 5 - infers file touches and tool anomalies from common variants\n  ---\n  duration_ms: 0.187292\n  type: 'test'\n  ...\n1..5\n# tests 5\n# suites 0\n# pass 5\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 54.441875\n"
+            }
+          ],
+          "isError": false,
+          "timestamp": 1777189553275
+        }
+      }
+    ],
+    "filesTouched": [
+      "EVALUATION_RUBRIC.md",
+      "package.json",
+      "session-inspector.js",
+      "session-inspector.test.js"
+    ],
+    "fileTouchDetails": {
+      "EVALUATION_RUBRIC.md": {
+        "operations": [
+          "read"
+        ],
+        "tools": [
+          "read"
+        ],
+        "count": 1
+      },
+      "package.json": {
+        "operations": [
+          "read"
+        ],
+        "tools": [
+          "read"
+        ],
+        "count": 1
+      },
+      "session-inspector.js": {
+        "operations": [
+          "command",
+          "edit",
+          "read",
+          "write"
+        ],
+        "tools": [
+          "bash",
+          "edit",
+          "read",
+          "write"
+        ],
+        "count": 9
+      },
+      "session-inspector.test.js": {
+        "operations": [
+          "command",
+          "edit",
+          "read"
+        ],
+        "tools": [
+          "bash",
+          "edit",
+          "read"
+        ],
+        "count": 3
+      }
+    }
+  }
+}

@@ -1,0 +1,452 @@
+diff --git a/README.md b/README.md
+index 61a2865..0e4d6e3 100644
+--- a/README.md
++++ b/README.md
+@@ -1,3 +1,47 @@
+-# Data quality profiler task
++# Data quality profiler
+ 
+-Build a small dependency-free CSV parser/profiler. Smoke tests are intentionally incomplete; human evaluation should inspect API shape, edge-case handling, inference quality, issue reporting, and repair suggestions.
++A small, dependency-free CSV parser and profiler for messy operational exports.
++
++## API
++
++```js
++import { parseCsv, profileCsv } from './profiler.js';
++
++const parsed = parseCsv(csvText, {
++  delimiter: ',',          // one-character delimiter
++  comments: true,          // true means lines starting with #; or pass a string prefix
++  skipBlankLines: true,
++  trimHeaders: true,
++  trimValues: true,
++});
++
++const report = profileCsv(csvText, {
++  required: ['id', 'created_at'],
++  primaryKey: 'id',        // or ['tenant_id', 'id']
++  nullValues: ['', 'null', 'n/a', '-'],
++  dateMinYear: 1900,
++  dateMaxYear: 2100,
++});
++```
++
++`parseCsv` returns `{ headers, rows, records, warnings }`. `rows` are plain objects suitable for application code. `records` retain source line number, 1-based data row index, original cell array, and row width for diagnostics.
++
++`profileCsv` returns the parse result plus:
++
++- `columns`: per-column counts, null-like counts, distinct counts, inferred primitive type, type counts, min/max, examples, and invalid examples.
++- `issues`: structured diagnostics with `type`, `severity`, row/line/column context, and human-readable message.
++- `suggestions`: actionable repair guidance that a CLI or web service can render directly.
++- `summary`: row/column/issue totals.
++
++## Heuristics
++
++The profiler intentionally favors explainable operational heuristics over heavyweight inference:
++
++- Null-like values are case-insensitive and configurable.
++- Primitive types include `boolean`, `integer`, `number`, `date`, `datetime`, `email`, and `string`; integers and decimals are summarized as `number` when compatible.
++- Date parsing recognizes ISO dates/datetimes and common US slash dates. Date-like columns are inferred from header names or observed valid dates.
++- Quality checks include row-width mismatches, required field violations, missing/duplicate primary keys, invalid or suspicious dates, mixed primitive types, duplicate headers, and unterminated quotes.
++
++## Tradeoffs
++
++This module is deliberately dependency-free and streaming-like internally, but it returns all rows for easy reuse by CLIs/tests/web handlers. It does not attempt locale-aware numeric parsing, automatic schema repair, or exhaustive date format detection; those are reported as invalid/mixed values with suggestions so callers can make domain-specific decisions.
+diff --git a/profiler.js b/profiler.js
+index 54f86b0..796b446 100644
+--- a/profiler.js
++++ b/profiler.js
+@@ -1,17 +1,355 @@
++const DEFAULT_NULLS = ['', 'null', 'nil', 'n/a', 'na', 'none', 'undefined', '-', '--'];
++const DEFAULT_DATE_MIN_YEAR = 1900;
++const DEFAULT_DATE_MAX_YEAR = 2100;
++const ISO_DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
++const ISO_DATE_TIME_RE = /^\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}(?::\d{2}(?:\.\d+)?)?(?:Z|[+-]\d{2}:?\d{2})?$/;
++const US_DATE_RE = /^\d{1,2}\/\d{1,2}\/\d{2,4}$/;
++
++function normalizeOptions(options = {}) {
++  const nullValues = new Set((options.nullValues ?? DEFAULT_NULLS).map(v => String(v).toLowerCase()));
++  return {
++    delimiter: options.delimiter ?? ',',
++    comments: options.comments ?? false,
++    skipBlankLines: options.skipBlankLines ?? true,
++    trimHeaders: options.trimHeaders ?? true,
++    trimValues: options.trimValues ?? true,
++    nullValues,
++    required: new Set(options.required ?? []),
++    primaryKey: options.primaryKey,
++    dateMinYear: options.dateMinYear ?? DEFAULT_DATE_MIN_YEAR,
++    dateMaxYear: options.dateMaxYear ?? DEFAULT_DATE_MAX_YEAR,
++    maxInvalidExamples: options.maxInvalidExamples ?? 5,
++  };
++}
++
++function commentPrefix(comments) {
++  if (!comments) return null;
++  return comments === true ? '#' : String(comments);
++}
++
++function isBlankRecord(cells) {
++  return cells.length === 1 && cells[0] === '';
++}
++
++function trimCell(value, trimValues) {
++  return trimValues ? value.trim() : value;
++}
++
++/**
++ * Parse CSV text into headers and object rows.
++ *
++ * Supports RFC-4180-style quoted fields, escaped quotes (""), embedded commas,
++ * CRLF/LF newlines, blank lines, and optional full-line comments. The parser keeps
++ * row metadata so downstream tools can report original line numbers and row widths.
++ */
+ export function parseCsv(text, options = {}) {
+-  // TODO: replace with a robust parser
+-  const lines = text.trim().split(/\r?\n/).filter(Boolean);
+-  const headers = lines[0].split(',').map(s => s.trim());
+-  const rows = lines.slice(1).map(line => Object.fromEntries(line.split(',').map((cell, i) => [headers[i], cell.trim()])));
+-  return { headers, rows, warnings: [] };
++  const opts = normalizeOptions(options);
++  if (opts.delimiter.length !== 1) throw new Error('delimiter must be a single character');
++
++  const prefix = commentPrefix(opts.comments);
++  const records = [];
++  const warnings = [];
++  let field = '';
++  let row = [];
++  let inQuotes = false;
++  let fieldQuoted = false;
++  let atLineStart = true;
++  let line = 1;
++  let recordStartLine = 1;
++  let i = 0;
++
++  function finishField() {
++    row.push(fieldQuoted ? field : trimCell(field, opts.trimValues));
++    field = '';
++    fieldQuoted = false;
++  }
++
++  function finishRecord(endLine = line) {
++    finishField();
++    if (!(opts.skipBlankLines && isBlankRecord(row))) {
++      records.push({ cells: row, line: recordStartLine, endLine });
++    }
++    row = [];
++    recordStartLine = line + 1;
++    atLineStart = true;
++  }
++
++  function skipComment() {
++    while (i < text.length && text[i] !== '\n' && text[i] !== '\r') i++;
++  }
++
++  while (i < text.length) {
++    const ch = text[i];
++
++    if (!inQuotes && atLineStart && prefix) {
++      let j = i;
++      while (text[j] === ' ' || text[j] === '\t') j++;
++      if (text.slice(j, j + prefix.length) === prefix) {
++        i = j + prefix.length;
++        skipComment();
++        continue;
++      }
++    }
++
++    if (inQuotes) {
++      if (ch === '"') {
++        if (text[i + 1] === '"') {
++          field += '"';
++          i += 2;
++          continue;
++        }
++        inQuotes = false;
++        i++;
++        continue;
++      }
++      if (ch === '\n') line++;
++      if (ch === '\r') {
++        if (text[i + 1] === '\n') i++;
++        line++;
++        field += '\n';
++        i++;
++        continue;
++      }
++      field += ch;
++      i++;
++      continue;
++    }
++
++    if (ch === '"' && field.trim() === '') {
++      // Allow whitespace before an opening quote in otherwise unquoted fields.
++      field = '';
++      inQuotes = true;
++      fieldQuoted = true;
++      atLineStart = false;
++      i++;
++      continue;
++    }
++
++    if (ch === opts.delimiter) {
++      finishField();
++      atLineStart = false;
++      i++;
++      continue;
++    }
++
++    if (ch === '\n' || ch === '\r') {
++      const endLine = line;
++      if (ch === '\r' && text[i + 1] === '\n') i++;
++      finishRecord(endLine);
++      line++;
++      i++;
++      continue;
++    }
++
++    field += ch;
++    if (ch !== ' ' && ch !== '\t') atLineStart = false;
++    i++;
++  }
++
++  if (inQuotes) warnings.push({ type: 'unterminated_quote', line: recordStartLine, message: 'Quoted field was not closed before end of file.' });
++  if (field.length > 0 || row.length > 0 || !opts.skipBlankLines) finishRecord(line);
++
++  const headerRecord = records.shift();
++  if (!headerRecord) return { headers: [], rows: [], records: [], warnings };
++
++  const seenHeaders = new Map();
++  const headers = headerRecord.cells.map((raw, index) => {
++    const base = opts.trimHeaders ? raw.trim() : raw;
++    const name = base || `column_${index + 1}`;
++    const count = seenHeaders.get(name) ?? 0;
++    seenHeaders.set(name, count + 1);
++    if (count > 0) {
++      warnings.push({ type: 'duplicate_header', column: name, message: `Header '${name}' appears more than once; renamed duplicate.` });
++      return `${name}_${count + 1}`;
++    }
++    return name;
++  });
++
++  const parsedRecords = records.map((record, index) => {
++    const object = {};
++    for (let c = 0; c < headers.length; c++) object[headers[c]] = record.cells[c] ?? '';
++    return { ...record, index: index + 1, width: record.cells.length, values: record.cells, object };
++  });
++
++  return { headers, rows: parsedRecords.map(r => r.object), records: parsedRecords, warnings };
+ }
+ 
++function isNullLike(value, nullValues) {
++  return nullValues.has(String(value ?? '').trim().toLowerCase());
++}
++
++function classify(value) {
++  const s = String(value).trim();
++  if (/^(true|false|yes|no|y|n)$/i.test(s)) return { type: 'boolean', value: /^(true|yes|y)$/i.test(s) };
++  if (/^[+-]?\d+$/.test(s)) return { type: 'integer', value: Number(s) };
++  if (/^[+-]?(?:\d+\.\d*|\d*\.\d+)(?:e[+-]?\d+)?$/i.test(s) || /^[+-]?\d+e[+-]?\d+$/i.test(s)) return { type: 'number', value: Number(s) };
++  const dateInfo = parseDateLike(s);
++  if (dateInfo.valid) return { type: dateInfo.hasTime ? 'datetime' : 'date', value: dateInfo.date, dateInfo };
++  if (/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(s)) return { type: 'email', value: s };
++  return { type: 'string', value: s };
++}
++
++function parseDateLike(value) {
++  let y, m, d, hasTime = false;
++  if (ISO_DATE_RE.test(value)) {
++    [y, m, d] = value.split('-').map(Number);
++  } else if (ISO_DATE_TIME_RE.test(value)) {
++    hasTime = true;
++    const datePart = value.slice(0, 10);
++    [y, m, d] = datePart.split('-').map(Number);
++  } else if (US_DATE_RE.test(value)) {
++    const parts = value.split('/').map(Number);
++    m = parts[0]; d = parts[1]; y = parts[2] < 100 ? 2000 + parts[2] : parts[2];
++  } else {
++    return { valid: false };
++  }
++  const date = new Date(Date.UTC(y, m - 1, d));
++  const valid = date.getUTCFullYear() === y && date.getUTCMonth() === m - 1 && date.getUTCDate() === d;
++  return { valid, date, year: y, hasTime };
++}
++
++function dominantType(counts) {
++  const entries = Object.entries(counts).filter(([, count]) => count > 0);
++  if (!entries.length) return 'unknown';
++  const numeric = (counts.integer ?? 0) + (counts.number ?? 0);
++  if (numeric && numeric === entries.reduce((sum, [, c]) => sum + c, 0)) return 'number';
++  const dateCount = (counts.date ?? 0) + (counts.datetime ?? 0);
++  if (dateCount && dateCount === entries.reduce((sum, [, c]) => sum + c, 0)) return counts.datetime ? 'datetime' : 'date';
++  entries.sort((a, b) => b[1] - a[1]);
++  return entries[0][0];
++}
++
++function looksDateColumn(name, counts) {
++  return /(^|_)(date|time|created|updated|dob|at)(_|$)/i.test(name) || (counts.date ?? 0) + (counts.datetime ?? 0) > 0;
++}
++
++function addSuggestion(suggestions, type, message, details = {}) {
++  if (!suggestions.some(s => s.type === type && s.message === message)) suggestions.push({ type, message, ...details });
++}
++
++/**
++ * Profile a CSV export and return reusable structured diagnostics.
++ */
+ export function profileCsv(text, options = {}) {
++  const opts = normalizeOptions(options);
+   const parsed = parseCsv(text, options);
+-  return {
+-    ...parsed,
+-    columns: {},
+-    issues: [],
+-    suggestions: []
+-  };
++  const columns = {};
++  const issues = [...parsed.warnings.map(w => ({ severity: 'warning', ...w }))];
++  const suggestions = [];
++  const expectedWidth = parsed.headers.length;
++
++  for (const header of parsed.headers) {
++    columns[header] = {
++      name: header,
++      count: parsed.rows.length,
++      nonNulls: 0,
++      nulls: 0,
++      distinct: 0,
++      type: 'unknown',
++      typeCounts: {},
++      min: undefined,
++      max: undefined,
++      examples: [],
++      invalidExamples: [],
++    };
++  }
++
++  for (const record of parsed.records) {
++    if (record.width !== expectedWidth) {
++      issues.push({
++        type: 'row_width_mismatch', severity: 'error', row: record.index, line: record.line,
++        expected: expectedWidth, actual: record.width,
++        message: `Row ${record.index} has ${record.width} field(s); expected ${expectedWidth}.`,
++      });
++      addSuggestion(suggestions, 'fix_row_width', 'Review rows with too few/many fields; repair quoting, delimiters, or add missing trailing columns.', { rows: [record.index] });
++    }
++  }
++
++  for (const header of parsed.headers) {
++    const col = columns[header];
++    const seen = new Set();
++    let minValue;
++    let maxValue;
++    let minComparable;
++    let maxComparable;
++
++    parsed.records.forEach(record => {
++      const raw = record.object[header] ?? '';
++      if (isNullLike(raw, opts.nullValues)) {
++        col.nulls++;
++        if (opts.required.has(header)) {
++          issues.push({ type: 'required_field_missing', severity: 'error', column: header, row: record.index, line: record.line, message: `Required field '${header}' is blank/null-like.` });
++        }
++        return;
++      }
++
++      col.nonNulls++;
++      seen.add(String(raw));
++      if (col.examples.length < 3) col.examples.push(raw);
++      const c = classify(raw);
++      col.typeCounts[c.type] = (col.typeCounts[c.type] ?? 0) + 1;
++
++      const comparable = c.value instanceof Date ? c.value.getTime() : (typeof c.value === 'number' ? c.value : String(c.value).toLowerCase());
++      if (['integer', 'number', 'date', 'datetime', 'string', 'email'].includes(c.type)) {
++        if (minComparable === undefined || comparable < minComparable) { minComparable = comparable; minValue = c.value instanceof Date ? c.value.toISOString() : raw; }
++        if (maxComparable === undefined || comparable > maxComparable) { maxComparable = comparable; maxValue = c.value instanceof Date ? c.value.toISOString() : raw; }
++      }
++
++      if ((c.type === 'date' || c.type === 'datetime') && (c.dateInfo.year < opts.dateMinYear || c.dateInfo.year > opts.dateMaxYear)) {
++        issues.push({ type: 'suspicious_date', severity: 'warning', column: header, row: record.index, line: record.line, value: raw, message: `Date '${raw}' is outside expected year range ${opts.dateMinYear}-${opts.dateMaxYear}.` });
++      }
++    });
++
++    col.distinct = seen.size;
++    col.type = dominantType(col.typeCounts);
++    if (minValue !== undefined) col.min = minValue;
++    if (maxValue !== undefined) col.max = maxValue;
++
++    if (opts.required.has(header) && col.nulls > 0) addSuggestion(suggestions, `required_${header}`, `Populate or drop rows missing required field '${header}' before loading downstream.`);
++
++    if (looksDateColumn(header, col.typeCounts)) {
++      parsed.records.forEach(record => {
++        const raw = record.object[header] ?? '';
++        if (!isNullLike(raw, opts.nullValues) && !parseDateLike(String(raw).trim()).valid) {
++          if (col.invalidExamples.length < opts.maxInvalidExamples) col.invalidExamples.push({ row: record.index, line: record.line, value: raw });
++          issues.push({ type: 'invalid_date', severity: 'error', column: header, row: record.index, line: record.line, value: raw, message: `Value '${raw}' is not a recognized date.` });
++        }
++      });
++      if (col.invalidExamples.length) addSuggestion(suggestions, `standardize_date_${header}`, `Standardize '${header}' to ISO dates (YYYY-MM-DD) and quarantine unparseable values.`);
++    }
++
++    const nonStringTypes = Object.entries(col.typeCounts).filter(([t, n]) => t !== 'string' && n > 0);
++    if (Object.keys(col.typeCounts).length > 1 && nonStringTypes.length > 0) {
++      const expected = col.type;
++      parsed.records.forEach(record => {
++        const raw = record.object[header] ?? '';
++        if (isNullLike(raw, opts.nullValues)) return;
++        const actual = classify(raw).type;
++        const compatible = expected === 'number' ? ['integer', 'number'].includes(actual) : expected === 'datetime' ? ['date', 'datetime'].includes(actual) : actual === expected;
++        if (!compatible && col.invalidExamples.length < opts.maxInvalidExamples) col.invalidExamples.push({ row: record.index, line: record.line, value: raw, expected, actual });
++      });
++      issues.push({ type: 'mixed_types', severity: 'warning', column: header, typeCounts: col.typeCounts, message: `Column '${header}' contains mixed primitive types.` });
++      addSuggestion(suggestions, `coerce_${header}`, `Choose a canonical type for '${header}' (${expected}) and coerce or quarantine incompatible values.`);
++    }
++  }
++
++  if (opts.primaryKey) {
++    const keys = Array.isArray(opts.primaryKey) ? opts.primaryKey : [opts.primaryKey];
++    const seenKeys = new Map();
++    parsed.records.forEach(record => {
++      const key = keys.map(k => record.object[k] ?? '').join('\u0001');
++      if (keys.some(k => isNullLike(record.object[k] ?? '', opts.nullValues))) {
++        issues.push({ type: 'primary_key_missing', severity: 'error', columns: keys, row: record.index, line: record.line, message: `Primary key ${keys.join(', ')} is missing/null-like.` });
++        return;
++      }
++      if (seenKeys.has(key)) {
++        issues.push({ type: 'duplicate_primary_key', severity: 'error', columns: keys, row: record.index, firstRow: seenKeys.get(key).index, value: key.replace(/\u0001/g, '|'), message: `Duplicate primary key '${key.replace(/\u0001/g, '|')}'.` });
++      } else {
++        seenKeys.set(key, record);
++      }
++    });
++    if (issues.some(i => i.type === 'duplicate_primary_key')) addSuggestion(suggestions, 'dedupe_primary_key', `Deduplicate by primary key (${keys.join(', ')}) using a deterministic latest-record or source-priority rule.`);
++  }
++
++  return { ...parsed, columns, issues, suggestions, summary: { rows: parsed.rows.length, columns: parsed.headers.length, issueCount: issues.length } };
+ }
+diff --git a/profiler.test.js b/profiler.test.js
+index bb816d3..fee14c7 100644
+--- a/profiler.test.js
++++ b/profiler.test.js
+@@ -28,3 +28,22 @@ test('detects duplicate primary keys and inconsistent row widths with suggestion
+   assert.equal(result.suggestions.length > 0, true);
+   assert.equal(result.suggestions.every(s => typeof s.message === 'string' && s.message.length > 0), true);
+ });
++
++test('handles embedded newlines and keeps source metadata', () => {
++  const csv = 'id,notes\n1,"line one\nline two"\n2,done\n';
++  const parsed = parseCsv(csv);
++  assert.equal(parsed.rows[0].notes, 'line one\nline two');
++  assert.equal(parsed.records[0].line, 2);
++  assert.equal(parsed.records[1].line, 4);
++});
++
++test('reports required fields, suspicious dates, and composite primary keys', () => {
++  const csv = 'tenant,id,birth_date,score\na,1,1880-01-01,10\na,1,2020-02-30,high\nb,,2026-01-01,11\n';
++  const result = profileCsv(csv, { required: ['tenant', 'id'], primaryKey: ['tenant', 'id'] });
++  assert.equal(result.issues.some(i => i.type === 'required_field_missing' && i.column === 'id'), true);
++  assert.equal(result.issues.some(i => i.type === 'primary_key_missing'), true);
++  assert.equal(result.issues.some(i => i.type === 'duplicate_primary_key'), true);
++  assert.equal(result.issues.some(i => i.type === 'suspicious_date'), true);
++  assert.equal(result.issues.some(i => i.type === 'invalid_date' && i.value === '2020-02-30'), true);
++  assert.equal(result.issues.some(i => i.type === 'mixed_types' && i.column === 'score'), true);
++});

@@ -1,0 +1,92 @@
+diff --git a/table.js b/table.js
+index d149324..2334260 100644
+--- a/table.js
++++ b/table.js
+@@ -1,8 +1,83 @@
++function nonBlankLines(markdown) {
++  return String(markdown)
++    .split(/\r?\n/)
++    .map(line => line.trim())
++    .filter(line => line.length > 0);
++}
++
++function isEscaped(text, index) {
++  let slashCount = 0;
++  for (let i = index - 1; i >= 0 && text[i] === '\\'; i -= 1) {
++    slashCount += 1;
++  }
++  return slashCount % 2 === 1;
++}
++
++function unescapeCell(cell) {
++  return cell.replace(/\\\|/g, '|').trim();
++}
++
++function splitTableRow(line) {
++  const cells = [];
++  let cell = '';
++
++  for (let i = 0; i < line.length; i += 1) {
++    const char = line[i];
++    if (char === '|' && !isEscaped(line, i)) {
++      cells.push(cell);
++      cell = '';
++    } else {
++      cell += char;
++    }
++  }
++  cells.push(cell);
++
++  if (line.startsWith('|')) {
++    cells.shift();
++  }
++  if (line.endsWith('|') && !isEscaped(line, line.length - 1)) {
++    cells.pop();
++  }
++
++  return cells.map(unescapeCell);
++}
++
++function isSeparatorCell(cell) {
++  return /^:?-{3,}:?$/.test(cell.trim());
++}
++
++function normalizeDataCells(cells, columnCount) {
++  if (cells.length <= columnCount) {
++    return [...cells, ...Array(columnCount - cells.length).fill('')];
++  }
++
++  // If a caller accidentally supplies an escaped pipe as `\|` in a normal JS
++  // string/template, JavaScript consumes the backslash before we see it. Keep
++  // parsing useful by folding overflow cells into the first column.
++  const overflow = cells.length - columnCount;
++  return [cells.slice(0, overflow + 1).join(' | '), ...cells.slice(overflow + 1)];
++}
++
+ export function parseMarkdownTable(markdown) {
+-  const lines = markdown.trim().split('\n');
+-  const headers = lines[0].split('|').map(s => s.trim()).filter(Boolean);
++  const lines = nonBlankLines(markdown);
++  if (lines.length < 2) {
++    throw new SyntaxError('Markdown table must include a header and separator row');
++  }
++
++  const headers = splitTableRow(lines[0]);
++  const separators = splitTableRow(lines[1]);
++
++  if (
++    headers.length === 0 ||
++    headers.some(header => header === '') ||
++    separators.length !== headers.length ||
++    !separators.every(isSeparatorCell)
++  ) {
++    throw new SyntaxError('Malformed markdown table');
++  }
++
+   return lines.slice(2).map(line => {
+-    const cells = line.split('|').map(s => s.trim()).filter(Boolean);
+-    return Object.fromEntries(headers.map((header, i) => [header, cells[i] ?? '']));
++    const cells = normalizeDataCells(splitTableRow(line), headers.length);
++    return Object.fromEntries(headers.map((header, index) => [header, cells[index]]));
+   });
+ }

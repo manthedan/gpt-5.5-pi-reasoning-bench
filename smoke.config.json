@@ -1,0 +1,16 @@
+{
+  "model": "openai-codex/gpt-5.5",
+  "thinkingLevels": ["off"],
+  "repetitions": 1,
+  "timeoutSeconds": 180,
+  "outputDir": "results/smoke",
+  "piArgs": [
+    "--no-context-files",
+    "--no-extensions",
+    "--no-skills",
+    "--no-prompt-templates"
+  ],
+  "tasks": [
+    "js-date-range-bugfix"
+  ]
+}

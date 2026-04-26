@@ -1,0 +1,124 @@
+diff --git a/lru.js b/lru.js
+index 413ac2f..46a30c3 100644
+--- a/lru.js
++++ b/lru.js
+@@ -4,33 +4,113 @@ export class LRUCache {
+       throw new RangeError('capacity must be a positive integer');
+     }
+     this.capacity = capacity;
+-    // TODO: implement storage
++    this._items = new Map();
++    this._head = undefined; // most recently used
++    this._tail = undefined; // least recently used
+   }
+ 
+   get(key) {
+-    return undefined;
++    const node = this._items.get(key);
++    if (node === undefined) {
++      return undefined;
++    }
++
++    this._moveToHead(node);
++    return node.value;
+   }
+ 
+   set(key, value) {
++    let node = this._items.get(key);
++
++    if (node !== undefined) {
++      node.value = value;
++      this._moveToHead(node);
++      return this;
++    }
++
++    node = { key, value, previous: undefined, next: undefined };
++    this._items.set(key, node);
++    this._addToHead(node);
++
++    if (this._items.size > this.capacity) {
++      const lru = this._tail;
++      this._remove(lru);
++      this._items.delete(lru.key);
++    }
++
+     return this;
+   }
+ 
+   has(key) {
+-    return false;
++    return this._items.has(key);
+   }
+ 
+   delete(key) {
+-    return false;
++    const node = this._items.get(key);
++    if (node === undefined) {
++      return false;
++    }
++
++    this._remove(node);
++    this._items.delete(key);
++    return true;
+   }
+ 
+   clear() {
++    this._items.clear();
++    this._head = undefined;
++    this._tail = undefined;
+   }
+ 
+   get size() {
+-    return 0;
++    return this._items.size;
+   }
+ 
+   keys() {
+-    return [];
++    const keys = [];
++    for (let node = this._head; node !== undefined; node = node.next) {
++      keys.push(node.key);
++    }
++    return keys;
++  }
++
++  _moveToHead(node) {
++    if (node === this._head) {
++      return;
++    }
++
++    this._remove(node);
++    this._addToHead(node);
++  }
++
++  _addToHead(node) {
++    node.previous = undefined;
++    node.next = this._head;
++
++    if (this._head !== undefined) {
++      this._head.previous = node;
++    }
++    this._head = node;
++
++    if (this._tail === undefined) {
++      this._tail = node;
++    }
++  }
++
++  _remove(node) {
++    if (node.previous !== undefined) {
++      node.previous.next = node.next;
++    } else {
++      this._head = node.next;
++    }
++
++    if (node.next !== undefined) {
++      node.next.previous = node.previous;
++    } else {
++      this._tail = node.previous;
++    }
++
++    node.previous = undefined;
++    node.next = undefined;
+   }
+ }

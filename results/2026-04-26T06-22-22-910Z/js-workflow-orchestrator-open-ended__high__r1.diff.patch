@@ -1,0 +1,904 @@
+diff --git a/README.md b/README.md
+index eb8d27d..eea3ccd 100644
+--- a/README.md
++++ b/README.md
+@@ -1,3 +1,43 @@
+ # Workflow orchestrator task
+ 
+-Build a dependency-free in-memory workflow orchestrator. The smoke tests only check a small part of the desired behavior. Human review should focus on design quality, correctness under concurrency, cancellation, retry semantics, and maintainability.
++A dependency-free in-memory workflow orchestrator for named async tasks and ordered workflow jobs.
++
++## Capabilities
++
++- Register/unregister named task handlers.
++- Submit jobs with ordered steps, initial input, per-job priority, and optional job timeout.
++- Enforce a global concurrency limit across active task attempts.
++- Retry failed steps with configurable delay, exponential backoff, and caps.
++- Cancel queued/running/retrying jobs cooperatively via `AbortSignal` while still timing out/cancelling handlers that ignore the signal from the orchestrator's point of view.
++- Emit structured lifecycle events on the `event` channel and task-specific event names such as `job:queued`, `step:started`, and `job:succeeded`.
++- Keep inspectable in-memory job state: status, step attempts, timings, errors, outputs, and cancellation/timeout details.
++
++## Example
++
++```js
++import { WorkflowOrchestrator } from './orchestrator.js';
++
++const orchestrator = new WorkflowOrchestrator({ concurrency: 2, retryDelayMs: 100 });
++
++orchestrator.on('event', event => console.log(event));
++
++orchestrator.register('double', async input => input * 2);
++orchestrator.register('inc', async (input, { signal }) => {
++  signal.throwIfAborted?.();
++  return input + 1;
++});
++
++const id = orchestrator.submit(
++  { input: 3, steps: [{ task: 'double' }, { task: 'inc', retries: 2, timeoutMs: 1000 }] },
++  { priority: 10, timeoutMs: 5000 },
++);
++
++await orchestrator.drain();
++console.log(orchestrator.getJob(id).outputs); // [6, 7]
++```
++
++Run tests with:
++
++```sh
++node --test
++```
+diff --git a/orchestrator.js b/orchestrator.js
+index 38da2ed..ba488f9 100644
+--- a/orchestrator.js
++++ b/orchestrator.js
+@@ -1,38 +1,774 @@
+ import { EventEmitter } from 'node:events';
+ 
++const TERMINAL_STATUSES = new Set(['succeeded', 'failed', 'cancelled', 'timed_out']);
++const DEFAULT_OPTIONS = Object.freeze({
++  concurrency: 1,
++  retries: 0,
++  retryDelayMs: 100,
++  retryBackoffFactor: 2,
++  maxRetryDelayMs: 30_000,
++  timeoutMs: undefined,
++  autoStart: true,
++});
++
++export class WorkflowError extends Error {
++  constructor(message, options = {}) {
++    super(message, options.cause ? { cause: options.cause } : undefined);
++    this.name = options.name ?? this.constructor.name;
++    if (options.code) this.code = options.code;
++  }
++}
++
++export class TimeoutError extends WorkflowError {
++  constructor(message = 'operation timed out', options = {}) {
++    super(message, { ...options, name: 'TimeoutError', code: options.code ?? 'TIMEOUT' });
++  }
++}
++
++export class CancellationError extends WorkflowError {
++  constructor(message = 'operation cancelled', options = {}) {
++    super(message, { ...options, name: 'CancellationError', code: options.code ?? 'CANCELLED' });
++  }
++}
++
++export class HandlerNotFoundError extends WorkflowError {
++  constructor(task) {
++    super(`No handler registered for task "${task}"`, { name: 'HandlerNotFoundError', code: 'HANDLER_NOT_FOUND' });
++    this.task = task;
++  }
++}
++
+ export class WorkflowOrchestrator extends EventEmitter {
+   constructor(options = {}) {
+     super();
+-    this.options = options;
++    this.options = { ...DEFAULT_OPTIONS, ...options };
++    this.options.concurrency = normalizePositiveInteger(this.options.concurrency, 'concurrency');
++    validateExecutionOptions(this.options, 'orchestrator option');
++
+     this.handlers = new Map();
+     this.jobs = new Map();
++
++    this._sequence = 0;
++    this._activeAttempts = 0;
++    this._schedulerTimer = null;
++    this._drainers = new Set();
+   }
+ 
+   register(name, handler) {
++    if (typeof name !== 'string' || name.length === 0) {
++      throw new TypeError('handler name must be a non-empty string');
++    }
++    if (typeof handler !== 'function') {
++      throw new TypeError(`handler for "${name}" must be a function`);
++    }
+     this.handlers.set(name, handler);
++    this._emitLifecycle('handler:registered', { task: name });
++    this._scheduleSoon();
++    return this;
++  }
++
++  unregister(name) {
++    const removed = this.handlers.delete(name);
++    if (removed) this._emitLifecycle('handler:unregistered', { task: name });
++    return removed;
++  }
++
++  setConcurrency(concurrency) {
++    this.options.concurrency = normalizePositiveInteger(concurrency, 'concurrency');
++    this._emitLifecycle('orchestrator:concurrency_changed', { concurrency: this.options.concurrency });
++    this._scheduleSoon();
+     return this;
+   }
+ 
+   submit(workflow, options = {}) {
+-    const id = options.id ?? String(Date.now());
+-    const job = { id, workflow, options, status: 'queued' };
+-    this.jobs.set(id, job);
+-    return id;
++    validateExecutionOptions(options, 'job option');
++    const normalizedWorkflow = normalizeWorkflow(workflow);
++    const id = options.id ?? normalizedWorkflow.id ?? createJobId();
++    if (typeof id !== 'string' && typeof id !== 'number') {
++      throw new TypeError('job id must be a string or number');
++    }
++    const jobId = String(id);
++    if (this.jobs.has(jobId)) {
++      throw new Error(`job with id "${jobId}" already exists`);
++    }
++
++    const now = Date.now();
++    const priority = normalizeFiniteNumber(options.priority ?? normalizedWorkflow.priority ?? 0, 'priority');
++    const timeoutMs = normalizeOptionalNonNegativeNumber(
++      options.timeoutMs ?? normalizedWorkflow.timeoutMs ?? this.options.timeoutMs,
++      'timeoutMs',
++    );
++
++    const job = {
++      id: jobId,
++      workflow: normalizedWorkflow.original,
++      options: { ...options },
++      status: 'queued',
++      priority,
++      sequence: ++this._sequence,
++      input: normalizedWorkflow.input,
++      output: undefined,
++      outputs: [],
++      error: null,
++      reason: null,
++      currentStep: 0,
++      currentInput: normalizedWorkflow.input,
++      readyAt: now,
++      createdAt: now,
++      queuedAt: now,
++      startedAt: null,
++      finishedAt: null,
++      updatedAt: now,
++      durationMs: null,
++      steps: normalizedWorkflow.steps.map((step, index) => createStepState(step, index)),
++
++      // Internal scheduler state. Kept enumerable intentionally: this project exposes
++      // in-memory state directly for inspection, and these fields are useful when
++      // diagnosing stuck or retrying jobs.
++      _runningAttempt: null,
++      _timeoutTimer: null,
++      _abortController: new AbortController(),
++    };
++
++    if (timeoutMs !== undefined) {
++      job.timeoutMs = timeoutMs;
++      job.deadlineAt = now + timeoutMs;
++      job._timeoutTimer = setManagedTimeout(() => {
++        this._timeoutJob(job, `job timed out after ${timeoutMs}ms`);
++      }, timeoutMs);
++    }
++
++    this.jobs.set(jobId, job);
++    this._emitLifecycle('job:queued', {
++      jobId,
++      priority: job.priority,
++      stepCount: job.steps.length,
++      timeoutMs: job.timeoutMs,
++    });
++
++    if (this.options.autoStart !== false) this._scheduleSoon();
++    return jobId;
+   }
+ 
+   cancel(id, reason = 'cancelled') {
+-    const job = this.jobs.get(id);
+-    if (!job) return false;
+-    job.status = 'cancelled';
+-    job.reason = reason;
++    const job = this.jobs.get(String(id));
++    if (!job || isTerminal(job.status)) return false;
++
++    const error = reason instanceof Error
++      ? reason
++      : new CancellationError(String(reason || 'cancelled'));
++    this._finalizeJob(job, 'cancelled', { reason: error.message, error });
++    job._abortController.abort(error);
++
++    if (job._runningAttempt?.controller && !job._runningAttempt.controller.signal.aborted) {
++      job._runningAttempt.controller.abort(error);
++    }
++
++    this._scheduleSoon();
+     return true;
+   }
+ 
+   getJob(id) {
+-    return this.jobs.get(id);
++    return this.jobs.get(String(id));
++  }
++
++  listJobs(filter = {}) {
++    const jobs = [...this.jobs.values()];
++    if (!filter.status) return jobs;
++    const statuses = Array.isArray(filter.status) ? new Set(filter.status) : new Set([filter.status]);
++    return jobs.filter(job => statuses.has(job.status));
++  }
++
++  async drain(options = {}) {
++    this._schedule();
++    if (this._isDrained()) return;
++
++    let timeoutTimer;
++    const timeoutMs = normalizeOptionalNonNegativeNumber(options.timeoutMs, 'timeoutMs');
++    try {
++      await new Promise((resolve, reject) => {
++        const waiter = { resolve, reject };
++        this._drainers.add(waiter);
++        if (timeoutMs !== undefined) {
++          timeoutTimer = setManagedTimeout(() => {
++            this._drainers.delete(waiter);
++            reject(new TimeoutError(`drain timed out after ${timeoutMs}ms`));
++          }, timeoutMs);
++        }
++      });
++    } finally {
++      if (timeoutTimer) clearTimeout(timeoutTimer);
++    }
++  }
++
++  _scheduleSoon() {
++    queueMicrotask(() => this._schedule());
++  }
++
++  _schedule() {
++    this._clearSchedulerTimer();
++
++    let madeProgress = true;
++    while (madeProgress) {
++      madeProgress = false;
++
++      for (const job of this.jobs.values()) {
++        if (!isTerminal(job.status) && !job._runningAttempt && job.currentStep >= job.steps.length) {
++          this._succeedJob(job);
++          madeProgress = true;
++        }
++      }
++
++      while (this._activeAttempts < this.options.concurrency) {
++        const job = this._nextRunnableJob(Date.now());
++        if (!job) break;
++        this._startAttempt(job);
++        madeProgress = true;
++      }
++    }
++
++    this._armSchedulerTimer();
++    this._notifyDrainersIfReady();
++  }
++
++  _nextRunnableJob(now) {
++    let selected = null;
++    for (const job of this.jobs.values()) {
++      if (isTerminal(job.status) || job._runningAttempt) continue;
++      if (!['queued', 'running', 'retrying'].includes(job.status)) continue;
++      if (job.currentStep >= job.steps.length) continue;
++      if ((job.readyAt ?? 0) > now) continue;
++
++      if (
++        !selected ||
++        job.priority > selected.priority ||
++        (job.priority === selected.priority && job.sequence < selected.sequence)
++      ) {
++        selected = job;
++      }
++    }
++    return selected;
++  }
++
++  _startAttempt(job) {
++    const step = job.steps[job.currentStep];
++    const attemptNumber = step.attempts.length + 1;
++    const now = Date.now();
++    const controller = new AbortController();
++    const attempt = {
++      attempt: attemptNumber,
++      status: 'running',
++      startedAt: now,
++      finishedAt: null,
++      durationMs: null,
++      input: undefined,
++      output: undefined,
++      error: null,
++    };
++
++    if (!job.startedAt) {
++      job.startedAt = now;
++      this._emitLifecycle('job:started', { jobId: job.id, priority: job.priority });
++    }
++
++    job.status = 'running';
++    job.updatedAt = now;
++    job.readyAt = now;
++    job._runningAttempt = { controller, stepIndex: step.index, attempt };
++
++    step.status = 'running';
++    step.startedAt ??= now;
++    step.updatedAt = now;
++    step.attempts.push(attempt);
++
++    const abortFromJob = () => {
++      if (!controller.signal.aborted) controller.abort(job._abortController.signal.reason);
++    };
++    if (job._abortController.signal.aborted) abortFromJob();
++    else job._abortController.signal.addEventListener('abort', abortFromJob, { once: true });
++
++    this._activeAttempts++;
++    this._emitLifecycle('step:started', {
++      jobId: job.id,
++      stepIndex: step.index,
++      task: step.task,
++      attempt: attemptNumber,
++    });
++
++    this._runAttempt(job, step, attempt, controller)
++      .catch(error => {
++        // _runAttempt handles expected task failures. This catch is only a guard so
++        // an implementation bug cannot leave the scheduler permanently wedged.
++        this._handleAttemptFailure(job, step, attempt, error, { nonRetryable: true });
++      })
++      .finally(() => {
++        job._abortController.signal.removeEventListener('abort', abortFromJob);
++        if (job._runningAttempt?.attempt === attempt) job._runningAttempt = null;
++        this._activeAttempts--;
++        this._scheduleSoon();
++      });
++  }
++
++  async _runAttempt(job, step, attempt, controller) {
++    let timeoutTimer;
++    try {
++      const handler = this.handlers.get(step.task);
++      if (!handler) throw new HandlerNotFoundError(step.task);
++
++      const timeoutMs = getStepTimeoutMs(step.definition, job, this.options);
++      if (timeoutMs !== undefined) {
++        timeoutTimer = setManagedTimeout(() => {
++          if (!controller.signal.aborted) {
++            controller.abort(new TimeoutError(`step ${step.index} (${step.task}) timed out after ${timeoutMs}ms`));
++          }
++        }, timeoutMs);
++      }
++
++      const input = await runWithAbort(
++        Promise.resolve().then(() => resolveStepInput(step.definition, job, step, attempt, controller.signal)),
++        controller.signal,
++      );
++      attempt.input = input;
++      step.input = input;
++
++      const context = this._createTaskContext(job, step, attempt, controller.signal);
++      const result = await runWithAbort(
++        Promise.resolve().then(() => handler(input, context)),
++        controller.signal,
++      );
++
++      this._handleAttemptSuccess(job, step, attempt, result);
++    } catch (error) {
++      const failure = controller.signal.aborted && attemptAbortCode(error)
++        ? abortReason(controller.signal)
++        : error;
++      const nonRetryable = failure instanceof HandlerNotFoundError || job.status === 'cancelled' || job.status === 'timed_out';
++      this._handleAttemptFailure(job, step, attempt, failure, { nonRetryable });
++    } finally {
++      if (timeoutTimer) clearTimeout(timeoutTimer);
++    }
++  }
++
++  _handleAttemptSuccess(job, step, attempt, result) {
++    if (isTerminal(job.status)) return;
++
++    const now = Date.now();
++    attempt.status = 'succeeded';
++    attempt.output = result;
++    attempt.finishedAt = now;
++    attempt.durationMs = now - attempt.startedAt;
++
++    step.status = 'succeeded';
++    step.output = result;
++    step.error = null;
++    step.finishedAt = now;
++    step.updatedAt = now;
++    step.durationMs = now - step.startedAt;
++
++    job.outputs.push(result);
++    job.currentInput = result;
++    job.currentStep++;
++    job.updatedAt = now;
++
++    this._emitLifecycle('step:succeeded', {
++      jobId: job.id,
++      stepIndex: step.index,
++      task: step.task,
++      attempt: attempt.attempt,
++      durationMs: attempt.durationMs,
++    });
++
++    if (job.currentStep >= job.steps.length) this._succeedJob(job);
++  }
++
++  _handleAttemptFailure(job, step, attempt, error, options = {}) {
++    const now = Date.now();
++    const normalizedError = normalizeError(error);
++
++    attempt.status = job.status === 'cancelled'
++      ? 'cancelled'
++      : job.status === 'timed_out' || error instanceof TimeoutError
++        ? 'timed_out'
++        : 'failed';
++    attempt.error = normalizedError;
++    attempt.finishedAt = now;
++    attempt.durationMs = attempt.startedAt ? now - attempt.startedAt : null;
++
++    step.error = normalizedError;
++    step.updatedAt = now;
++
++    if (isTerminal(job.status)) {
++      step.status = job.status === 'cancelled' ? 'cancelled' : job.status === 'timed_out' ? 'timed_out' : 'failed';
++      if (!step.finishedAt) step.finishedAt = now;
++      if (step.startedAt && step.durationMs == null) step.durationMs = now - step.startedAt;
++      this._emitLifecycle('step:failed', {
++        jobId: job.id,
++        stepIndex: step.index,
++        task: step.task,
++        attempt: attempt.attempt,
++        final: true,
++        error: normalizedError,
++      });
++      return;
++    }
++
++    const retries = getStepRetries(step.definition, job, this.options);
++    const canRetry = !options.nonRetryable && !wasAbortBecauseJobStopped(job, error) && attempt.attempt <= retries;
++
++    this._emitLifecycle('step:failed', {
++      jobId: job.id,
++      stepIndex: step.index,
++      task: step.task,
++      attempt: attempt.attempt,
++      final: !canRetry,
++      error: normalizedError,
++    });
++
++    if (canRetry) {
++      const delayMs = calculateBackoffMs(step.definition, job, this.options, attempt.attempt);
++      step.status = 'retrying';
++      step.nextAttemptAt = now + delayMs;
++      job.status = 'retrying';
++      job.readyAt = step.nextAttemptAt;
++      job.updatedAt = now;
++      this._emitLifecycle('step:retry_scheduled', {
++        jobId: job.id,
++        stepIndex: step.index,
++        task: step.task,
++        attempt: attempt.attempt + 1,
++        delayMs,
++        scheduledAt: step.nextAttemptAt,
++      });
++      return;
++    }
++
++    step.status = error instanceof TimeoutError ? 'timed_out' : 'failed';
++    step.finishedAt = now;
++    step.durationMs = step.startedAt ? now - step.startedAt : null;
++
++    const finalStatus = error instanceof TimeoutError ? 'timed_out' : 'failed';
++    this._finalizeJob(job, finalStatus, { error });
++  }
++
++  _succeedJob(job) {
++    if (isTerminal(job.status)) return;
++    if (!job.startedAt) {
++      job.startedAt = Date.now();
++      this._emitLifecycle('job:started', { jobId: job.id, priority: job.priority });
++    }
++    job.output = job.currentInput;
++    this._finalizeJob(job, 'succeeded');
++  }
++
++  _timeoutJob(job, message) {
++    if (!job || isTerminal(job.status)) return;
++    const error = new TimeoutError(message);
++    this._finalizeJob(job, 'timed_out', { error });
++    job._abortController.abort(error);
++    if (job._runningAttempt?.controller && !job._runningAttempt.controller.signal.aborted) {
++      job._runningAttempt.controller.abort(error);
++    }
++    this._scheduleSoon();
++  }
++
++  _finalizeJob(job, status, details = {}) {
++    if (isTerminal(job.status)) return;
++
++    const now = Date.now();
++    job.status = status;
++    job.updatedAt = now;
++    job.finishedAt = now;
++    job.durationMs = (job.startedAt ?? job.createdAt) ? now - (job.startedAt ?? job.createdAt) : null;
++
++    if (details.error) job.error = normalizeError(details.error);
++    if (details.reason) job.reason = details.reason;
++    if (status === 'cancelled' && !job.reason) job.reason = details.error?.message ?? 'cancelled';
++
++    if (job._timeoutTimer) {
++      clearTimeout(job._timeoutTimer);
++      job._timeoutTimer = null;
++    }
++
++    if (status === 'cancelled' || status === 'timed_out') {
++      for (const step of job.steps) {
++        if (step.status === 'succeeded') continue;
++        step.status = status;
++        step.updatedAt = now;
++        step.finishedAt ??= now;
++        if (step.startedAt && step.durationMs == null) step.durationMs = now - step.startedAt;
++      }
++    }
++
++    const eventType = `job:${status}`;
++    this._emitLifecycle(eventType, {
++      jobId: job.id,
++      status,
++      durationMs: job.durationMs,
++      error: job.error,
++      reason: job.reason,
++    });
++    this._notifyDrainersIfReady();
++  }
++
++  _createTaskContext(job, step, attempt, signal) {
++    return Object.freeze({
++      orchestrator: this,
++      jobId: job.id,
++      stepIndex: step.index,
++      task: step.task,
++      attempt: attempt.attempt,
++      signal,
++      workflowInput: job.input,
++      previousOutput: job.currentInput,
++      job,
++      step,
++      emit: (type, fields = {}) => this._emitLifecycle(type, {
++        jobId: job.id,
++        stepIndex: step.index,
++        task: step.task,
++        attempt: attempt.attempt,
++        ...fields,
++      }),
++    });
++  }
++
++  _armSchedulerTimer() {
++    if (this._schedulerTimer || this._activeAttempts >= this.options.concurrency) return;
++
++    let nextReadyAt = Infinity;
++    for (const job of this.jobs.values()) {
++      if (isTerminal(job.status) || job._runningAttempt) continue;
++      if (!['queued', 'running', 'retrying'].includes(job.status)) continue;
++      if (job.currentStep >= job.steps.length) continue;
++      if ((job.readyAt ?? 0) < nextReadyAt) nextReadyAt = job.readyAt ?? 0;
++    }
++
++    if (nextReadyAt !== Infinity && nextReadyAt > Date.now()) {
++      this._schedulerTimer = setManagedTimeout(() => {
++        this._schedulerTimer = null;
++        this._schedule();
++      }, Math.max(0, nextReadyAt - Date.now()));
++    }
++  }
++
++  _clearSchedulerTimer() {
++    if (this._schedulerTimer) {
++      clearTimeout(this._schedulerTimer);
++      this._schedulerTimer = null;
++    }
++  }
++
++  _isDrained() {
++    return this._activeAttempts === 0 && [...this.jobs.values()].every(job => isTerminal(job.status));
+   }
+ 
+-  async drain() {
+-    // TODO: implement scheduling and execution
++  _notifyDrainersIfReady() {
++    if (!this._isDrained()) return;
++    for (const waiter of this._drainers) waiter.resolve();
++    this._drainers.clear();
+   }
++
++  _emitLifecycle(type, fields = {}) {
++    const event = {
++      type,
++      timestamp: Date.now(),
++      ...fields,
++    };
++    this.emit('event', event);
++    if (type !== 'error' || this.listenerCount('error') > 0) this.emit(type, event);
++    return event;
++  }
++}
++
++function normalizeWorkflow(workflow) {
++  if (!workflow || typeof workflow !== 'object') {
++    throw new TypeError('workflow must be an object');
++  }
++  const steps = Array.isArray(workflow.steps) ? workflow.steps : [];
++  return {
++    original: workflow,
++    input: workflow.input,
++    priority: workflow.priority,
++    timeoutMs: workflow.timeoutMs,
++    steps: steps.map((step, index) => normalizeStep(step, index)),
++  };
++}
++
++function normalizeStep(step, index) {
++  const definition = typeof step === 'string' ? { task: step } : step;
++  if (!definition || typeof definition !== 'object') {
++    throw new TypeError(`workflow step ${index} must be an object or task name string`);
++  }
++  const task = definition.task ?? definition.name;
++  if (typeof task !== 'string' || task.length === 0) {
++    throw new TypeError(`workflow step ${index} must specify a non-empty task`);
++  }
++  validateExecutionOptions(definition, `workflow step ${index}`);
++  return { ...definition, task };
++}
++
++function validateExecutionOptions(options, label) {
++  if (!options || typeof options !== 'object') return;
++  if (Object.prototype.hasOwnProperty.call(options, 'retries')) {
++    normalizeNonNegativeInteger(options.retries, `${label} retries`);
++  }
++  if (Object.prototype.hasOwnProperty.call(options, 'retryDelayMs')) {
++    normalizeOptionalNonNegativeNumber(options.retryDelayMs, `${label} retryDelayMs`);
++  }
++  if (Object.prototype.hasOwnProperty.call(options, 'retryBackoffFactor')) {
++    normalizeOptionalNonNegativeNumber(options.retryBackoffFactor, `${label} retryBackoffFactor`);
++  }
++  if (Object.prototype.hasOwnProperty.call(options, 'maxRetryDelayMs')) {
++    normalizeOptionalNonNegativeNumber(options.maxRetryDelayMs, `${label} maxRetryDelayMs`);
++  }
++  if (Object.prototype.hasOwnProperty.call(options, 'timeoutMs')) {
++    normalizeOptionalNonNegativeNumber(options.timeoutMs, `${label} timeoutMs`);
++  }
++  if (Object.prototype.hasOwnProperty.call(options, 'stepTimeoutMs')) {
++    normalizeOptionalNonNegativeNumber(options.stepTimeoutMs, `${label} stepTimeoutMs`);
++  }
++}
++
++function createStepState(definition, index) {
++  return {
++    index,
++    task: definition.task,
++    definition,
++    status: 'queued',
++    attempts: [],
++    input: undefined,
++    output: undefined,
++    error: null,
++    startedAt: null,
++    finishedAt: null,
++    updatedAt: null,
++    durationMs: null,
++    nextAttemptAt: null,
++  };
++}
++
++function resolveStepInput(definition, job, step, attempt, signal) {
++  if (!Object.prototype.hasOwnProperty.call(definition, 'input')) return job.currentInput;
++  if (typeof definition.input !== 'function') return definition.input;
++  return definition.input(job.currentInput, {
++    job,
++    step,
++    attempt: attempt.attempt,
++    signal,
++    workflowInput: job.input,
++  });
++}
++
++function getStepRetries(definition, job, defaults) {
++  return normalizeNonNegativeInteger(definition.retries ?? job.options.retries ?? defaults.retries ?? 0, 'retries');
++}
++
++function getStepTimeoutMs(definition, job, defaults) {
++  return normalizeOptionalNonNegativeNumber(
++    definition.timeoutMs ?? job.options.stepTimeoutMs ?? defaults.stepTimeoutMs,
++    'step timeoutMs',
++  );
++}
++
++function calculateBackoffMs(definition, job, defaults, failedAttemptNumber) {
++  const base = normalizeOptionalNonNegativeNumber(
++    definition.retryDelayMs ?? job.options.retryDelayMs ?? defaults.retryDelayMs,
++    'retryDelayMs',
++  ) ?? 0;
++  const factor = normalizeFiniteNumber(
++    definition.retryBackoffFactor ?? job.options.retryBackoffFactor ?? defaults.retryBackoffFactor ?? 1,
++    'retryBackoffFactor',
++  );
++  const max = normalizeOptionalNonNegativeNumber(
++    definition.maxRetryDelayMs ?? job.options.maxRetryDelayMs ?? defaults.maxRetryDelayMs,
++    'maxRetryDelayMs',
++  );
++  const raw = base * Math.max(1, factor) ** Math.max(0, failedAttemptNumber - 1);
++  return Math.min(max ?? raw, raw);
++}
++
++async function runWithAbort(promise, signal) {
++  if (!signal) return promise;
++  if (signal.aborted) throw abortReason(signal);
++
++  let abortListener;
++  const abortPromise = new Promise((_, reject) => {
++    abortListener = () => reject(abortReason(signal));
++    signal.addEventListener('abort', abortListener, { once: true });
++  });
++
++  try {
++    return await Promise.race([promise, abortPromise]);
++  } finally {
++    signal.removeEventListener('abort', abortListener);
++    // Avoid noisy unhandled rejections from work that loses the race after timeout
++    // or cancellation. The underlying function cannot be killed by JavaScript, so
++    // cooperative handlers should still watch context.signal.
++    Promise.resolve(promise).catch(() => {});
++  }
++}
++
++function abortReason(signal) {
++  return signal.reason ?? new CancellationError('operation aborted');
++}
++
++function wasAbortBecauseJobStopped(job, error) {
++  return job.status === 'cancelled' || job.status === 'timed_out' || error instanceof CancellationError;
++}
++
++function attemptAbortCode(error) {
++  return error?.code === 'ABORT_ERR' || error?.name === 'AbortError';
++}
++
++function normalizeError(error) {
++  if (!error) return null;
++  if (typeof error === 'string') return { name: 'Error', message: error };
++  return {
++    name: error.name ?? 'Error',
++    message: error.message ?? String(error),
++    code: error.code,
++    task: error.task,
++    stack: error.stack,
++    cause: error.cause ? normalizeError(error.cause) : undefined,
++  };
++}
++
++function isTerminal(status) {
++  return TERMINAL_STATUSES.has(status);
++}
++
++function normalizePositiveInteger(value, name) {
++  if (!Number.isInteger(value) || value < 1) throw new TypeError(`${name} must be a positive integer`);
++  return value;
++}
++
++function normalizeNonNegativeInteger(value, name) {
++  if (!Number.isInteger(value) || value < 0) throw new TypeError(`${name} must be a non-negative integer`);
++  return value;
++}
++
++function normalizeFiniteNumber(value, name) {
++  if (typeof value !== 'number' || !Number.isFinite(value)) throw new TypeError(`${name} must be a finite number`);
++  return value;
++}
++
++function normalizeOptionalNonNegativeNumber(value, name) {
++  if (value === undefined || value === null) return undefined;
++  if (typeof value !== 'number' || !Number.isFinite(value) || value < 0) {
++    throw new TypeError(`${name} must be a non-negative finite number`);
++  }
++  return value;
++}
++
++function setManagedTimeout(callback, delayMs) {
++  return setTimeout(callback, delayMs);
++}
++
++function createJobId() {
++  if (typeof cryptoThis()?.randomUUID === 'function') return cryptoThis().randomUUID();
++  return `${Date.now()}-${Math.random().toString(36).slice(2)}`;
++}
++
++function cryptoThis() {
++  return globalThis.crypto;
+ }
+diff --git a/orchestrator.test.js b/orchestrator.test.js
+index 13b3df2..d56ce6a 100644
+--- a/orchestrator.test.js
++++ b/orchestrator.test.js
+@@ -49,3 +49,59 @@ test('emits structured lifecycle events', async () => {
+   assert.equal(events.some(e => e.type === 'job:succeeded' && e.jobId === id), true);
+   assert.equal(events.every(e => typeof e.timestamp === 'number'), true);
+ });
++
++test('schedules queued jobs by priority without preempting running work', async () => {
++  const o = new WorkflowOrchestrator({ concurrency: 1 });
++  const order = [];
++  o.register('record', async value => { order.push(value); return value; });
++
++  const low = o.submit({ input: 'low', steps: [{ task: 'record' }] }, { priority: 0 });
++  const high = o.submit({ input: 'high', steps: [{ task: 'record' }] }, { priority: 10 });
++  const medium = o.submit({ input: 'medium', steps: [{ task: 'record' }] }, { priority: 5 });
++
++  await o.drain();
++  assert.deepEqual(order, ['high', 'medium', 'low']);
++  assert.equal(o.getJob(high).status, 'succeeded');
++  assert.equal(o.getJob(medium).status, 'succeeded');
++  assert.equal(o.getJob(low).status, 'succeeded');
++});
++
++test('cancels running jobs and frees drain even when a handler ignores the signal', async () => {
++  const o = new WorkflowOrchestrator({ concurrency: 1 });
++  o.register('hang', () => new Promise(() => {}));
++  const id = o.submit({ input: 'x', steps: [{ task: 'hang' }] });
++
++  await new Promise(resolve => o.once('step:started', resolve));
++  assert.equal(o.cancel(id, 'no longer needed'), true);
++  await o.drain({ timeoutMs: 50 });
++
++  const job = o.getJob(id);
++  assert.equal(job.status, 'cancelled');
++  assert.equal(job.reason, 'no longer needed');
++  assert.equal(job.steps[0].attempts[0].status, 'cancelled');
++});
++
++test('enforces step timeouts and records timeout errors', async () => {
++  const o = new WorkflowOrchestrator({ concurrency: 1 });
++  o.register('hang', () => new Promise(() => {}));
++  const id = o.submit({ input: 'x', steps: [{ task: 'hang', timeoutMs: 5 }] });
++
++  await o.drain({ timeoutMs: 100 });
++
++  const job = o.getJob(id);
++  assert.equal(job.status, 'timed_out');
++  assert.equal(job.steps[0].status, 'timed_out');
++  assert.equal(job.steps[0].attempts[0].error.name, 'TimeoutError');
++});
++
++test('fails missing handlers with inspectable errors', async () => {
++  const o = new WorkflowOrchestrator();
++  const id = o.submit({ input: 'x', steps: [{ task: 'missing', retries: 3 }] });
++
++  await o.drain();
++
++  const job = o.getJob(id);
++  assert.equal(job.status, 'failed');
++  assert.equal(job.steps[0].attempts.length, 1);
++  assert.equal(job.error.name, 'HandlerNotFoundError');
++});

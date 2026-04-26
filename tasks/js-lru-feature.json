@@ -1,0 +1,11 @@
+{
+  "id": "js-lru-feature",
+  "title": "Implement an LRU cache",
+  "prompt": "Implement the missing LRUCache class so the tests pass. Aim for O(1) get/set/delete operations, readable code, and no external dependencies. Run the tests before finishing.",
+  "testCommand": "node --test",
+  "files": {
+    "package.json": "{\n  \"name\": \"lru-task\",\n  \"type\": \"module\",\n  \"scripts\": {\"test\": \"node --test\"}\n}\n",
+    "lru.js": "export class LRUCache {\n  constructor(capacity) {\n    if (!Number.isInteger(capacity) || capacity < 1) {\n      throw new RangeError('capacity must be a positive integer');\n    }\n    this.capacity = capacity;\n    // TODO: implement storage\n  }\n\n  get(key) {\n    return undefined;\n  }\n\n  set(key, value) {\n    return this;\n  }\n\n  has(key) {\n    return false;\n  }\n\n  delete(key) {\n    return false;\n  }\n\n  clear() {\n  }\n\n  get size() {\n    return 0;\n  }\n\n  keys() {\n    return [];\n  }\n}\n",
+    "lru.test.js": "import test from 'node:test';\nimport assert from 'node:assert/strict';\nimport { LRUCache } from './lru.js';\n\ntest('set/get/has/size basics', () => {\n  const c = new LRUCache(2);\n  assert.equal(c.set('a', 1), c);\n  c.set('b', 2);\n  assert.equal(c.get('a'), 1);\n  assert.equal(c.has('b'), true);\n  assert.equal(c.has('x'), false);\n  assert.equal(c.size, 2);\n});\n\ntest('evicts least recently used on capacity overflow', () => {\n  const c = new LRUCache(2);\n  c.set('a', 1);\n  c.set('b', 2);\n  c.get('a');\n  c.set('c', 3);\n  assert.equal(c.has('a'), true);\n  assert.equal(c.has('b'), false);\n  assert.equal(c.get('c'), 3);\n});\n\ntest('updating existing keys refreshes recency without growing', () => {\n  const c = new LRUCache(2);\n  c.set('a', 1).set('b', 2).set('a', 10).set('c', 3);\n  assert.equal(c.get('a'), 10);\n  assert.equal(c.has('b'), false);\n  assert.equal(c.size, 2);\n});\n\ntest('delete, clear, and keys in most-recent-first order', () => {\n  const c = new LRUCache(3);\n  c.set('a', 1).set('b', 2).set('c', 3);\n  c.get('a');\n  assert.deepEqual(c.keys(), ['a', 'c', 'b']);\n  assert.equal(c.delete('c'), true);\n  assert.equal(c.delete('missing'), false);\n  assert.deepEqual(c.keys(), ['a', 'b']);\n  c.clear();\n  assert.equal(c.size, 0);\n  assert.deepEqual(c.keys(), []);\n});\n"
+  }
+}

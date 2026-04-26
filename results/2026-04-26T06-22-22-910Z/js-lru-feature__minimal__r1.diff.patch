@@ -1,0 +1,68 @@
+diff --git a/lru.js b/lru.js
+index 413ac2f..6976286 100644
+--- a/lru.js
++++ b/lru.js
+@@ -4,33 +4,57 @@ export class LRUCache {
+       throw new RangeError('capacity must be a positive integer');
+     }
+     this.capacity = capacity;
+-    // TODO: implement storage
++    // Map keeps insertion order: oldest entry first, newest entry last.
++    this.cache = new Map();
+   }
+ 
+   get(key) {
+-    return undefined;
++    if (!this.cache.has(key)) {
++      return undefined;
++    }
++
++    const value = this.cache.get(key);
++    this.#markRecent(key, value);
++    return value;
+   }
+ 
+   set(key, value) {
++    if (this.cache.has(key)) {
++      this.cache.delete(key);
++    }
++
++    this.cache.set(key, value);
++
++    if (this.cache.size > this.capacity) {
++      const oldestKey = this.cache.keys().next().value;
++      this.cache.delete(oldestKey);
++    }
++
+     return this;
+   }
+ 
+   has(key) {
+-    return false;
++    return this.cache.has(key);
+   }
+ 
+   delete(key) {
+-    return false;
++    return this.cache.delete(key);
+   }
+ 
+   clear() {
++    this.cache.clear();
+   }
+ 
+   get size() {
+-    return 0;
++    return this.cache.size;
+   }
+ 
+   keys() {
+-    return [];
++    return Array.from(this.cache.keys()).reverse();
++  }
++
++  #markRecent(key, value) {
++    this.cache.delete(key);
++    this.cache.set(key, value);
+   }
+ }

@@ -1,0 +1,43 @@
+diff --git a/range.js b/range.js
+index f777be2..7c52f49 100644
+--- a/range.js
++++ b/range.js
+@@ -1,19 +1,28 @@
++function parseRange(range) {
++  if (!range) throw new TypeError('ranges are required');
++
++  const start = new Date(range.start);
++  const end = new Date(range.end);
++
++  if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime()) || start >= end) {
++    throw new RangeError('invalid date range');
++  }
++
++  return { start, end };
++}
++
+ export function overlaps(a, b) {
+-  if (!a || !b) throw new TypeError('ranges are required');
+-  const startA = new Date(a.start);
+-  const endA = new Date(a.end);
+-  const startB = new Date(b.start);
+-  const endB = new Date(b.end);
++  const rangeA = parseRange(a);
++  const rangeB = parseRange(b);
+ 
+-  // BUG: treats adjacent ranges as overlapping and accepts invalid ranges.
+-  return startA <= endB && startB <= endA;
++  return rangeA.start < rangeB.end && rangeB.start < rangeA.end;
+ }
+ 
+ export function mergeRanges(ranges) {
+   return ranges
+-    .slice()
+-    .sort((a, b) => new Date(a.start) - new Date(b.start))
+-    .reduce((acc, range) => {
++    .map((range) => ({ range, parsed: parseRange(range) }))
++    .sort((a, b) => a.parsed.start - b.parsed.start)
++    .reduce((acc, { range }) => {
+       const last = acc[acc.length - 1];
+       if (last && overlaps(last, range)) {
+         last.end = new Date(Math.max(new Date(last.end), new Date(range.end))).toISOString();

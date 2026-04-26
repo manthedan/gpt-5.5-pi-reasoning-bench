@@ -1,0 +1,201 @@
+diff --git a/session-inspector.js b/session-inspector.js
+index 09b89d5..c5ba31e 100644
+--- a/session-inspector.js
++++ b/session-inspector.js
+@@ -1,19 +1,184 @@
+-export function parseSessionJsonl(text) {
+-  return text.trim().split('\n').map(line => JSON.parse(line));
+-}
++// Dependency-free utilities for inspecting Pi-style JSONL agent sessions.
++// The exported functions are intentionally small and composable so callers can
++// parse once, analyze, then render their own UI/report if desired.
++
++export function parseSessionJsonl(text, options = {}) {
++  const { keepBlankLines = false } = options;
++  const entries = [];
++  const diagnostics = [];
++  const lines = String(text ?? '').split(/\r?\n/);
+ 
+-export function analyzeSession(entries) {
+-  return {
+-    entries,
+-    metrics: {
+-      assistantTurns: 0,
+-      totalTokens: 0,
+-      cost: 0,
+-      toolCalls: {}
++  for (let i = 0; i < lines.length; i++) {
++    const lineNumber = i + 1;
++    const raw = lines[i];
++    if (!keepBlankLines && raw.trim() === '') continue;
++    try {
++      const value = JSON.parse(raw);
++      entries.push({ ...value, _line: lineNumber });
++    } catch (error) {
++      diagnostics.push({
++        line: lineNumber,
++        message: error instanceof Error ? error.message : String(error),
++        text: raw.length > 240 ? `${raw.slice(0, 237)}...` : raw
++      });
+     }
++  }
++
++  return { entries, diagnostics };
++}
++
++export function analyzeSession(entriesOrParsed, diagnostics = []) {
++  const entries = Array.isArray(entriesOrParsed) ? entriesOrParsed : entriesOrParsed?.entries ?? [];
++  const parseDiagnostics = Array.isArray(entriesOrParsed) ? diagnostics : entriesOrParsed?.diagnostics ?? diagnostics;
++  const nodes = buildMessageTree(entries);
++  const activeBranch = getActiveBranch(nodes);
++
++  const metrics = {
++    entryCount: entries.length,
++    messageCount: 0,
++    assistantTurns: 0,
++    userTurns: 0,
++    toolResultCount: 0,
++    toolCalls: {},
++    totalToolCalls: 0,
++    totalTokens: 0,
++    inputTokens: 0,
++    outputTokens: 0,
++    cacheReadTokens: 0,
++    cacheWriteTokens: 0,
++    cost: 0,
++    errorCount: parseDiagnostics.length,
++    malformedLines: parseDiagnostics.length,
++    filesTouched: [],
++    startTime: null,
++    endTime: null,
++    durationMs: 0,
++    branchCount: nodes.leaves.length,
++    activeBranchLength: activeBranch.length
+   };
++
++  const touched = new Set();
++  const anomalies = [];
++  const toolCallIds = new Set();
++  const toolResultIds = new Set();
++
++  for (const entry of entries) {
++    if (entry.type !== 'message') continue;
++    metrics.messageCount++;
++    const msg = entry.message ?? {};
++    const role = msg.role;
++    updateTimeRange(metrics, getTimestamp(msg));
++
++    if (role === 'assistant') {
++      metrics.assistantTurns++;
++      addUsage(metrics, msg.usage);
++      for (const call of extractToolCalls(msg.content)) {
++        if (call.id) toolCallIds.add(call.id);
++        const name = call.name || 'unknown';
++        metrics.toolCalls[name] = (metrics.toolCalls[name] || 0) + 1;
++        metrics.totalToolCalls++;
++        inferFilesFromToolCall(name, call.arguments, touched);
++      }
++    } else if (role === 'user') {
++      metrics.userTurns++;
++    } else if (role === 'toolResult') {
++      metrics.toolResultCount++;
++      if (msg.toolCallId) toolResultIds.add(msg.toolCallId);
++      if (msg.isError) metrics.errorCount++;
++      inferFilesFromToolCall(msg.toolName, msg.arguments ?? msg.input, touched);
++      inferFilesFromText(extractText(msg.content), touched);
++    }
++  }
++
++  metrics.filesTouched = [...touched].sort();
++  if (metrics.startTime && metrics.endTime) {
++    metrics.durationMs = new Date(metrics.endTime).getTime() - new Date(metrics.startTime).getTime();
++  }
++  metrics.cost = round(metrics.cost, 6);
++
++  for (const d of parseDiagnostics) anomalies.push({ severity: 'warning', type: 'malformed-jsonl', message: `Line ${d.line}: ${d.message}` });
++  for (const id of toolCallIds) if (!toolResultIds.has(id)) anomalies.push({ severity: 'warning', type: 'missing-tool-result', message: `Tool call ${id} has no matching result` });
++  for (const id of toolResultIds) if (!toolCallIds.has(id)) anomalies.push({ severity: 'warning', type: 'orphan-tool-result', message: `Tool result ${id} has no matching call` });
++  for (const id of nodes.orphans) anomalies.push({ severity: 'warning', type: 'orphan-message', message: `Message ${id} references a missing parent` });
++  if (metrics.errorCount > parseDiagnostics.length) anomalies.push({ severity: 'error', type: 'tool-errors', message: `${metrics.errorCount - parseDiagnostics.length} tool result(s) marked as errors` });
++  if (metrics.branchCount > 1) anomalies.push({ severity: 'info', type: 'branches', message: `${metrics.branchCount} terminal branches found; active branch chosen by latest timestamp` });
++
++  return { entries, diagnostics: parseDiagnostics, tree: nodes, activeBranch, metrics, anomalies };
++}
++
++export function buildMessageTree(entries) {
++  const byId = new Map();
++  const roots = [];
++  const orphans = [];
++  for (const entry of entries) {
++    if (entry.type !== 'message' || !entry.id) continue;
++    byId.set(entry.id, { entry, id: entry.id, parentId: entry.parentId ?? null, children: [] });
++  }
++  for (const node of byId.values()) {
++    if (node.parentId && byId.has(node.parentId)) byId.get(node.parentId).children.push(node);
++    else {
++      roots.push(node);
++      if (node.parentId) orphans.push(node.id);
++    }
++  }
++  const leaves = [...byId.values()].filter(n => n.children.length === 0);
++  return { byId, roots, leaves, orphans };
++}
++
++export function getActiveBranch(tree) {
++  const latestLeaf = [...tree.leaves].sort((a, b) => timestampMs(getTimestamp(b.entry)) - timestampMs(getTimestamp(a.entry)))[0];
++  if (!latestLeaf) return [];
++  const branch = [];
++  let node = latestLeaf;
++  while (node) {
++    branch.unshift(node.entry);
++    node = node.parentId ? tree.byId.get(node.parentId) : null;
++  }
++  return branch;
+ }
+ 
+ export function formatReport(analysis) {
+-  return 'Session report';
++  const m = analysis.metrics;
++  const lines = [];
++  lines.push('Session report');
++  lines.push(`- Time: ${m.startTime ?? 'unknown'} → ${m.endTime ?? 'unknown'} (${formatDuration(m.durationMs)})`);
++  lines.push(`- Messages: ${m.messageCount} (${m.userTurns} user, ${m.assistantTurns} assistant turns, ${m.toolResultCount} tool results)`);
++  lines.push(`- Tokens: ${m.totalTokens} total (${m.inputTokens} in, ${m.outputTokens} out, ${m.cacheReadTokens} cache read, ${m.cacheWriteTokens} cache write)`);
++  lines.push(`- Cost: $${m.cost.toFixed(6)}`);
++  lines.push(`- Tool calls: ${m.totalToolCalls}${Object.keys(m.toolCalls).length ? ` (${Object.entries(m.toolCalls).map(([k, v]) => `${k}: ${v}`).join(', ')})` : ''}`);
++  lines.push(`- Files touched: ${m.filesTouched.length ? m.filesTouched.join(', ') : 'none inferred'}`);
++  lines.push(`- Branches: ${m.branchCount} terminal branch(es), active branch length ${m.activeBranchLength}`);
++  lines.push(`- Errors/anomalies: ${m.errorCount} error(s), ${m.malformedLines} malformed JSONL line(s)`);
++  if (analysis.anomalies?.length) {
++    lines.push('Anomalies:');
++    for (const a of analysis.anomalies.slice(0, 12)) lines.push(`  - [${a.severity}] ${a.message}`);
++    if (analysis.anomalies.length > 12) lines.push(`  - ... ${analysis.anomalies.length - 12} more`);
++  }
++  lines.push(`Productivity signals: ${productivitySignals(m).join('; ')}`);
++  return lines.join('\n');
++}
++
++function addUsage(metrics, usage = {}) {
++  metrics.inputTokens += num(usage.input ?? usage.inputTokens ?? usage.promptTokens);
++  metrics.outputTokens += num(usage.output ?? usage.outputTokens ?? usage.completionTokens);
++  metrics.cacheReadTokens += num(usage.cacheRead ?? usage.cacheReadTokens);
++  metrics.cacheWriteTokens += num(usage.cacheWrite ?? usage.cacheWriteTokens);
++  metrics.totalTokens += num(usage.totalTokens ?? usage.total ?? (num(usage.input) + num(usage.output)));
++  metrics.cost += num(usage.cost?.total ?? usage.cost ?? usage.totalCost);
++}
++function extractToolCalls(content) { return Array.isArray(content) ? content.filter(p => p && (p.type === 'toolCall' || p.toolCallId || p.name) && (p.name || p.type === 'toolCall')) : []; }
++function extractText(content) { return Array.isArray(content) ? content.map(p => typeof p === 'string' ? p : p?.text ?? '').join('\n') : String(content ?? ''); }
++function inferFilesFromToolCall(name = '', args = {}, set) {
++  if (typeof args === 'string') { try { args = JSON.parse(args); } catch { inferFilesFromText(args, set); return; } }
++  for (const key of ['path','file','filePath','filepath','target_file','targetFile']) if (typeof args?.[key] === 'string') set.add(args[key]);
++  for (const key of ['files','paths']) if (Array.isArray(args?.[key])) for (const f of args[key]) if (typeof f === 'string') set.add(f);
++  if (/bash|shell|command/.test(name) && typeof args?.command === 'string') inferFilesFromText(args.command, set);
+ }
++function inferFilesFromText(text, set) { for (const m of String(text ?? '').matchAll(/(?:^|\s)([\w./-]+\.(?:js|ts|json|md|txt|py|css|html|yml|yaml|sh|tsx|jsx))/g)) set.add(m[1]); }
++function getTimestamp(o) { return o?.timestamp ?? o?.message?.timestamp ?? null; }
++function timestampMs(t) { return typeof t === 'number' ? t : Date.parse(t || 0) || 0; }
++function updateTimeRange(m, t) { const ms = timestampMs(t); if (!ms) return; const iso = new Date(ms).toISOString(); if (!m.startTime || ms < timestampMs(m.startTime)) m.startTime = iso; if (!m.endTime || ms > timestampMs(m.endTime)) m.endTime = iso; }
++function num(v) { return Number.isFinite(Number(v)) ? Number(v) : 0; }
++function round(v, places) { const f = 10 ** places; return Math.round((v + Number.EPSILON) * f) / f; }
++function formatDuration(ms) { if (!ms) return '0s'; const s = Math.round(ms / 1000); return s < 60 ? `${s}s` : `${Math.floor(s / 60)}m ${s % 60}s`; }
++function productivitySignals(m) { const s = []; if (m.filesTouched.length) s.push(`${m.filesTouched.length} file(s) touched`); if (m.totalToolCalls) s.push(`${round(m.totalToolCalls / Math.max(m.assistantTurns, 1), 2)} tool calls/assistant turn`); if (m.errorCount) s.push('errors may have interrupted progress'); else s.push('no recorded tool errors'); return s; }

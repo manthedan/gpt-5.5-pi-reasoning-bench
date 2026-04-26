@@ -1,0 +1,97 @@
+diff --git a/table.js b/table.js
+index d149324..07a3e45 100644
+--- a/table.js
++++ b/table.js
+@@ -1,8 +1,89 @@
+ export function parseMarkdownTable(markdown) {
+-  const lines = markdown.trim().split('\n');
+-  const headers = lines[0].split('|').map(s => s.trim()).filter(Boolean);
++  const lines = markdown
++    .split(/\r?\n/)
++    .map(line => line.trim())
++    .filter(line => line.length > 0);
++
++  if (lines.length < 2) {
++    throw new SyntaxError('Markdown table must include a header and separator row');
++  }
++
++  const headers = splitTableRow(lines[0]);
++  const separator = splitTableRow(lines[1]);
++
++  if (headers.length === 0 || separator.length !== headers.length) {
++    throw new SyntaxError('Malformed markdown table');
++  }
++
++  if (!separator.every(isSeparatorCell)) {
++    throw new SyntaxError('Malformed markdown table separator');
++  }
++
+   return lines.slice(2).map(line => {
+-    const cells = line.split('|').map(s => s.trim()).filter(Boolean);
++    const cells = normalizeCellCount(splitTableRow(line), headers.length);
+     return Object.fromEntries(headers.map((header, i) => [header, cells[i] ?? '']));
+   });
+ }
++
++function splitTableRow(line) {
++  const cells = [];
++  let cell = '';
++
++  for (let i = 0; i < line.length; i++) {
++    const char = line[i];
++    const next = line[i + 1];
++
++    if (char === '\\' && next === '|') {
++      cell += '|';
++      i++;
++      continue;
++    }
++
++    if (char === '|') {
++      cells.push(cell.trim());
++      cell = '';
++      continue;
++    }
++
++    cell += char;
++  }
++
++  cells.push(cell.trim());
++
++  if (line.startsWith('|')) {
++    cells.shift();
++  }
++
++  if (endsWithUnescapedPipe(line)) {
++    cells.pop();
++  }
++
++  return cells;
++}
++
++function endsWithUnescapedPipe(line) {
++  const trimmed = line.trimEnd();
++  if (!trimmed.endsWith('|')) return false;
++
++  let backslashes = 0;
++  for (let i = trimmed.length - 2; i >= 0 && trimmed[i] === '\\'; i--) {
++    backslashes++;
++  }
++  return backslashes % 2 === 0;
++}
++
++function isSeparatorCell(cell) {
++  return /^:?-{3,}:?$/.test(cell);
++}
++
++function normalizeCellCount(cells, expectedCount) {
++  if (cells.length <= expectedCount) {
++    return cells;
++  }
++
++  // Extra cells are usually caused by pipe characters that were intended to be
++  // literal cell content. Keep the row usable by folding the extras into the
++  // first column; escaped pipes are handled directly by splitTableRow().
++  const extras = cells.length - expectedCount;
++  return [cells.slice(0, extras + 1).join(' | '), ...cells.slice(extras + 1)];
++}

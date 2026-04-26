@@ -1,0 +1,52 @@
+Session report
+Session: 019dc8b2-6721-778f-b82a-28cfac43d8de (/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/workspaces/js-agent-session-inspector-open-ended__minimal__r1)
+Time: 2026-04-26T07:30:28.263Z → 2026-04-26T07:31:07.659Z (39.4s)
+Assistant turns: 5; user turns: 1; tool results: 7
+Tokens: 19820 (input 6760, output 3844, cache read 9216, cache write 0); cost: $0.0000
+Tool calls: read=4, bash=2, write=1
+Files touched: EVALUATION_RUBRIC.md, package.json, session-inspector.js, session-inspector.test.js
+Tree: 14 linked nodes, active path 15, branches 0, orphans 0
+Productivity signals:
+- 7 tool call(s) across 3 tool(s)
+- 4 file(s) touched/inferred
+- 7.9s per assistant turn
+Anomalies: none detected
+
+---SELF_ANALYSIS_JSON---
+{
+  "entries": 16,
+  "diagnostics": 0,
+  "metrics": {
+    "assistantTurns": 5,
+    "userTurns": 1,
+    "toolResults": 7,
+    "toolCalls": {
+      "bash": 2,
+      "read": 4,
+      "write": 1
+    },
+    "errors": 0,
+    "malformedLines": 0,
+    "failedToolCalls": 0,
+    "inputTokens": 6760,
+    "outputTokens": 3844,
+    "cacheReadTokens": 9216,
+    "cacheWriteTokens": 0,
+    "totalTokens": 19820,
+    "cost": 0,
+    "filesTouched": [
+      "EVALUATION_RUBRIC.md",
+      "package.json",
+      "session-inspector.js",
+      "session-inspector.test.js"
+    ],
+    "startTime": "2026-04-26T07:30:28.263Z",
+    "endTime": "2026-04-26T07:31:07.659Z",
+    "durationMs": 39396,
+    "nodesWithParent": 14,
+    "activePathLength": 15,
+    "branchPoints": 0,
+    "orphanCount": 0,
+    "entryCount": 16
+  }
+}

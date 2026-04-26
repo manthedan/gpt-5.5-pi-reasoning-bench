@@ -1,0 +1,20 @@
+{
+  "model": "openai-codex/gpt-5.5",
+  "thinkingLevels": ["off", "minimal", "low", "medium", "high"],
+  "repetitions": 1,
+  "timeoutSeconds": 900,
+  "piArgs": [
+    "--no-context-files",
+    "--no-extensions",
+    "--no-skills",
+    "--no-prompt-templates"
+  ],
+  "tasks": [
+    "js-date-range-bugfix",
+    "js-lru-feature",
+    "js-markdown-refactor",
+    "js-workflow-orchestrator-open-ended",
+    "js-data-quality-profiler-open-ended",
+    "js-agent-session-inspector-open-ended"
+  ]
+}

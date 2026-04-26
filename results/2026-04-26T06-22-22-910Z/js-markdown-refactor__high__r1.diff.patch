@@ -1,0 +1,118 @@
+diff --git a/table.js b/table.js
+index d149324..b93ef12 100644
+--- a/table.js
++++ b/table.js
+@@ -1,8 +1,109 @@
+ export function parseMarkdownTable(markdown) {
+-  const lines = markdown.trim().split('\n');
+-  const headers = lines[0].split('|').map(s => s.trim()).filter(Boolean);
++  const lines = nonBlankLines(markdown);
++
++  if (lines.length < 2) {
++    throw new SyntaxError('Markdown table must include a header and separator row');
++  }
++
++  const headers = splitTableRow(lines[0]);
++  if (headers.length === 0 || headers.every(header => header === '')) {
++    throw new SyntaxError('Markdown table header is empty');
++  }
++
++  const separator = splitTableRow(lines[1]);
++  if (separator.length !== headers.length || !separator.every(isSeparatorCell)) {
++    throw new SyntaxError('Markdown table separator does not match the header');
++  }
++
+   return lines.slice(2).map(line => {
+-    const cells = line.split('|').map(s => s.trim()).filter(Boolean);
+-    return Object.fromEntries(headers.map((header, i) => [header, cells[i] ?? '']));
++    const cells = fitCellsToHeaders(splitTableRow(line), headers.length);
++    return Object.fromEntries(headers.map((header, i) => [header, cells[i]]));
+   });
+ }
++
++function nonBlankLines(markdown) {
++  return String(markdown)
++    .split(/\r?\n/)
++    .filter(line => line.trim() !== '');
++}
++
++function splitTableRow(line) {
++  const cells = [];
++  let cell = '';
++  let escaping = false;
++
++  for (const char of line) {
++    if (escaping) {
++      cell += char === '|' ? '|' : `\\${char}`;
++      escaping = false;
++      continue;
++    }
++
++    if (char === '\\') {
++      escaping = true;
++    } else if (char === '|') {
++      cells.push(cell.trim());
++      cell = '';
++    } else {
++      cell += char;
++    }
++  }
++
++  if (escaping) {
++    cell += '\\';
++  }
++
++  cells.push(cell.trim());
++
++  if (startsWithPipe(line)) {
++    cells.shift();
++  }
++  if (endsWithUnescapedPipe(line)) {
++    cells.pop();
++  }
++
++  return cells;
++}
++
++function startsWithPipe(line) {
++  return line.trimStart().startsWith('|');
++}
++
++function endsWithUnescapedPipe(line) {
++  const trimmed = line.trimEnd();
++  if (!trimmed.endsWith('|')) {
++    return false;
++  }
++
++  let backslashes = 0;
++  for (let i = trimmed.length - 2; i >= 0 && trimmed[i] === '\\'; i--) {
++    backslashes++;
++  }
++  return backslashes % 2 === 0;
++}
++
++function isSeparatorCell(cell) {
++  if (cell.length < 3) {
++    return false;
++  }
++
++  const body = cell.replace(/^:/, '').replace(/:$/, '');
++  return body.length >= 3 && [...body].every(char => char === '-');
++}
++
++function fitCellsToHeaders(cells, expectedCount) {
++  if (cells.length < expectedCount) {
++    return [...cells, ...Array(expectedCount - cells.length).fill('')];
++  }
++
++  if (cells.length === expectedCount) {
++    return cells;
++  }
++
++  // When an escaped pipe has already been interpreted by the JavaScript caller
++  // (for example, `\|` in a template literal), the row arrives with too many
++  // cells. Prefer keeping all content by folding surplus cells into the first
++  // column rather than silently dropping data.
++  const surplus = cells.length - expectedCount;
++  return [cells.slice(0, surplus + 1).join(' | '), ...cells.slice(surplus + 1)];
++}

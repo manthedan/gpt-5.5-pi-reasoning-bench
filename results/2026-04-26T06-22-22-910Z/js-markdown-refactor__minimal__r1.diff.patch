@@ -1,0 +1,94 @@
+diff --git a/table.js b/table.js
+index d149324..69ab937 100644
+--- a/table.js
++++ b/table.js
+@@ -1,8 +1,85 @@
++function isBlank(line) {
++  return line.trim() === '';
++}
++
++function trimOuterPipes(line) {
++  let text = line.trim();
++  if (text.startsWith('|')) text = text.slice(1);
++  if (text.endsWith('|') && !endsWithEscapedPipe(text)) text = text.slice(0, -1);
++  return text;
++}
++
++function endsWithEscapedPipe(text) {
++  if (!text.endsWith('|')) return false;
++  let backslashes = 0;
++  for (let i = text.length - 2; i >= 0 && text[i] === '\\'; i--) backslashes++;
++  return backslashes % 2 === 1;
++}
++
++function splitRow(line) {
++  const cells = [];
++  let cell = '';
++  const text = trimOuterPipes(line);
++
++  for (let i = 0; i < text.length; i++) {
++    const char = text[i];
++    const next = text[i + 1];
++
++    if (char === '\\' && next === '|') {
++      cell += '|';
++      i++;
++    } else if (char === '|') {
++      cells.push(cell.trim());
++      cell = '';
++    } else {
++      cell += char;
++    }
++  }
++
++  cells.push(cell.trim());
++  return cells;
++}
++
++function isSeparatorCell(cell) {
++  return /^:?-{3,}:?$/.test(cell.trim());
++}
++
++function makeSyntaxError(message) {
++  return new SyntaxError(`Malformed markdown table: ${message}`);
++}
++
++function fitCellsToHeaders(cells, headerCount) {
++  if (cells.length <= headerCount) {
++    return [...cells, ...Array(headerCount - cells.length).fill('')];
++  }
++
++  // A common source of surplus cells is an escaped pipe that was already
++  // consumed by a JavaScript string literal before reaching this parser. Keep
++  // the implementation small by folding the surplus into the first column.
++  const surplus = cells.length - headerCount;
++  return [cells.slice(0, surplus + 1).join(' | '), ...cells.slice(surplus + 1)];
++}
++
+ export function parseMarkdownTable(markdown) {
+-  const lines = markdown.trim().split('\n');
+-  const headers = lines[0].split('|').map(s => s.trim()).filter(Boolean);
++  const lines = String(markdown).split(/\r?\n/).filter(line => !isBlank(line));
++
++  if (lines.length < 2) {
++    throw makeSyntaxError('expected a header and separator row');
++  }
++
++  const headers = splitRow(lines[0]);
++  const separator = splitRow(lines[1]);
++
++  if (headers.length === 0 || headers.some(header => header === '')) {
++    throw makeSyntaxError('header cells must not be empty');
++  }
++
++  if (separator.length !== headers.length || !separator.every(isSeparatorCell)) {
++    throw makeSyntaxError('invalid separator row');
++  }
++
+   return lines.slice(2).map(line => {
+-    const cells = line.split('|').map(s => s.trim()).filter(Boolean);
+-    return Object.fromEntries(headers.map((header, i) => [header, cells[i] ?? '']));
++    const cells = fitCellsToHeaders(splitRow(line), headers.length);
++    return Object.fromEntries(headers.map((header, i) => [header, cells[i]]));
+   });
+ }

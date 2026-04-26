@@ -1,0 +1,53 @@
+Session report
+- Time: 2026-04-26T07:31:30.623Z → 2026-04-26T07:32:07.720Z (37s)
+- Messages: 16 (1 user, 7 assistant turns, 8 tool results)
+- Tokens: 32196 total (7795 in, 3921 out, 20480 cache read, 0 cache write)
+- Cost: $0.000000
+- Tool calls: 8 (bash: 3, read: 3, write: 1, edit: 1)
+- Files touched: EVALUATION_RUBRIC.md, package.js, package.json, session-inspector.js, session-inspector.test.js
+- Branches: 1 terminal branch(es), active branch length 16
+- Errors/anomalies: 1 error(s), 0 malformed JSONL line(s)
+Anomalies:
+  - [warning] Message a0db4503 references a missing parent
+  - [error] 1 tool result(s) marked as errors
+Productivity signals: 5 file(s) touched; 1.14 tool calls/assistant turn; errors may have interrupted progress
+
+---SELF_ANALYSIS_JSON---
+{
+  "entries": 19,
+  "diagnostics": 0,
+  "metrics": {
+    "entryCount": 19,
+    "messageCount": 16,
+    "assistantTurns": 7,
+    "userTurns": 1,
+    "toolResultCount": 8,
+    "toolCalls": {
+      "bash": 3,
+      "read": 3,
+      "write": 1,
+      "edit": 1
+    },
+    "totalToolCalls": 8,
+    "totalTokens": 32196,
+    "inputTokens": 7795,
+    "outputTokens": 3921,
+    "cacheReadTokens": 20480,
+    "cacheWriteTokens": 0,
+    "cost": 0,
+    "errorCount": 1,
+    "malformedLines": 0,
+    "filesTouched": [
+      "EVALUATION_RUBRIC.md",
+      "package.js",
+      "package.json",
+      "session-inspector.js",
+      "session-inspector.test.js"
+    ],
+    "startTime": "2026-04-26T07:31:30.623Z",
+    "endTime": "2026-04-26T07:32:07.720Z",
+    "durationMs": 37097,
+    "branchCount": 1,
+    "activeBranchLength": 16
+  }
+}

@@ -1,0 +1,52 @@
+TAP version 13
+# Subtest: runs ordered workflow steps and stores outputs
+ok 1 - runs ordered workflow steps and stores outputs
+  ---
+  duration_ms: 1.253167
+  type: 'test'
+  ...
+# Subtest: retries failed steps and records attempts
+ok 2 - retries failed steps and records attempts
+  ---
+  duration_ms: 3.853167
+  type: 'test'
+  ...
+# Subtest: honors concurrency limit while processing multiple jobs
+ok 3 - honors concurrency limit while processing multiple jobs
+  ---
+  duration_ms: 63.422125
+  type: 'test'
+  ...
+# Subtest: emits structured lifecycle events
+ok 4 - emits structured lifecycle events
+  ---
+  duration_ms: 0.230417
+  type: 'test'
+  ...
+# Subtest: runs higher priority queued jobs first
+ok 5 - runs higher priority queued jobs first
+  ---
+  duration_ms: 0.290834
+  type: 'test'
+  ...
+# Subtest: cancels queued jobs and records the reason
+ok 6 - cancels queued jobs and records the reason
+  ---
+  duration_ms: 10.713792
+  type: 'test'
+  ...
+# Subtest: fails timed out steps with structured error details
+ok 7 - fails timed out steps with structured error details
+  ---
+  duration_ms: 6.200292
+  type: 'test'
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 7
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 138.251334

@@ -1,0 +1,6 @@
+node_modules/
+.DS_Store
+results/**/*.events.jsonl
+results/**/sessions/
+results/**/workspaces/
+results/smoke/

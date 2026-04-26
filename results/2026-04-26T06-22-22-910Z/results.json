@@ -1,0 +1,1510 @@
+[
+  {
+    "runId": "js-date-range-bugfix__off__r1",
+    "taskId": "js-date-range-bugfix",
+    "title": "Fix date range overlap edge cases",
+    "model": "openai-codex/gpt-5.5",
+    "thinking": "off",
+    "repetition": 1,
+    "status": "pass",
+    "piExitCode": 0,
+    "durationSeconds": 15.138,
+    "usage": {
+      "input": 4288,
+      "output": 1001,
+      "cacheRead": 6144,
+      "cacheWrite": 0,
+      "totalTokens": 11433,
+      "costTotal": 0
+    },
+    "toolCalls": {
+      "bash": 2,
+      "read": 3,
+      "edit": 1
+    },
+    "assistantTurns": 5,
+    "finalAssistantText": "Implemented the date-range fix in `range.js`.\n\nSummary:\n- Added range parsing/validation.\n- Invalid dates and `start >= end` now throw `RangeError`.\n- `overlaps()` now treats ranges as half-open, so adjacent ranges do not overlap.\n- `mergeRanges()` validates ranges before sorting/merging and keeps adjacent ranges separate.\n\nTest result:\n- `node --test` passes: 4/4 tests.",
+    "tests": {
+      "exitCode": 0,
+      "command": "node --test"
+    },
+    "diff": {
+      "stat": " range.js | 29 +++++++++++++++++++----------\n 1 file changed, 19 insertions(+), 10 deletions(-)\n",
+      "numstat": "19\t10\trange.js\n",
+      "filesChanged": 1,
+      "added": 19,
+      "deleted": 10
+    },
+    "evaluationRubric": [],
+    "artifacts": {
+      "events": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-date-range-bugfix__off__r1.events.jsonl",
+      "stderr": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-date-range-bugfix__off__r1.stderr.log",
+      "patch": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-date-range-bugfix__off__r1.diff.patch",
+      "workspace": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/workspaces/js-date-range-bugfix__off__r1",
+      "session": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/sessions/2026-04-26T06-22-23-657Z_019dc874-13a9-7399-90dc-4338b8a527ec.jsonl"
+    }
+  },
+  {
+    "runId": "js-date-range-bugfix__minimal__r1",
+    "taskId": "js-date-range-bugfix",
+    "title": "Fix date range overlap edge cases",
+    "model": "openai-codex/gpt-5.5",
+    "thinking": "minimal",
+    "repetition": 1,
+    "status": "pass",
+    "piExitCode": 0,
+    "durationSeconds": 25.274,
+    "usage": {
+      "input": 5048,
+      "output": 1219,
+      "cacheRead": 5120,
+      "cacheWrite": 0,
+      "totalTokens": 11387,
+      "costTotal": 0
+    },
+    "toolCalls": {
+      "bash": 2,
+      "read": 3,
+      "edit": 1
+    },
+    "assistantTurns": 5,
+    "finalAssistantText": "Implemented the date-range fixes in `range.js`:\n\n- Added range validation with `RangeError` for invalid dates or `start > end`.\n- Updated `overlaps()` to use half-open range semantics, so adjacent ranges do not overlap.\n- Updated `mergeRanges()` to validate inputs, sort safely by parsed dates, keep adjacent ranges separate, and merge true overlaps.\n\nTest result:\n\n- `node --test` passes: 4/4 tests successful.",
+    "tests": {
+      "exitCode": 0,
+      "command": "node --test"
+    },
+    "diff": {
+      "stat": " range.js | 36 +++++++++++++++++++++++++-----------\n 1 file changed, 25 insertions(+), 11 deletions(-)\n",
+      "numstat": "25\t11\trange.js\n",
+      "filesChanged": 1,
+      "added": 25,
+      "deleted": 11
+    },
+    "evaluationRubric": [],
+    "artifacts": {
+      "events": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-date-range-bugfix__minimal__r1.events.jsonl",
+      "stderr": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-date-range-bugfix__minimal__r1.stderr.log",
+      "patch": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-date-range-bugfix__minimal__r1.diff.patch",
+      "workspace": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/workspaces/js-date-range-bugfix__minimal__r1",
+      "session": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/sessions/2026-04-26T06-22-39-030Z_019dc874-4fb6-75fb-928b-453d3c494dfb.jsonl"
+    }
+  },
+  {
+    "runId": "js-date-range-bugfix__low__r1",
+    "taskId": "js-date-range-bugfix",
+    "title": "Fix date range overlap edge cases",
+    "model": "openai-codex/gpt-5.5",
+    "thinking": "low",
+    "repetition": 1,
+    "status": "pass",
+    "piExitCode": 0,
+    "durationSeconds": 11.278,
+    "usage": {
+      "input": 3962,
+      "output": 585,
+      "cacheRead": 5632,
+      "cacheWrite": 0,
+      "totalTokens": 10179,
+      "costTotal": 0
+    },
+    "toolCalls": {
+      "bash": 2,
+      "read": 3,
+      "edit": 1
+    },
+    "assistantTurns": 5,
+    "finalAssistantText": "Implemented the date range fix in `range.js`.\n\nSummary:\n- Added range parsing/validation.\n- Invalid dates and ranges where `start > end` now throw `RangeError`.\n- Updated overlap logic to treat ranges as half-open: adjacent ranges no longer overlap.\n- Preserved the existing public API.\n\nTest results:\n- Ran `node --test`\n- All tests passed: 4/4.",
+    "tests": {
+      "exitCode": 0,
+      "command": "node --test"
+    },
+    "diff": {
+      "stat": " range.js | 23 ++++++++++++++++-------\n 1 file changed, 16 insertions(+), 7 deletions(-)\n",
+      "numstat": "16\t7\trange.js\n",
+      "filesChanged": 1,
+      "added": 16,
+      "deleted": 7
+    },
+    "evaluationRubric": [],
+    "artifacts": {
+      "events": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-date-range-bugfix__low__r1.events.jsonl",
+      "stderr": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-date-range-bugfix__low__r1.stderr.log",
+      "patch": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-date-range-bugfix__low__r1.diff.patch",
+      "workspace": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/workspaces/js-date-range-bugfix__low__r1",
+      "session": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/sessions/2026-04-26T06-23-04-497Z_019dc874-b330-7065-94c1-b6b25ed19668.jsonl"
+    }
+  },
+  {
+    "runId": "js-date-range-bugfix__medium__r1",
+    "taskId": "js-date-range-bugfix",
+    "title": "Fix date range overlap edge cases",
+    "model": "openai-codex/gpt-5.5",
+    "thinking": "medium",
+    "repetition": 1,
+    "status": "pass",
+    "piExitCode": 0,
+    "durationSeconds": 18.022,
+    "usage": {
+      "input": 7184,
+      "output": 1042,
+      "cacheRead": 4096,
+      "cacheWrite": 0,
+      "totalTokens": 12322,
+      "costTotal": 0
+    },
+    "toolCalls": {
+      "bash": 2,
+      "read": 3,
+      "edit": 1
+    },
+    "assistantTurns": 5,
+    "finalAssistantText": "Implemented the date range fix in `range.js`:\n\n- Added range parsing/validation.\n- Invalid dates and non-forward ranges now throw `RangeError`.\n- `overlaps` now treats ranges as half-open, so adjacent ranges do not overlap.\n- `mergeRanges` now validates before sorting/merging and still preserves the public API.\n\nTest results:\n\n- Ran `node --test`\n- All tests passed: `4/4` pass.",
+    "tests": {
+      "exitCode": 0,
+      "command": "node --test"
+    },
+    "diff": {
+      "stat": " range.js | 29 +++++++++++++++++++----------\n 1 file changed, 19 insertions(+), 10 deletions(-)\n",
+      "numstat": "19\t10\trange.js\n",
+      "filesChanged": 1,
+      "added": 19,
+      "deleted": 10
+    },
+    "evaluationRubric": [],
+    "artifacts": {
+      "events": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-date-range-bugfix__medium__r1.events.jsonl",
+      "stderr": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-date-range-bugfix__medium__r1.stderr.log",
+      "patch": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-date-range-bugfix__medium__r1.diff.patch",
+      "workspace": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/workspaces/js-date-range-bugfix__medium__r1",
+      "session": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/sessions/2026-04-26T06-23-15-765Z_019dc874-df35-765c-8447-460945887242.jsonl"
+    }
+  },
+  {
+    "runId": "js-date-range-bugfix__high__r1",
+    "taskId": "js-date-range-bugfix",
+    "title": "Fix date range overlap edge cases",
+    "model": "openai-codex/gpt-5.5",
+    "thinking": "high",
+    "repetition": 1,
+    "status": "pass",
+    "piExitCode": 0,
+    "durationSeconds": 46.475,
+    "usage": {
+      "input": 7628,
+      "output": 2471,
+      "cacheRead": 18432,
+      "cacheWrite": 0,
+      "totalTokens": 28531,
+      "costTotal": 0
+    },
+    "toolCalls": {
+      "bash": 4,
+      "read": 3,
+      "edit": 2
+    },
+    "assistantTurns": 8,
+    "finalAssistantText": "Updated `range.js`:\n\n- Added shared range validation for invalid dates and inverted ranges.\n- Changed overlap logic to half-open semantics so adjacent ranges do not overlap.\n- Updated `mergeRanges` to validate before sorting/merging and keep adjacent ranges separate.\n\nTests: `node --test` passes — 4/4 tests.",
+    "tests": {
+      "exitCode": 0,
+      "command": "node --test"
+    },
+    "diff": {
+      "stat": " range.js | 39 +++++++++++++++++++++++++--------------\n 1 file changed, 25 insertions(+), 14 deletions(-)\n",
+      "numstat": "25\t14\trange.js\n",
+      "filesChanged": 1,
+      "added": 25,
+      "deleted": 14
+    },
+    "evaluationRubric": [],
+    "artifacts": {
+      "events": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-date-range-bugfix__high__r1.events.jsonl",
+      "stderr": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-date-range-bugfix__high__r1.stderr.log",
+      "patch": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-date-range-bugfix__high__r1.diff.patch",
+      "workspace": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/workspaces/js-date-range-bugfix__high__r1",
+      "session": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/sessions/2026-04-26T06-23-34-116Z_019dc875-26e4-719d-83c6-bfbcea4b1723.jsonl"
+    }
+  },
+  {
+    "runId": "js-lru-feature__off__r1",
+    "taskId": "js-lru-feature",
+    "title": "Implement an LRU cache",
+    "model": "openai-codex/gpt-5.5",
+    "thinking": "off",
+    "repetition": 1,
+    "status": "pass",
+    "piExitCode": 0,
+    "durationSeconds": 15.479,
+    "usage": {
+      "input": 3718,
+      "output": 964,
+      "cacheRead": 6144,
+      "cacheWrite": 0,
+      "totalTokens": 10826,
+      "costTotal": 0
+    },
+    "toolCalls": {
+      "bash": 2,
+      "read": 3,
+      "edit": 1
+    },
+    "assistantTurns": 5,
+    "finalAssistantText": "Implemented `LRUCache` in `lru.js`.\n\nChanges:\n- Added internal `Map` storage.\n- Implemented `get`, `set`, `has`, `delete`, `clear`, `size`, and `keys`.\n- `get` and `set` refresh recency.\n- Capacity overflow evicts the least recently used item.\n- `keys()` returns most-recent-first order.\n\nTest results:\n\n```text\nnode --test\n# pass 4\n# fail 0\n```",
+    "tests": {
+      "exitCode": 0,
+      "command": "node --test"
+    },
+    "diff": {
+      "stat": " lru.js | 36 ++++++++++++++++++++++++++++++------\n 1 file changed, 30 insertions(+), 6 deletions(-)\n",
+      "numstat": "30\t6\tlru.js\n",
+      "filesChanged": 1,
+      "added": 30,
+      "deleted": 6
+    },
+    "evaluationRubric": [],
+    "artifacts": {
+      "events": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-lru-feature__off__r1.events.jsonl",
+      "stderr": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-lru-feature__off__r1.stderr.log",
+      "patch": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-lru-feature__off__r1.diff.patch",
+      "workspace": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/workspaces/js-lru-feature__off__r1",
+      "session": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/sessions/2026-04-26T06-24-20-768Z_019dc875-dd1f-74a9-ae6f-511b0b3d3f23.jsonl"
+    }
+  },
+  {
+    "runId": "js-lru-feature__minimal__r1",
+    "taskId": "js-lru-feature",
+    "title": "Implement an LRU cache",
+    "model": "openai-codex/gpt-5.5",
+    "thinking": "minimal",
+    "repetition": 1,
+    "status": "pass",
+    "piExitCode": 0,
+    "durationSeconds": 14.441,
+    "usage": {
+      "input": 5032,
+      "output": 860,
+      "cacheRead": 4608,
+      "cacheWrite": 0,
+      "totalTokens": 10500,
+      "costTotal": 0
+    },
+    "toolCalls": {
+      "bash": 2,
+      "read": 3,
+      "edit": 1
+    },
+    "assistantTurns": 5,
+    "finalAssistantText": "Implemented `LRUCache` in `lru.js`.\n\nChanges:\n- Added `Map`-based storage with O(1) `get`, `set`, `has`, `delete`, and `clear`.\n- `get` and updating `set` refresh item recency.\n- Capacity overflow evicts the least recently used item.\n- `keys()` returns keys in most-recent-first order.\n- Added working `size` getter.\n\nTests:\n- Ran `node --test`\n- Result: 4 passed, 0 failed.",
+    "tests": {
+      "exitCode": 0,
+      "command": "node --test"
+    },
+    "diff": {
+      "stat": " lru.js | 36 ++++++++++++++++++++++++++++++------\n 1 file changed, 30 insertions(+), 6 deletions(-)\n",
+      "numstat": "30\t6\tlru.js\n",
+      "filesChanged": 1,
+      "added": 30,
+      "deleted": 6
+    },
+    "evaluationRubric": [],
+    "artifacts": {
+      "events": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-lru-feature__minimal__r1.events.jsonl",
+      "stderr": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-lru-feature__minimal__r1.stderr.log",
+      "patch": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-lru-feature__minimal__r1.diff.patch",
+      "workspace": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/workspaces/js-lru-feature__minimal__r1",
+      "session": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/sessions/2026-04-26T06-24-36-239Z_019dc876-198f-71b9-975a-97c9b4f55097.jsonl"
+    }
+  },
+  {
+    "runId": "js-lru-feature__low__r1",
+    "taskId": "js-lru-feature",
+    "title": "Implement an LRU cache",
+    "model": "openai-codex/gpt-5.5",
+    "thinking": "low",
+    "repetition": 1,
+    "status": "pass",
+    "piExitCode": 0,
+    "durationSeconds": 16.834,
+    "usage": {
+      "input": 4768,
+      "output": 1084,
+      "cacheRead": 6144,
+      "cacheWrite": 0,
+      "totalTokens": 11996,
+      "costTotal": 0
+    },
+    "toolCalls": {
+      "bash": 2,
+      "read": 3,
+      "write": 1
+    },
+    "assistantTurns": 5,
+    "finalAssistantText": "Implemented `LRUCache` in `lru.js`.\n\nChanges:\n- Added `Map` + doubly linked list storage for O(1) `get`, `set`, `has`, and `delete`.\n- Maintains most-recently-used order.\n- Supports eviction on capacity overflow.\n- Implemented `clear`, `size`, and `keys()`.\n\nTest results:\n- Ran `node --test`\n- All tests passed: 4/4.",
+    "tests": {
+      "exitCode": 0,
+      "command": "node --test"
+    },
+    "diff": {
+      "stat": " lru.js | 88 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-----\n 1 file changed, 82 insertions(+), 6 deletions(-)\n",
+      "numstat": "82\t6\tlru.js\n",
+      "filesChanged": 1,
+      "added": 82,
+      "deleted": 6
+    },
+    "evaluationRubric": [],
+    "artifacts": {
+      "events": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-lru-feature__low__r1.events.jsonl",
+      "stderr": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-lru-feature__low__r1.stderr.log",
+      "patch": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-lru-feature__low__r1.diff.patch",
+      "workspace": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/workspaces/js-lru-feature__low__r1",
+      "session": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/sessions/2026-04-26T06-24-50-850Z_019dc876-52a2-72fc-b10d-dc237aeb3fb9.jsonl"
+    }
+  },
+  {
+    "runId": "js-lru-feature__medium__r1",
+    "taskId": "js-lru-feature",
+    "title": "Implement an LRU cache",
+    "model": "openai-codex/gpt-5.5",
+    "thinking": "medium",
+    "repetition": 1,
+    "status": "pass",
+    "piExitCode": 0,
+    "durationSeconds": 16.073,
+    "usage": {
+      "input": 5532,
+      "output": 1366,
+      "cacheRead": 5120,
+      "cacheWrite": 0,
+      "totalTokens": 12018,
+      "costTotal": 0
+    },
+    "toolCalls": {
+      "bash": 2,
+      "read": 3,
+      "edit": 1
+    },
+    "assistantTurns": 5,
+    "finalAssistantText": "Implemented `LRUCache` in `lru.js`.\n\nChanges:\n- Added `Map` + doubly linked list storage for O(1) `get`, `set`, and `delete`.\n- Implemented recency updates on `get` and existing-key `set`.\n- Added capacity eviction of least recently used entries.\n- Implemented `has`, `clear`, `size`, and `keys()` in most-recent-first order.\n\nTests:\n- Ran `node --test`\n- Result: 4 passed, 0 failed.",
+    "tests": {
+      "exitCode": 0,
+      "command": "node --test"
+    },
+    "diff": {
+      "stat": " lru.js | 92 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-----\n 1 file changed, 86 insertions(+), 6 deletions(-)\n",
+      "numstat": "86\t6\tlru.js\n",
+      "filesChanged": 1,
+      "added": 86,
+      "deleted": 6
+    },
+    "evaluationRubric": [],
+    "artifacts": {
+      "events": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-lru-feature__medium__r1.events.jsonl",
+      "stderr": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-lru-feature__medium__r1.stderr.log",
+      "patch": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-lru-feature__medium__r1.diff.patch",
+      "workspace": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/workspaces/js-lru-feature__medium__r1",
+      "session": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/sessions/2026-04-26T06-25-07-847Z_019dc876-9507-70dc-b500-9daebb9e3902.jsonl"
+    }
+  },
+  {
+    "runId": "js-lru-feature__high__r1",
+    "taskId": "js-lru-feature",
+    "title": "Implement an LRU cache",
+    "model": "openai-codex/gpt-5.5",
+    "thinking": "high",
+    "repetition": 1,
+    "status": "pass",
+    "piExitCode": 0,
+    "durationSeconds": 19.223,
+    "usage": {
+      "input": 4194,
+      "output": 1225,
+      "cacheRead": 6144,
+      "cacheWrite": 0,
+      "totalTokens": 11563,
+      "costTotal": 0
+    },
+    "toolCalls": {
+      "bash": 2,
+      "read": 3,
+      "edit": 1
+    },
+    "assistantTurns": 5,
+    "finalAssistantText": "Implemented `LRUCache` in `lru.js`.\n\nChanges:\n- Added internal `Map` storage for O(1) `get`, `set`, `has`, and `delete`.\n- `get` and `set` refresh recency.\n- Capacity overflow evicts least recently used item.\n- Implemented `clear`, `size`, and `keys()` in most-recent-first order.\n\nTests:\n- Ran `node --test`\n- Result: 4/4 tests passed.",
+    "tests": {
+      "exitCode": 0,
+      "command": "node --test"
+    },
+    "diff": {
+      "stat": " lru.js | 33 +++++++++++++++++++++++++++------\n 1 file changed, 27 insertions(+), 6 deletions(-)\n",
+      "numstat": "27\t6\tlru.js\n",
+      "filesChanged": 1,
+      "added": 27,
+      "deleted": 6
+    },
+    "evaluationRubric": [],
+    "artifacts": {
+      "events": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-lru-feature__high__r1.events.jsonl",
+      "stderr": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-lru-feature__high__r1.stderr.log",
+      "patch": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-lru-feature__high__r1.diff.patch",
+      "workspace": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/workspaces/js-lru-feature__high__r1",
+      "session": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/sessions/2026-04-26T06-25-24-083Z_019dc876-d473-7583-876a-d8a1792cf49c.jsonl"
+    }
+  },
+  {
+    "runId": "js-markdown-refactor__off__r1",
+    "taskId": "js-markdown-refactor",
+    "title": "Refactor markdown table parser",
+    "model": "openai-codex/gpt-5.5",
+    "thinking": "off",
+    "repetition": 1,
+    "status": "pass",
+    "piExitCode": 0,
+    "durationSeconds": 38.859,
+    "usage": {
+      "input": 10925,
+      "output": 2412,
+      "cacheRead": 17920,
+      "cacheWrite": 0,
+      "totalTokens": 31257,
+      "costTotal": 0
+    },
+    "toolCalls": {
+      "bash": 5,
+      "read": 3,
+      "write": 1,
+      "edit": 1
+    },
+    "assistantTurns": 9,
+    "finalAssistantText": "Implemented `table.js` refactor:\n\n- Added small helper functions for:\n  - Trimming leading/trailing blank lines\n  - Splitting table rows while preserving empty cells\n  - Handling escaped pipe characters\n  - Validating markdown separator rows\n- Preserves empty cells and supports missing outer pipes.\n- Throws `SyntaxError` for malformed headers/separators.\n- Keeps implementation dependency-free and readable.\n\nTests run:\n\n```bash\nnode --test\n```\n\nResult: all tests passed — 5/5.",
+    "tests": {
+      "exitCode": 0,
+      "command": "node --test"
+    },
+    "diff": {
+      "stat": " table.js | 85 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++----\n 1 file changed, 80 insertions(+), 5 deletions(-)\n",
+      "numstat": "80\t5\ttable.js\n",
+      "filesChanged": 1,
+      "added": 80,
+      "deleted": 5
+    },
+    "evaluationRubric": [],
+    "artifacts": {
+      "events": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-markdown-refactor__off__r1.events.jsonl",
+      "stderr": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-markdown-refactor__off__r1.stderr.log",
+      "patch": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-markdown-refactor__off__r1.diff.patch",
+      "workspace": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/workspaces/js-markdown-refactor__off__r1",
+      "session": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/sessions/2026-04-26T06-25-43-683Z_019dc877-2103-732e-b93b-85af920da957.jsonl"
+    }
+  },
+  {
+    "runId": "js-markdown-refactor__minimal__r1",
+    "taskId": "js-markdown-refactor",
+    "title": "Refactor markdown table parser",
+    "model": "openai-codex/gpt-5.5",
+    "thinking": "minimal",
+    "repetition": 1,
+    "status": "pass",
+    "piExitCode": 0,
+    "durationSeconds": 31.372,
+    "usage": {
+      "input": 6422,
+      "output": 1754,
+      "cacheRead": 11776,
+      "cacheWrite": 0,
+      "totalTokens": 19952,
+      "costTotal": 0
+    },
+    "toolCalls": {
+      "bash": 3,
+      "read": 3,
+      "write": 1
+    },
+    "assistantTurns": 6,
+    "finalAssistantText": "Implemented `table.js` refactor:\n\n- Added small helper functions for:\n  - trimming optional outer pipes\n  - splitting rows while respecting escaped `\\|`\n  - validating separator rows\n  - padding missing cells while preserving empty cells\n  - throwing `SyntaxError` for malformed tables\n- Handles blank lines, missing outer pipes, empty cells, escaped pipes, and malformed separators.\n\nTest results:\n\n- Ran `node --test`\n- All tests passed: `5/5`",
+    "tests": {
+      "exitCode": 0,
+      "command": "node --test"
+    },
+    "diff": {
+      "stat": " table.js | 85 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++---\n 1 file changed, 81 insertions(+), 4 deletions(-)\n",
+      "numstat": "81\t4\ttable.js\n",
+      "filesChanged": 1,
+      "added": 81,
+      "deleted": 4
+    },
+    "evaluationRubric": [],
+    "artifacts": {
+      "events": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-markdown-refactor__minimal__r1.events.jsonl",
+      "stderr": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-markdown-refactor__minimal__r1.stderr.log",
+      "patch": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-markdown-refactor__minimal__r1.diff.patch",
+      "workspace": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/workspaces/js-markdown-refactor__minimal__r1",
+      "session": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/sessions/2026-04-26T06-26-22-658Z_019dc877-b942-72fd-a9ae-93b185fa23c2.jsonl"
+    }
+  },
+  {
+    "runId": "js-markdown-refactor__low__r1",
+    "taskId": "js-markdown-refactor",
+    "title": "Refactor markdown table parser",
+    "model": "openai-codex/gpt-5.5",
+    "thinking": "low",
+    "repetition": 1,
+    "status": "pass",
+    "piExitCode": 0,
+    "durationSeconds": 26.846,
+    "usage": {
+      "input": 4849,
+      "output": 1554,
+      "cacheRead": 10240,
+      "cacheWrite": 0,
+      "totalTokens": 16643,
+      "costTotal": 0
+    },
+    "toolCalls": {
+      "bash": 4,
+      "read": 3,
+      "write": 1
+    },
+    "assistantTurns": 7,
+    "finalAssistantText": "Implemented a small dependency-free refactor in `table.js`.\n\nChanges:\n- Added row splitting that preserves empty cells.\n- Supports tables with or without outer pipes.\n- Handles escaped pipe characters (`\\|`) inside cells.\n- Ignores surrounding blank lines.\n- Validates header/separator structure and throws `SyntaxError` for malformed tables.\n- Added clear helper functions instead of regex-only parsing.\n\nTest result:\n\n```text\nnode --test\n# pass 5\n# fail 0\n```",
+    "tests": {
+      "exitCode": 0,
+      "command": "node --test"
+    },
+    "diff": {
+      "stat": " table.js | 87 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++---\n 1 file changed, 84 insertions(+), 3 deletions(-)\n",
+      "numstat": "84\t3\ttable.js\n",
+      "filesChanged": 1,
+      "added": 84,
+      "deleted": 3
+    },
+    "evaluationRubric": [],
+    "artifacts": {
+      "events": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-markdown-refactor__low__r1.events.jsonl",
+      "stderr": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-markdown-refactor__low__r1.stderr.log",
+      "patch": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-markdown-refactor__low__r1.diff.patch",
+      "workspace": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/workspaces/js-markdown-refactor__low__r1",
+      "session": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/sessions/2026-04-26T06-26-54-027Z_019dc878-33ca-71ad-8cce-eb4f3b8ab072.jsonl"
+    }
+  },
+  {
+    "runId": "js-markdown-refactor__medium__r1",
+    "taskId": "js-markdown-refactor",
+    "title": "Refactor markdown table parser",
+    "model": "openai-codex/gpt-5.5",
+    "thinking": "medium",
+    "repetition": 1,
+    "status": "pass",
+    "piExitCode": 0,
+    "durationSeconds": 53.268,
+    "usage": {
+      "input": 8606,
+      "output": 2773,
+      "cacheRead": 21504,
+      "cacheWrite": 0,
+      "totalTokens": 32883,
+      "costTotal": 0
+    },
+    "toolCalls": {
+      "bash": 7,
+      "read": 3,
+      "write": 1
+    },
+    "assistantTurns": 10,
+    "finalAssistantText": "Summary:\n- Refactored `table.js` into small helper functions for:\n  - Trimming/ignoring surrounding blank lines\n  - Splitting rows while respecting escaped pipes\n  - Preserving empty cells\n  - Handling optional outer pipes\n  - Validating separator rows and malformed tables\n  - Filling missing trailing cells\n\nTest results:\n- Ran `node --test`\n- All tests passed: 5/5",
+    "tests": {
+      "exitCode": 0,
+      "command": "node --test"
+    },
+    "diff": {
+      "stat": " table.js | 83 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++----\n 1 file changed, 79 insertions(+), 4 deletions(-)\n",
+      "numstat": "79\t4\ttable.js\n",
+      "filesChanged": 1,
+      "added": 79,
+      "deleted": 4
+    },
+    "evaluationRubric": [],
+    "artifacts": {
+      "events": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-markdown-refactor__medium__r1.events.jsonl",
+      "stderr": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-markdown-refactor__medium__r1.stderr.log",
+      "patch": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-markdown-refactor__medium__r1.diff.patch",
+      "workspace": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/workspaces/js-markdown-refactor__medium__r1",
+      "session": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/sessions/2026-04-26T06-27-21-051Z_019dc878-9d5b-7119-a8bc-d2ef26390515.jsonl"
+    }
+  },
+  {
+    "runId": "js-markdown-refactor__high__r1",
+    "taskId": "js-markdown-refactor",
+    "title": "Refactor markdown table parser",
+    "model": "openai-codex/gpt-5.5",
+    "thinking": "high",
+    "repetition": 1,
+    "status": "pass",
+    "piExitCode": 0,
+    "durationSeconds": 69.795,
+    "usage": {
+      "input": 8789,
+      "output": 4059,
+      "cacheRead": 23040,
+      "cacheWrite": 0,
+      "totalTokens": 35888,
+      "costTotal": 0
+    },
+    "toolCalls": {
+      "bash": 5,
+      "read": 3,
+      "write": 1
+    },
+    "assistantTurns": 8,
+    "finalAssistantText": "Updated `table.js` with a small helper-based markdown table parser that now:\n\n- Preserves empty cells.\n- Supports optional outer pipes.\n- Handles escaped pipe characters.\n- Validates header/separator structure and throws `SyntaxError` for malformed tables.\n- Pads missing cells and avoids silently dropping surplus content.\n\nTest results:\n\n```text\nnode --test\n# pass 5\n# fail 0\n```",
+    "tests": {
+      "exitCode": 0,
+      "command": "node --test"
+    },
+    "diff": {
+      "stat": " table.js | 109 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++---\n 1 file changed, 105 insertions(+), 4 deletions(-)\n",
+      "numstat": "105\t4\ttable.js\n",
+      "filesChanged": 1,
+      "added": 105,
+      "deleted": 4
+    },
+    "evaluationRubric": [],
+    "artifacts": {
+      "events": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-markdown-refactor__high__r1.events.jsonl",
+      "stderr": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-markdown-refactor__high__r1.stderr.log",
+      "patch": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-markdown-refactor__high__r1.diff.patch",
+      "workspace": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/workspaces/js-markdown-refactor__high__r1",
+      "session": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/sessions/2026-04-26T06-28-14-653Z_019dc879-6ebd-77df-a39a-b52a94d5696b.jsonl"
+    }
+  },
+  {
+    "runId": "js-workflow-orchestrator-open-ended__off__r1",
+    "taskId": "js-workflow-orchestrator-open-ended",
+    "title": "Design a resilient workflow orchestrator",
+    "model": "openai-codex/gpt-5.5",
+    "thinking": "off",
+    "repetition": 1,
+    "status": "pass",
+    "piExitCode": 0,
+    "durationSeconds": 378.419,
+    "usage": {
+      "input": 18450,
+      "output": 9546,
+      "cacheRead": 105472,
+      "cacheWrite": 0,
+      "totalTokens": 133468,
+      "costTotal": 0
+    },
+    "toolCalls": {
+      "bash": 6,
+      "read": 4,
+      "write": 2,
+      "edit": 4
+    },
+    "assistantTurns": 14,
+    "finalAssistantText": "Implemented a production-minded in-memory workflow orchestrator.\n\nChanged:\n- `orchestrator.js`\n  - Added task registration validation and unregister support.\n  - Added job submission with normalized workflow/step state.\n  - Added priority queue scheduling with global concurrency limits.\n  - Added ordered step execution with output chaining.\n  - Added retries with exponential backoff.\n  - Added job cancellation using `AbortController` / `AbortSignal`.\n  - Added job and step timeouts.\n  - Added structured lifecycle events on `event` plus per-event channels.\n  - Added inspectable state: statuses, timings, attempts, serialized errors, outputs.\n  - Added helper APIs: `getJob()` and `listJobs()`.\n  - Added custom errors for cancellation and timeout cases.\n\n- `orchestrator.test.js`\n  - Kept existing smoke coverage.\n  - Added tests for priority scheduling, cancellation, step timeout retries, and missing-handler failure state.\n\n- `README.md`\n  - Added usage example and feature/API summary.\n\nDesign tradeoffs:\n- Workflows are ordered, so each job runs one step at a time; the concurrency limit applies across jobs.\n- Retry backoff currently occupies a concurrency slot, which keeps state simple and predictable.\n- Cancellation/timeouts are cooperative via `AbortSignal`; handlers that ignore the signal may continue running in the background, but the orchestrator records the job/step as cancelled or timed out once the orchestrator-side timeout/cancel occurs.\n- `getJob()` returns live in-memory state for easy inspection and compatibility with the existing tests.\n\nTest result:\n- `node --test`\n- 8/8 tests passing.",
+    "tests": {
+      "exitCode": 0,
+      "command": "node --test"
+    },
+    "diff": {
+      "stat": " README.md            |  46 ++++-\n orchestrator.js      | 484 +++++++++++++++++++++++++++++++++++++++++++++++++--\n orchestrator.test.js |  62 +++++++\n 3 files changed, 580 insertions(+), 12 deletions(-)\n",
+      "numstat": "45\t1\tREADME.md\n473\t11\torchestrator.js\n62\t0\torchestrator.test.js\n",
+      "filesChanged": 3,
+      "added": 580,
+      "deleted": 12
+    },
+    "evaluationRubric": [
+      "Clear domain model and public API",
+      "Correct async scheduling under concurrency limits and priority ordering",
+      "Thoughtful retry/backoff/timeout/cancellation semantics",
+      "Useful observability",
+      "Readable maintainable implementation",
+      "Handles realistic edge cases"
+    ],
+    "artifacts": {
+      "events": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-workflow-orchestrator-open-ended__off__r1.events.jsonl",
+      "stderr": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-workflow-orchestrator-open-ended__off__r1.stderr.log",
+      "patch": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-workflow-orchestrator-open-ended__off__r1.diff.patch",
+      "workspace": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/workspaces/js-workflow-orchestrator-open-ended__off__r1",
+      "session": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/sessions/2026-04-26T06-29-24-785Z_019dc87a-80b1-71a8-9bac-b5c7c12855a2.jsonl"
+    }
+  },
+  {
+    "runId": "js-workflow-orchestrator-open-ended__minimal__r1",
+    "taskId": "js-workflow-orchestrator-open-ended",
+    "title": "Design a resilient workflow orchestrator",
+    "model": "openai-codex/gpt-5.5",
+    "thinking": "minimal",
+    "repetition": 1,
+    "status": "pass",
+    "piExitCode": 0,
+    "durationSeconds": 79.347,
+    "usage": {
+      "input": 11758,
+      "output": 5718,
+      "cacheRead": 51712,
+      "cacheWrite": 0,
+      "totalTokens": 69188,
+      "costTotal": 0
+    },
+    "toolCalls": {
+      "bash": 4,
+      "read": 4,
+      "write": 1,
+      "edit": 4
+    },
+    "assistantTurns": 11,
+    "finalAssistantText": "Implemented a production-minded in-memory workflow orchestrator in `orchestrator.js`.\n\nWhat changed:\n- Added task handler validation and registration.\n- Added workflow submission with:\n  - unique job IDs\n  - priority\n  - normalized step state\n  - timestamps, outputs, errors, attempts, and lifecycle metadata\n- Added scheduling with configurable concurrency.\n- Added priority-aware queued job selection.\n- Added ordered step execution with output chaining.\n- Added retries with configurable delay and exponential backoff.\n- Added cooperative cancellation via `AbortController`.\n- Added job and step timeout handling.\n- Added structured lifecycle events through the existing `EventEmitter`:\n  - `job:queued`\n  - `job:started`\n  - `job:succeeded`\n  - `job:failed`\n  - `job:cancelled`\n  - step/attempt events\n- Added robust state inspection through `getJob`.\n- Added additional tests covering:\n  - priority scheduling\n  - queued/running cancellation\n  - timeout failure state\n\nDesign tradeoffs:\n- Concurrency is enforced at the job level: one running workflow consumes one concurrency slot.\n- Cancellation and timeout are cooperative. Handlers receive an abort signal, but JavaScript cannot forcibly stop a non-cooperative async function without external machinery.\n- State is kept in memory and returned as live objects for simple inspection and compatibility with the smoke tests.\n- Submission schedules work on the next microtask, allowing batches of submitted jobs to be priority-sorted before execution starts.\n\nTest result:\n\n```text\nnode --test\n# tests 7\n# pass 7\n# fail 0\n```",
+    "tests": {
+      "exitCode": 0,
+      "command": "node --test"
+    },
+    "diff": {
+      "stat": " orchestrator.js      | 269 +++++++++++++++++++++++++++++++++++++++++++++++++--\n orchestrator.test.js |  36 +++++++\n 2 files changed, 299 insertions(+), 6 deletions(-)\n",
+      "numstat": "263\t6\torchestrator.js\n36\t0\torchestrator.test.js\n",
+      "filesChanged": 2,
+      "added": 299,
+      "deleted": 6
+    },
+    "evaluationRubric": [
+      "Clear domain model and public API",
+      "Correct async scheduling under concurrency limits and priority ordering",
+      "Thoughtful retry/backoff/timeout/cancellation semantics",
+      "Useful observability",
+      "Readable maintainable implementation",
+      "Handles realistic edge cases"
+    ],
+    "artifacts": {
+      "events": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-workflow-orchestrator-open-ended__minimal__r1.events.jsonl",
+      "stderr": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-workflow-orchestrator-open-ended__minimal__r1.stderr.log",
+      "patch": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-workflow-orchestrator-open-ended__minimal__r1.diff.patch",
+      "workspace": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/workspaces/js-workflow-orchestrator-open-ended__minimal__r1",
+      "session": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/sessions/2026-04-26T06-35-43-946Z_019dc880-49ca-778c-9874-178429a953c0.jsonl"
+    }
+  },
+  {
+    "runId": "js-workflow-orchestrator-open-ended__low__r1",
+    "taskId": "js-workflow-orchestrator-open-ended",
+    "title": "Design a resilient workflow orchestrator",
+    "model": "openai-codex/gpt-5.5",
+    "thinking": "low",
+    "repetition": 1,
+    "status": "pass",
+    "piExitCode": 0,
+    "durationSeconds": 56.712,
+    "usage": {
+      "input": 10697,
+      "output": 5422,
+      "cacheRead": 34304,
+      "cacheWrite": 0,
+      "totalTokens": 50423,
+      "costTotal": 0
+    },
+    "toolCalls": {
+      "bash": 3,
+      "read": 4,
+      "write": 1,
+      "edit": 3
+    },
+    "assistantTurns": 9,
+    "finalAssistantText": "Implemented a production-minded in-memory workflow orchestrator in `orchestrator.js`.\n\n### What changed\n\n- Added task registration validation and `unregister`.\n- Implemented job submission with:\n  - deterministic IDs\n  - duplicate ID protection\n  - priority-based queueing\n  - FIFO ordering within equal priority\n  - structured job/step state\n- Implemented scheduler with configurable concurrency.\n- Implemented ordered workflow execution.\n- Added retry support with:\n  - per-step or global retry counts\n  - retry delay\n  - backoff factor\n  - attempt history and errors\n- Added cancellation support for queued and running jobs.\n- Added timeout handling with abort signals passed to handlers.\n- Added structured lifecycle events via the existing `event` emitter channel:\n  - `job:queued`\n  - `job:started`\n  - `job:succeeded`\n  - `job:failed`\n  - `job:cancelled`\n  - `job:cancelling`\n  - `step:started`\n  - `step:attempt:started`\n  - `step:attempt:failed`\n  - `step:retry:scheduled`\n  - `step:succeeded`\n- Added job inspection helpers:\n  - `getJob(id)`\n  - `listJobs(filter)`\n- Preserved enough state for observability:\n  - status\n  - timings\n  - outputs\n  - errors\n  - step attempts\n  - cancellation reasons\n\n### Tests\n\nExpanded `orchestrator.test.js` with coverage for:\n\n- priority scheduling\n- queued-job cancellation\n- timeout failure details\n\nRan the full suite:\n\n```text\nnode --test\n```\n\nResult:\n\n```text\ntests 7\npass 7\nfail 0\n```\n\n### Design tradeoffs\n\n- The orchestrator is intentionally in-memory and dependency-free.\n- Running handlers cannot be forcibly killed by JavaScript, but they receive an `AbortSignal` so cooperative handlers can stop promptly.\n- Timeouts fail the step/job and abort the per-attempt signal, but do not globally cancel unrelated jobs.\n- Jobs are mutable inspection records, which keeps the API simple for this exercise but would likely be wrapped or cloned in a hardened public API.",
+    "tests": {
+      "exitCode": 0,
+      "command": "node --test"
+    },
+    "diff": {
+      "stat": " orchestrator.js      | 278 +++++++++++++++++++++++++++++++++++++++++++++++++--\n orchestrator.test.js |  33 ++++++\n 2 files changed, 305 insertions(+), 6 deletions(-)\n",
+      "numstat": "272\t6\torchestrator.js\n33\t0\torchestrator.test.js\n",
+      "filesChanged": 2,
+      "added": 305,
+      "deleted": 6
+    },
+    "evaluationRubric": [
+      "Clear domain model and public API",
+      "Correct async scheduling under concurrency limits and priority ordering",
+      "Thoughtful retry/backoff/timeout/cancellation semantics",
+      "Useful observability",
+      "Readable maintainable implementation",
+      "Handles realistic edge cases"
+    ],
+    "artifacts": {
+      "events": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-workflow-orchestrator-open-ended__low__r1.events.jsonl",
+      "stderr": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-workflow-orchestrator-open-ended__low__r1.stderr.log",
+      "patch": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-workflow-orchestrator-open-ended__low__r1.diff.patch",
+      "workspace": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/workspaces/js-workflow-orchestrator-open-ended__low__r1",
+      "session": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/sessions/2026-04-26T06-37-03-552Z_019dc881-80c0-76a2-af41-7abd852375f2.jsonl"
+    }
+  },
+  {
+    "runId": "js-workflow-orchestrator-open-ended__medium__r1",
+    "taskId": "js-workflow-orchestrator-open-ended",
+    "title": "Design a resilient workflow orchestrator",
+    "model": "openai-codex/gpt-5.5",
+    "thinking": "medium",
+    "repetition": 1,
+    "status": "pass",
+    "piExitCode": 0,
+    "durationSeconds": 245.424,
+    "usage": {
+      "input": 26508,
+      "output": 9295,
+      "cacheRead": 104448,
+      "cacheWrite": 0,
+      "totalTokens": 140251,
+      "costTotal": 0
+    },
+    "toolCalls": {
+      "bash": 6,
+      "read": 4,
+      "write": 1,
+      "edit": 6
+    },
+    "assistantTurns": 15,
+    "finalAssistantText": "Implemented a production-minded in-memory workflow orchestrator in `orchestrator.js`.\n\nHighlights:\n- Named task handler registration/unregistration.\n- Workflow submission with ordered step execution.\n- Global concurrency scheduling with queued job priority.\n- Retry support with configurable backoff.\n- Job and step timeout support via `AbortSignal`.\n- Cooperative cancellation for queued and running jobs.\n- Structured lifecycle events on both `event` and specific event names.\n- Rich in-memory job state: status, timings, outputs, errors, attempts, current step, inputs.\n- Input/options validation for safer API behavior.\n- Duplicate job ID protection.\n- Drain support for awaiting all queued/running work.\n\nExpanded `orchestrator.test.js` with coverage for:\n- Priority scheduling.\n- Queued cancellation.\n- Cooperative running cancellation.\n- Step timeout behavior.\n\nTest result:\n\n```text\nnode --test\n# tests 8\n# pass 8\n# fail 0\n```\n\nDesign tradeoff: cancellation/timeouts are cooperative because JavaScript cannot safely preempt arbitrary async handlers. Handlers receive an `AbortSignal`; if they ignore it, their underlying work may continue, but the orchestrator prevents late completion from turning cancelled/timed-out jobs into successful ones.",
+    "tests": {
+      "exitCode": 0,
+      "command": "node --test"
+    },
+    "diff": {
+      "stat": " orchestrator.js      | 448 ++++++++++++++++++++++++++++++++++++++++++++++++++-\n orchestrator.test.js |  74 +++++++++\n 2 files changed, 516 insertions(+), 6 deletions(-)\n",
+      "numstat": "442\t6\torchestrator.js\n74\t0\torchestrator.test.js\n",
+      "filesChanged": 2,
+      "added": 516,
+      "deleted": 6
+    },
+    "evaluationRubric": [
+      "Clear domain model and public API",
+      "Correct async scheduling under concurrency limits and priority ordering",
+      "Thoughtful retry/backoff/timeout/cancellation semantics",
+      "Useful observability",
+      "Readable maintainable implementation",
+      "Handles realistic edge cases"
+    ],
+    "artifacts": {
+      "events": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-workflow-orchestrator-open-ended__medium__r1.events.jsonl",
+      "stderr": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-workflow-orchestrator-open-ended__medium__r1.stderr.log",
+      "patch": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-workflow-orchestrator-open-ended__medium__r1.diff.patch",
+      "workspace": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/workspaces/js-workflow-orchestrator-open-ended__medium__r1",
+      "session": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/sessions/2026-04-26T06-38-00-891Z_019dc882-60bb-741e-8a00-dad23c772110.jsonl"
+    }
+  },
+  {
+    "runId": "js-workflow-orchestrator-open-ended__high__r1",
+    "taskId": "js-workflow-orchestrator-open-ended",
+    "title": "Design a resilient workflow orchestrator",
+    "model": "openai-codex/gpt-5.5",
+    "thinking": "high",
+    "repetition": 1,
+    "status": "timeout",
+    "piExitCode": null,
+    "durationSeconds": 908.696,
+    "usage": {
+      "input": 1680,
+      "output": 133,
+      "cacheRead": 1024,
+      "cacheWrite": 0,
+      "totalTokens": 2837,
+      "costTotal": 0
+    },
+    "toolCalls": {
+      "bash": 1,
+      "read": 5
+    },
+    "assistantTurns": 2,
+    "finalAssistantText": "",
+    "tests": {
+      "exitCode": 1,
+      "command": "node --test"
+    },
+    "diff": {
+      "stat": " README.md            |  42 ++-\n orchestrator.js      | 760 ++++++++++++++++++++++++++++++++++++++++++++++++++-\n orchestrator.test.js |  56 ++++\n 3 files changed, 845 insertions(+), 13 deletions(-)\n",
+      "numstat": "41\t1\tREADME.md\n748\t12\torchestrator.js\n56\t0\torchestrator.test.js\n",
+      "filesChanged": 3,
+      "added": 845,
+      "deleted": 13
+    },
+    "evaluationRubric": [
+      "Clear domain model and public API",
+      "Correct async scheduling under concurrency limits and priority ordering",
+      "Thoughtful retry/backoff/timeout/cancellation semantics",
+      "Useful observability",
+      "Readable maintainable implementation",
+      "Handles realistic edge cases"
+    ],
+    "artifacts": {
+      "events": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-workflow-orchestrator-open-ended__high__r1.events.jsonl",
+      "stderr": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-workflow-orchestrator-open-ended__high__r1.stderr.log",
+      "patch": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-workflow-orchestrator-open-ended__high__r1.diff.patch",
+      "workspace": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/workspaces/js-workflow-orchestrator-open-ended__high__r1",
+      "session": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/sessions/2026-04-26T06-42-07-467Z_019dc886-23eb-70fa-ad48-d4d3007548e7.jsonl"
+    }
+  },
+  {
+    "runId": "js-data-quality-profiler-open-ended__off__r1",
+    "taskId": "js-data-quality-profiler-open-ended",
+    "title": "Design a messy CSV data quality profiler",
+    "model": "openai-codex/gpt-5.5",
+    "thinking": "off",
+    "repetition": 1,
+    "status": "pass",
+    "piExitCode": 0,
+    "durationSeconds": 519.593,
+    "usage": {
+      "input": 17145,
+      "output": 8547,
+      "cacheRead": 82432,
+      "cacheWrite": 0,
+      "totalTokens": 108124,
+      "costTotal": 0
+    },
+    "toolCalls": {
+      "bash": 5,
+      "read": 4,
+      "write": 2,
+      "edit": 4
+    },
+    "assistantTurns": 13,
+    "finalAssistantText": "Implemented a dependency-free CSV profiling/data-quality module.\n\nChanged:\n- `profiler.js`\n  - Robust CSV parser for quoted fields, escaped quotes, embedded commas/newlines, blank lines, optional comments.\n  - Header normalization for blank/duplicate names.\n  - Row metadata and warnings for row-width mismatches and unterminated quotes.\n  - Column profiling: counts, null-like values, distincts, inferred primitive types, type counts, min/max for numbers/dates, invalid examples.\n  - Quality issue detection: duplicate primary keys, row width mismatches, required-field violations, missing required columns, invalid/suspicious dates, mixed types.\n  - Actionable repair suggestions.\n  - Clean reusable API via `parseCsv()` and `profileCsv()`.\n\n- `profiler.test.js`\n  - Added tests for embedded newlines, duplicate headers, unterminated quotes, required violations, mixed types, and suspicious dates.\n\n- `README.md`\n  - Added API docs, behavior summary, issue coverage, and heuristic tradeoffs.\n\nTest result:\n- `node --test`\n- 5 tests passed, 0 failed.\n\nTradeoffs:\n- Date parsing is intentionally strict to avoid locale ambiguity.\n- Malformed CSV is preserved and reported where possible instead of throwing.\n- Type inference is heuristic/majority-based and conservative for mixed operational data.",
+    "tests": {
+      "exitCode": 0,
+      "command": "node --test"
+    },
+    "diff": {
+      "stat": " README.md        |  59 ++++++-\n profiler.js      | 464 +++++++++++++++++++++++++++++++++++++++++++++++++++++--\n profiler.test.js |  16 ++\n 3 files changed, 527 insertions(+), 12 deletions(-)\n",
+      "numstat": "57\t2\tREADME.md\n454\t10\tprofiler.js\n16\t0\tprofiler.test.js\n",
+      "filesChanged": 3,
+      "added": 527,
+      "deleted": 12
+    },
+    "evaluationRubric": [
+      "Robust CSV parser",
+      "Useful profile result shape",
+      "Thoughtful inference heuristics",
+      "Actionable repair suggestions",
+      "Graceful malformed input handling",
+      "Readable modular code"
+    ],
+    "artifacts": {
+      "events": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-data-quality-profiler-open-ended__off__r1.events.jsonl",
+      "stderr": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-data-quality-profiler-open-ended__off__r1.stderr.log",
+      "patch": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-data-quality-profiler-open-ended__off__r1.diff.patch",
+      "workspace": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/workspaces/js-data-quality-profiler-open-ended__off__r1",
+      "session": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/sessions/2026-04-26T06-57-17-325Z_019dc894-060d-73cf-b730-a9bdb73555d6.jsonl"
+    }
+  },
+  {
+    "runId": "js-data-quality-profiler-open-ended__minimal__r1",
+    "taskId": "js-data-quality-profiler-open-ended",
+    "title": "Design a messy CSV data quality profiler",
+    "model": "openai-codex/gpt-5.5",
+    "thinking": "minimal",
+    "repetition": 1,
+    "status": "pass",
+    "piExitCode": 0,
+    "durationSeconds": 83.885,
+    "usage": {
+      "input": 9175,
+      "output": 4796,
+      "cacheRead": 19968,
+      "cacheWrite": 0,
+      "totalTokens": 33939,
+      "costTotal": 0
+    },
+    "toolCalls": {
+      "bash": 2,
+      "read": 4,
+      "write": 3
+    },
+    "assistantTurns": 7,
+    "finalAssistantText": "Implemented a dependency-free CSV profiling/data-quality module.\n\nChanged:\n- `profiler.js`\n  - Replaced stub parser with a state-machine CSV parser.\n  - Supports:\n    - quoted fields\n    - escaped quotes\n    - embedded commas\n    - embedded newlines\n    - blank lines\n    - optional whole-line comments\n    - row-width metadata\n    - unclosed quote warnings\n  - Added `profileCsv()` with:\n    - per-column counts, null counts, distinct counts\n    - primitive type inference\n    - min/max for numbers and dates\n    - invalid example collection\n    - row width mismatch detection\n    - duplicate primary key detection\n    - suspicious/invalid date detection\n    - mixed type detection\n    - required field violations\n    - actionable repair suggestions\n\n- `profiler.test.js`\n  - Kept smoke tests.\n  - Added coverage for embedded newlines, line metadata, required nulls, mixed types, and suspicious dates.\n\n- `README.md`\n  - Documented reusable API, options, outputs, and heuristic tradeoffs.\n\nTest result:\n- Ran `node --test`\n- Passed: 5/5 tests\n\nTradeoffs:\n- The parser is intentionally forgiving rather than strictly rejecting malformed exports.\n- Date/type inference is heuristic and conservative; callers can improve accuracy with `dateColumns`, `required`, and `primaryKey`.\n- Suggestions are advisory and auditable rather than performing automatic repair/mutation.",
+    "tests": {
+      "exitCode": 0,
+      "command": "node --test"
+    },
+    "diff": {
+      "stat": " README.md        |  43 +++++++++++-\n profiler.js      | 196 +++++++++++++++++++++++++++++++++++++++++++++++++++----\n profiler.test.js |  16 +++++\n 3 files changed, 242 insertions(+), 13 deletions(-)\n",
+      "numstat": "41\t2\tREADME.md\n185\t11\tprofiler.js\n16\t0\tprofiler.test.js\n",
+      "filesChanged": 3,
+      "added": 242,
+      "deleted": 13
+    },
+    "evaluationRubric": [
+      "Robust CSV parser",
+      "Useful profile result shape",
+      "Thoughtful inference heuristics",
+      "Actionable repair suggestions",
+      "Graceful malformed input handling",
+      "Readable modular code"
+    ],
+    "artifacts": {
+      "events": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-data-quality-profiler-open-ended__minimal__r1.events.jsonl",
+      "stderr": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-data-quality-profiler-open-ended__minimal__r1.stderr.log",
+      "patch": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-data-quality-profiler-open-ended__minimal__r1.diff.patch",
+      "workspace": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/workspaces/js-data-quality-profiler-open-ended__minimal__r1",
+      "session": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/sessions/2026-04-26T07-05-57-313Z_019dc89b-f540-7257-87dd-d4c3056023e3.jsonl"
+    }
+  },
+  {
+    "runId": "js-data-quality-profiler-open-ended__low__r1",
+    "taskId": "js-data-quality-profiler-open-ended",
+    "title": "Design a messy CSV data quality profiler",
+    "model": "openai-codex/gpt-5.5",
+    "thinking": "low",
+    "repetition": 1,
+    "status": "pass",
+    "piExitCode": 0,
+    "durationSeconds": 68.826,
+    "usage": {
+      "input": 15338,
+      "output": 4270,
+      "cacheRead": 26624,
+      "cacheWrite": 0,
+      "totalTokens": 46232,
+      "costTotal": 0
+    },
+    "toolCalls": {
+      "bash": 4,
+      "read": 4,
+      "write": 2,
+      "edit": 1
+    },
+    "assistantTurns": 9,
+    "finalAssistantText": "Implemented a dependency-free CSV profiling/data-quality module.\n\nChanged:\n- `profiler.js`\n  - Replaced stub parser with robust CSV parsing:\n    - quoted fields\n    - escaped quotes\n    - embedded commas/newlines\n    - CRLF/LF\n    - blank lines\n    - optional comment lines\n    - duplicate header renaming\n    - raw `records` retained for row-width analysis\n  - Added reusable `profileCsv` API:\n    - per-column counts, null-like counts, distinct counts\n    - primitive type inference: number/date/boolean/email/string/empty\n    - min/max for numbers and dates\n    - example values and invalid examples\n    - row width mismatch detection\n    - duplicate primary key detection\n    - required-field violations\n    - invalid/suspicious date detection\n    - invalid email detection\n    - mixed-type detection\n    - actionable deduplicated repair suggestions\n- `README.md`\n  - Added API usage examples, return-shape notes, and heuristic/tradeoff documentation.\n\nTradeoffs:\n- Date inference intentionally favors ISO-like formats to avoid locale ambiguity.\n- Rows with too few fields are padded as empty strings in `rows`; raw width remains available via `records`.\n- Type inference uses the dominant non-null primitive type and reports conflicting values rather than coercing them.\n\nTests:\n- Ran `node --test`\n- Result: 3/3 tests passing.",
+    "tests": {
+      "exitCode": 0,
+      "command": "node --test"
+    },
+    "diff": {
+      "stat": " README.md   |  35 +++++++++-\n profiler.js | 219 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++---\n 2 files changed, 241 insertions(+), 13 deletions(-)\n",
+      "numstat": "33\t2\tREADME.md\n208\t11\tprofiler.js\n",
+      "filesChanged": 2,
+      "added": 241,
+      "deleted": 13
+    },
+    "evaluationRubric": [
+      "Robust CSV parser",
+      "Useful profile result shape",
+      "Thoughtful inference heuristics",
+      "Actionable repair suggestions",
+      "Graceful malformed input handling",
+      "Readable modular code"
+    ],
+    "artifacts": {
+      "events": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-data-quality-profiler-open-ended__low__r1.events.jsonl",
+      "stderr": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-data-quality-profiler-open-ended__low__r1.stderr.log",
+      "patch": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-data-quality-profiler-open-ended__low__r1.diff.patch",
+      "workspace": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/workspaces/js-data-quality-profiler-open-ended__low__r1",
+      "session": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/sessions/2026-04-26T07-07-21-617Z_019dc89d-3e91-766b-af7f-01c38f7a98d7.jsonl"
+    }
+  },
+  {
+    "runId": "js-data-quality-profiler-open-ended__medium__r1",
+    "taskId": "js-data-quality-profiler-open-ended",
+    "title": "Design a messy CSV data quality profiler",
+    "model": "openai-codex/gpt-5.5",
+    "thinking": "medium",
+    "repetition": 1,
+    "status": "pass",
+    "piExitCode": 0,
+    "durationSeconds": 312.259,
+    "usage": {
+      "input": 14888,
+      "output": 6627,
+      "cacheRead": 46592,
+      "cacheWrite": 0,
+      "totalTokens": 68107,
+      "costTotal": 0
+    },
+    "toolCalls": {
+      "bash": 4,
+      "read": 4,
+      "write": 2,
+      "edit": 2
+    },
+    "assistantTurns": 10,
+    "finalAssistantText": "Implemented a dependency-free CSV profiling/data-quality module.\n\nChanged:\n- `profiler.js`\n  - Robust CSV parser with quoted fields, escaped quotes, embedded commas/newlines, CRLF/LF, blank lines, optional comments, duplicate header handling, and source row metadata.\n  - `profileCsv()` API with reusable structured output:\n    - column counts/nulls/distinct/type counts/inferred type/min/max/examples/invalid examples\n    - row width mismatch detection\n    - duplicate/missing primary key detection, including composite keys\n    - required-field violations\n    - invalid/suspicious date detection\n    - mixed primitive type detection\n    - actionable repair suggestions\n    - summary totals\n- `profiler.test.js`\n  - Added coverage for embedded newlines, source metadata, required fields, suspicious dates, invalid dates, composite primary keys, and mixed types.\n- `README.md`\n  - Documented API shape, returned structures, heuristics, and tradeoffs.\n\nTest result:\n- `node --test`\n- 5 tests passed, 0 failed.\n\nTradeoffs:\n- Kept everything dependency-free and explainable.\n- Date parsing is intentionally conservative: ISO dates/datetimes plus common US slash dates.\n- The profiler returns all rows/records for simple CLI/web reuse rather than exposing a streaming interface.\n- Locale-specific number formats and automatic repair are not attempted; the module reports issues with suggestions so callers can apply domain-specific cleanup rules.",
+    "tests": {
+      "exitCode": 0,
+      "command": "node --test"
+    },
+    "diff": {
+      "stat": " README.md        |  48 +++++++-\n profiler.js      | 360 +++++++++++++++++++++++++++++++++++++++++++++++++++++--\n profiler.test.js |  19 +++\n 3 files changed, 414 insertions(+), 13 deletions(-)\n",
+      "numstat": "46\t2\tREADME.md\n349\t11\tprofiler.js\n19\t0\tprofiler.test.js\n",
+      "filesChanged": 3,
+      "added": 414,
+      "deleted": 13
+    },
+    "evaluationRubric": [
+      "Robust CSV parser",
+      "Useful profile result shape",
+      "Thoughtful inference heuristics",
+      "Actionable repair suggestions",
+      "Graceful malformed input handling",
+      "Readable modular code"
+    ],
+    "artifacts": {
+      "events": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-data-quality-profiler-open-ended__medium__r1.events.jsonl",
+      "stderr": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-data-quality-profiler-open-ended__medium__r1.stderr.log",
+      "patch": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-data-quality-profiler-open-ended__medium__r1.diff.patch",
+      "workspace": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/workspaces/js-data-quality-profiler-open-ended__medium__r1",
+      "session": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/sessions/2026-04-26T07-08-32-532Z_019dc89e-5393-71cb-a178-439d16b22fa2.jsonl"
+    }
+  },
+  {
+    "runId": "js-data-quality-profiler-open-ended__high__r1",
+    "taskId": "js-data-quality-profiler-open-ended",
+    "title": "Design a messy CSV data quality profiler",
+    "model": "openai-codex/gpt-5.5",
+    "thinking": "high",
+    "repetition": 1,
+    "status": "pi_fail",
+    "piExitCode": 1,
+    "durationSeconds": 448.074,
+    "usage": {
+      "input": 1666,
+      "output": 131,
+      "cacheRead": 1024,
+      "cacheWrite": 0,
+      "totalTokens": 2821,
+      "costTotal": 0
+    },
+    "toolCalls": {
+      "bash": 1,
+      "read": 5
+    },
+    "assistantTurns": 2,
+    "finalAssistantText": "",
+    "tests": {
+      "exitCode": 1,
+      "command": "node --test"
+    },
+    "diff": {
+      "stat": "",
+      "numstat": "",
+      "filesChanged": 0,
+      "added": 0,
+      "deleted": 0
+    },
+    "evaluationRubric": [
+      "Robust CSV parser",
+      "Useful profile result shape",
+      "Thoughtful inference heuristics",
+      "Actionable repair suggestions",
+      "Graceful malformed input handling",
+      "Readable modular code"
+    ],
+    "artifacts": {
+      "events": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-data-quality-profiler-open-ended__high__r1.events.jsonl",
+      "stderr": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-data-quality-profiler-open-ended__high__r1.stderr.log",
+      "patch": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-data-quality-profiler-open-ended__high__r1.diff.patch",
+      "workspace": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/workspaces/js-data-quality-profiler-open-ended__high__r1",
+      "session": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/sessions/2026-04-26T07-13-45-535Z_019dc8a3-1a3f-73bf-bb65-53c377759736.jsonl"
+    }
+  },
+  {
+    "runId": "js-agent-session-inspector-open-ended__off__r1",
+    "taskId": "js-agent-session-inspector-open-ended",
+    "title": "Build a Pi session inspector and quality report",
+    "model": "openai-codex/gpt-5.5",
+    "thinking": "off",
+    "repetition": 1,
+    "status": "pass",
+    "piExitCode": 0,
+    "durationSeconds": 553.599,
+    "usage": {
+      "input": 14045,
+      "output": 7569,
+      "cacheRead": 51712,
+      "cacheWrite": 0,
+      "totalTokens": 73326,
+      "costTotal": 0
+    },
+    "toolCalls": {
+      "bash": 4,
+      "read": 4,
+      "write": 1,
+      "edit": 2
+    },
+    "assistantTurns": 9,
+    "finalAssistantText": "Implemented a dependency-free Pi-style JSONL session analyzer in `session-inspector.js`.\n\nWhat changed:\n- Robust `parseSessionJsonl()` returning `{ entries, diagnostics }`, preserving malformed-line details.\n- Reusable API:\n  - `parseSessionJsonl(text, options)`\n  - `analyzeSession(entriesOrParsed, diagnosticsOrOptions, options)`\n  - `inspectSessionJsonl(text, options)`\n  - `formatReport(analysis, options)`\n  - `reconstructTree(entries)`\n- Branch/tree reconstruction from `parentId`, including:\n  - roots, leaves, active path, max depth\n  - duplicate IDs, missing parents, cycles\n- Metrics:\n  - assistant/user/tool turns\n  - tool calls by name\n  - token/cost totals\n  - message time range and duration\n  - malformed/error counts\n  - stop reasons\n  - inferred files touched\n- Human-readable report with:\n  - activity summary\n  - branch/tree summary\n  - productivity signals\n  - anomalies\n- Added an extra test covering active branch reconstruction and missing-parent anomalies.\n\nTradeoffs:\n- File inference is heuristic-based, using common argument names like `path`, `file`, `files`, plus simple command-path detection.\n- “Active branch” is selected from the latest leaf-like message in input order, which matches append-only session logs but may not capture every UI-specific branch-selection mechanism.\n- Session metadata events are included in metrics but excluded from the parent/child conversation tree unless they participate in parent relationships.\n\nTest results:\n- `node --test`\n- Passed: 4/4 tests.",
+    "tests": {
+      "exitCode": 0,
+      "command": "node --test"
+    },
+    "diff": {
+      "stat": " session-inspector.js      | 469 +++++++++++++++++++++++++++++++++++++++++++++-\n session-inspector.test.js |  13 ++\n 2 files changed, 472 insertions(+), 10 deletions(-)\n",
+      "numstat": "459\t10\tsession-inspector.js\n13\t0\tsession-inspector.test.js\n",
+      "filesChanged": 2,
+      "added": 472,
+      "deleted": 10
+    },
+    "evaluationRubric": [
+      "Robust JSONL parsing diagnostics",
+      "Tree/active path reconstruction",
+      "Useful session metrics",
+      "Meaningful human report",
+      "Clean reusable API",
+      "Real-world Pi variation handling"
+    ],
+    "selfAnalysis": {
+      "exitCode": 1,
+      "ok": false,
+      "sessionFile": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/sessions/2026-04-26T07-21-13-689Z_019dc8a9-f0d9-77ec-be80-35a3b9d50fe8.jsonl",
+      "stdoutPath": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-agent-session-inspector-open-ended__off__r1.self-analysis.stdout.log",
+      "stderrPath": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-agent-session-inspector-open-ended__off__r1.self-analysis.stderr.log"
+    },
+    "artifacts": {
+      "events": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-agent-session-inspector-open-ended__off__r1.events.jsonl",
+      "stderr": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-agent-session-inspector-open-ended__off__r1.stderr.log",
+      "patch": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-agent-session-inspector-open-ended__off__r1.diff.patch",
+      "workspace": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/workspaces/js-agent-session-inspector-open-ended__off__r1",
+      "session": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/sessions/2026-04-26T07-21-13-689Z_019dc8a9-f0d9-77ec-be80-35a3b9d50fe8.jsonl",
+      "selfAnalysisStdout": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-agent-session-inspector-open-ended__off__r1.self-analysis.stdout.log",
+      "selfAnalysisStderr": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-agent-session-inspector-open-ended__off__r1.self-analysis.stderr.log"
+    }
+  },
+  {
+    "runId": "js-agent-session-inspector-open-ended__minimal__r1",
+    "taskId": "js-agent-session-inspector-open-ended",
+    "title": "Build a Pi session inspector and quality report",
+    "model": "openai-codex/gpt-5.5",
+    "thinking": "minimal",
+    "repetition": 1,
+    "status": "pass",
+    "piExitCode": 0,
+    "durationSeconds": 62.141,
+    "usage": {
+      "input": 6760,
+      "output": 3844,
+      "cacheRead": 9216,
+      "cacheWrite": 0,
+      "totalTokens": 19820,
+      "costTotal": 0
+    },
+    "toolCalls": {
+      "bash": 2,
+      "read": 4,
+      "write": 1
+    },
+    "assistantTurns": 5,
+    "finalAssistantText": "Implemented a dependency-free Pi-style JSONL session analyzer in `session-inspector.js`.\n\nWhat changed:\n- Added robust `parseSessionJsonl(text)`:\n  - Skips blank lines.\n  - Preserves malformed-line diagnostics with line number, severity, message, raw text, and best-effort column.\n  - Returns `{ entries, diagnostics }`.\n\n- Added reusable analysis API:\n  - `analyzeSession(input, diagnostics)`\n  - `buildSessionTree(entries)`\n  - `getActivePath(tree)`\n  - `formatReport(analysis)`\n\n- Implemented branch/tree reconstruction:\n  - Builds nodes from `id` / `parentId`.\n  - Tracks roots, children, active path, duplicate IDs, and orphaned nodes.\n\n- Added useful metrics:\n  - Assistant/user/tool-result turn counts.\n  - Tool calls by name.\n  - Token totals including input/output/cache read/cache write.\n  - Cost totals.\n  - Time range and duration.\n  - Error and failed-tool-call counts.\n  - Files touched inferred from tool arguments and path-like fields.\n  - Branch/orphan/tree statistics.\n\n- Added human-readable report:\n  - Summarizes time, turns, tokens, cost, tool usage, files touched, tree shape.\n  - Highlights anomalies such as malformed lines, missing parents, duplicate IDs, and errors.\n  - Includes simple productivity signals.\n\nTradeoffs:\n- Active branch is inferred as the latest leaf by timestamp/index, which is practical for session logs but may not reflect explicit UI branch selection if that exists elsewhere.\n- File inference is conservative and based on path-like keys such as `path`, `file`, `filename`, etc.\n- Tool-call extraction handles common Pi-style structures but remains schema-tolerant rather than schema-strict.\n\nTest results:\n- Ran `node --test`\n- All tests passed: `3 passed, 0 failed`.",
+    "tests": {
+      "exitCode": 0,
+      "command": "node --test"
+    },
+    "diff": {
+      "stat": " session-inspector.js | 207 ++++++++++++++++++++++++++++++++++++++++++++++++---\n 1 file changed, 197 insertions(+), 10 deletions(-)\n",
+      "numstat": "197\t10\tsession-inspector.js\n",
+      "filesChanged": 1,
+      "added": 197,
+      "deleted": 10
+    },
+    "evaluationRubric": [
+      "Robust JSONL parsing diagnostics",
+      "Tree/active path reconstruction",
+      "Useful session metrics",
+      "Meaningful human report",
+      "Clean reusable API",
+      "Real-world Pi variation handling"
+    ],
+    "selfAnalysis": {
+      "exitCode": 1,
+      "ok": false,
+      "sessionFile": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/sessions/2026-04-26T07-30-28-257Z_019dc8b2-6721-778f-b82a-28cfac43d8de.jsonl",
+      "stdoutPath": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-agent-session-inspector-open-ended__minimal__r1.self-analysis.stdout.log",
+      "stderrPath": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-agent-session-inspector-open-ended__minimal__r1.self-analysis.stderr.log"
+    },
+    "artifacts": {
+      "events": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-agent-session-inspector-open-ended__minimal__r1.events.jsonl",
+      "stderr": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-agent-session-inspector-open-ended__minimal__r1.stderr.log",
+      "patch": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-agent-session-inspector-open-ended__minimal__r1.diff.patch",
+      "workspace": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/workspaces/js-agent-session-inspector-open-ended__minimal__r1",
+      "session": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/sessions/2026-04-26T07-30-28-257Z_019dc8b2-6721-778f-b82a-28cfac43d8de.jsonl",
+      "selfAnalysisStdout": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-agent-session-inspector-open-ended__minimal__r1.self-analysis.stdout.log",
+      "selfAnalysisStderr": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-agent-session-inspector-open-ended__minimal__r1.self-analysis.stderr.log"
+    }
+  },
+  {
+    "runId": "js-agent-session-inspector-open-ended__low__r1",
+    "taskId": "js-agent-session-inspector-open-ended",
+    "title": "Build a Pi session inspector and quality report",
+    "model": "openai-codex/gpt-5.5",
+    "thinking": "low",
+    "repetition": 1,
+    "status": "pass",
+    "piExitCode": 0,
+    "durationSeconds": 53.466,
+    "usage": {
+      "input": 7795,
+      "output": 3921,
+      "cacheRead": 20480,
+      "cacheWrite": 0,
+      "totalTokens": 32196,
+      "costTotal": 0
+    },
+    "toolCalls": {
+      "bash": 3,
+      "read": 3,
+      "write": 1,
+      "edit": 1
+    },
+    "assistantTurns": 7,
+    "finalAssistantText": "Implemented a dependency-free Pi-style JSONL session analyzer in `session-inspector.js`.\n\nWhat changed:\n- `parseSessionJsonl(text, options)`\n  - Robust JSONL parsing.\n  - Preserves malformed-line diagnostics with line number, message, and truncated raw text.\n  - Skips blank lines by default.\n- `analyzeSession(entriesOrParsed, diagnostics)`\n  - Reconstructs message tree from `parentId`.\n  - Selects active branch from latest terminal leaf.\n  - Computes metrics:\n    - assistant/user/tool-result turns\n    - tool calls by name\n    - token totals and cost\n    - time range and duration\n    - malformed line count\n    - error count\n    - inferred files touched\n    - branch counts\n  - Detects anomalies:\n    - malformed JSONL\n    - missing/orphan tool results\n    - orphan messages\n    - tool errors\n    - multiple terminal branches\n- `formatReport(analysis)`\n  - Produces a concise human-readable report with metrics, anomalies, and productivity signals.\n- Added reusable helpers/APIs:\n  - `buildMessageTree`\n  - `getActiveBranch`\n\nTradeoffs:\n- File inference is heuristic-based and intentionally conservative.\n- Active branch is chosen by latest timestamp among leaf nodes, which is explainable but may differ from a UI-specific branch marker if one exists.\n- Metrics support common Pi/OpenAI-style usage fields, but unknown provider-specific fields may need future mapping.\n\nTest results:\n- Ran `node --test`\n- All visible tests passed: `3/3`",
+    "tests": {
+      "exitCode": 0,
+      "command": "node --test"
+    },
+    "diff": {
+      "stat": " session-inspector.js | 189 +++++++++++++++++++++++++++++++++++++++++++++++----\n 1 file changed, 177 insertions(+), 12 deletions(-)\n",
+      "numstat": "177\t12\tsession-inspector.js\n",
+      "filesChanged": 1,
+      "added": 177,
+      "deleted": 12
+    },
+    "evaluationRubric": [
+      "Robust JSONL parsing diagnostics",
+      "Tree/active path reconstruction",
+      "Useful session metrics",
+      "Meaningful human report",
+      "Clean reusable API",
+      "Real-world Pi variation handling"
+    ],
+    "selfAnalysis": {
+      "exitCode": 1,
+      "ok": false,
+      "sessionFile": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/sessions/2026-04-26T07-31-30-616Z_019dc8b3-5ab8-7305-aecb-5b66fb510070.jsonl",
+      "stdoutPath": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-agent-session-inspector-open-ended__low__r1.self-analysis.stdout.log",
+      "stderrPath": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-agent-session-inspector-open-ended__low__r1.self-analysis.stderr.log"
+    },
+    "artifacts": {
+      "events": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-agent-session-inspector-open-ended__low__r1.events.jsonl",
+      "stderr": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-agent-session-inspector-open-ended__low__r1.stderr.log",
+      "patch": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-agent-session-inspector-open-ended__low__r1.diff.patch",
+      "workspace": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/workspaces/js-agent-session-inspector-open-ended__low__r1",
+      "session": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/sessions/2026-04-26T07-31-30-616Z_019dc8b3-5ab8-7305-aecb-5b66fb510070.jsonl",
+      "selfAnalysisStdout": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-agent-session-inspector-open-ended__low__r1.self-analysis.stdout.log",
+      "selfAnalysisStderr": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-agent-session-inspector-open-ended__low__r1.self-analysis.stderr.log"
+    }
+  },
+  {
+    "runId": "js-agent-session-inspector-open-ended__medium__r1",
+    "taskId": "js-agent-session-inspector-open-ended",
+    "title": "Build a Pi session inspector and quality report",
+    "model": "openai-codex/gpt-5.5",
+    "thinking": "medium",
+    "repetition": 1,
+    "status": "pass",
+    "piExitCode": 0,
+    "durationSeconds": 644.523,
+    "usage": {
+      "input": 14851,
+      "output": 6990,
+      "cacheRead": 44544,
+      "cacheWrite": 0,
+      "totalTokens": 66385,
+      "costTotal": 0
+    },
+    "toolCalls": {
+      "bash": 4,
+      "read": 4,
+      "write": 1,
+      "edit": 2
+    },
+    "assistantTurns": 9,
+    "finalAssistantText": "Implemented a dependency-free Pi-style JSONL session analyzer in `session-inspector.js`.\n\nWhat changed:\n- Added robust `parseSessionJsonl()`:\n  - Handles malformed JSON lines without aborting.\n  - Preserves diagnostics with line numbers, severity, kind, raw text, and messages.\n  - Ignores trailing blank lines safely.\n\n- Added reusable analysis API:\n  - `analyzeSession(entriesOrParsed, diagnostics)`\n  - `inspectSessionJsonl(text, options)`\n  - `formatReport(analysis, options)`\n\n- Added active branch/tree reconstruction:\n  - Builds message nodes from `id` / `parentId`.\n  - Detects missing parents and duplicate IDs.\n  - Infers active branch from explicit leaf metadata when available, otherwise latest leaf.\n\n- Added metrics:\n  - Assistant/user/tool turns.\n  - Tool calls by name.\n  - Token totals and cost totals.\n  - Conversation time range and duration.\n  - Error counts, malformed lines, tool errors.\n  - Inferred files touched from tool arguments/content.\n  - Branch count and active branch length.\n\n- Added human-readable reporting:\n  - Concise session overview.\n  - Token/cost/tool/file summaries.\n  - Productivity signals.\n  - Anomaly list including malformed JSON, missing parents, branch divergence, missing tool results, etc.\n\nTradeoffs:\n- File inference is intentionally conservative and heuristic-based; it catches common path fields and path-like strings but avoids deep shell parsing.\n- Metrics are computed for the inferred active branch plus session metadata, not every historical branch, to better reflect the active conversation path.\n- The analyzer supports common schema variations without depending on Pi internals or external packages.\n\nTest results:\n- Ran `node --test`\n- All tests passed: `3/3`",
+    "tests": {
+      "exitCode": 0,
+      "command": "node --test"
+    },
+    "diff": {
+      "stat": " session-inspector.js | 526 ++++++++++++++++++++++++++++++++++++++++++++++++++-\n 1 file changed, 516 insertions(+), 10 deletions(-)\n",
+      "numstat": "516\t10\tsession-inspector.js\n",
+      "filesChanged": 1,
+      "added": 516,
+      "deleted": 10
+    },
+    "evaluationRubric": [
+      "Robust JSONL parsing diagnostics",
+      "Tree/active path reconstruction",
+      "Useful session metrics",
+      "Meaningful human report",
+      "Clean reusable API",
+      "Real-world Pi variation handling"
+    ],
+    "selfAnalysis": {
+      "exitCode": 1,
+      "ok": false,
+      "sessionFile": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/sessions/2026-04-26T07-32-24-512Z_019dc8b4-2d3f-743d-bf74-d846dc77d6d9.jsonl",
+      "stdoutPath": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-agent-session-inspector-open-ended__medium__r1.self-analysis.stdout.log",
+      "stderrPath": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-agent-session-inspector-open-ended__medium__r1.self-analysis.stderr.log"
+    },
+    "artifacts": {
+      "events": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-agent-session-inspector-open-ended__medium__r1.events.jsonl",
+      "stderr": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-agent-session-inspector-open-ended__medium__r1.stderr.log",
+      "patch": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-agent-session-inspector-open-ended__medium__r1.diff.patch",
+      "workspace": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/workspaces/js-agent-session-inspector-open-ended__medium__r1",
+      "session": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/sessions/2026-04-26T07-32-24-512Z_019dc8b4-2d3f-743d-bf74-d846dc77d6d9.jsonl",
+      "selfAnalysisStdout": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-agent-session-inspector-open-ended__medium__r1.self-analysis.stdout.log",
+      "selfAnalysisStderr": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-agent-session-inspector-open-ended__medium__r1.self-analysis.stderr.log"
+    }
+  },
+  {
+    "runId": "js-agent-session-inspector-open-ended__high__r1",
+    "taskId": "js-agent-session-inspector-open-ended",
+    "title": "Build a Pi session inspector and quality report",
+    "model": "openai-codex/gpt-5.5",
+    "thinking": "high",
+    "repetition": 1,
+    "status": "timeout",
+    "piExitCode": null,
+    "durationSeconds": 1462.285,
+    "usage": {
+      "input": 2922,
+      "output": 676,
+      "cacheRead": 2048,
+      "cacheWrite": 0,
+      "totalTokens": 5646,
+      "costTotal": 0
+    },
+    "toolCalls": {
+      "bash": 2,
+      "read": 4
+    },
+    "assistantTurns": 3,
+    "finalAssistantText": "",
+    "tests": {
+      "exitCode": 0,
+      "command": "node --test"
+    },
+    "diff": {
+      "stat": " session-inspector.js      | 840 +++++++++++++++++++++++++++++++++++++++++++++-\n session-inspector.test.js |  26 ++\n 2 files changed, 856 insertions(+), 10 deletions(-)\n",
+      "numstat": "830\t10\tsession-inspector.js\n26\t0\tsession-inspector.test.js\n",
+      "filesChanged": 2,
+      "added": 856,
+      "deleted": 10
+    },
+    "evaluationRubric": [
+      "Robust JSONL parsing diagnostics",
+      "Tree/active path reconstruction",
+      "Useful session metrics",
+      "Meaningful human report",
+      "Clean reusable API",
+      "Real-world Pi variation handling"
+    ],
+    "selfAnalysis": {
+      "exitCode": 1,
+      "ok": false,
+      "sessionFile": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/sessions/2026-04-26T07-43-10-329Z_019dc8be-07f9-729c-94d2-040351315472.jsonl",
+      "stdoutPath": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-agent-session-inspector-open-ended__high__r1.self-analysis.stdout.log",
+      "stderrPath": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-agent-session-inspector-open-ended__high__r1.self-analysis.stderr.log"
+    },
+    "artifacts": {
+      "events": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-agent-session-inspector-open-ended__high__r1.events.jsonl",
+      "stderr": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-agent-session-inspector-open-ended__high__r1.stderr.log",
+      "patch": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-agent-session-inspector-open-ended__high__r1.diff.patch",
+      "workspace": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/workspaces/js-agent-session-inspector-open-ended__high__r1",
+      "session": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/sessions/2026-04-26T07-43-10-329Z_019dc8be-07f9-729c-94d2-040351315472.jsonl",
+      "selfAnalysisStdout": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-agent-session-inspector-open-ended__high__r1.self-analysis.stdout.log",
+      "selfAnalysisStderr": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/js-agent-session-inspector-open-ended__high__r1.self-analysis.stderr.log"
+    }
+  }
+]

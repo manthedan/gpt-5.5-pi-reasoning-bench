@@ -1,0 +1,40 @@
+TAP version 13
+# Subtest: parses basic table
+ok 1 - parses basic table
+  ---
+  duration_ms: 0.614125
+  type: 'test'
+  ...
+# Subtest: preserves empty cells and handles missing outer pipes
+ok 2 - preserves empty cells and handles missing outer pipes
+  ---
+  duration_ms: 0.102208
+  type: 'test'
+  ...
+# Subtest: supports escaped pipe characters in cells
+ok 3 - supports escaped pipe characters in cells
+  ---
+  duration_ms: 0.289584
+  type: 'test'
+  ...
+# Subtest: ignores blank lines before and after table
+ok 4 - ignores blank lines before and after table
+  ---
+  duration_ms: 0.09475
+  type: 'test'
+  ...
+# Subtest: throws for malformed tables
+ok 5 - throws for malformed tables
+  ---
+  duration_ms: 0.169375
+  type: 'test'
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 36.572666

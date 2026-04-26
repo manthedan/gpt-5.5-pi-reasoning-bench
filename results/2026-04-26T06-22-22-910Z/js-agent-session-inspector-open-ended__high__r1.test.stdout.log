@@ -1,0 +1,40 @@
+TAP version 13
+# Subtest: parses jsonl while preserving malformed-line diagnostics
+ok 1 - parses jsonl while preserving malformed-line diagnostics
+  ---
+  duration_ms: 0.765875
+  type: 'test'
+  ...
+# Subtest: computes useful session metrics
+ok 2 - computes useful session metrics
+  ---
+  duration_ms: 1.4775
+  type: 'test'
+  ...
+# Subtest: formats a human-readable report with anomalies
+ok 3 - formats a human-readable report with anomalies
+  ---
+  duration_ms: 8.747416
+  type: 'test'
+  ...
+# Subtest: reconstructs branches and chooses the latest active leaf
+ok 4 - reconstructs branches and chooses the latest active leaf
+  ---
+  duration_ms: 0.646166
+  type: 'test'
+  ...
+# Subtest: infers file touches and tool anomalies from common variants
+ok 5 - infers file touches and tool anomalies from common variants
+  ---
+  duration_ms: 0.163792
+  type: 'test'
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 51.831917

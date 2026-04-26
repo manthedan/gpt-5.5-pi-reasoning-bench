@@ -1,0 +1,55 @@
+diff --git a/range.js b/range.js
+index f777be2..20e1100 100644
+--- a/range.js
++++ b/range.js
+@@ -1,25 +1,36 @@
++function parseRange(range) {
++  if (!range) throw new TypeError('ranges are required');
++
++  const start = new Date(range.start).getTime();
++  const end = new Date(range.end).getTime();
++
++  if (!Number.isFinite(start) || !Number.isFinite(end) || start > end) {
++    throw new RangeError('invalid range');
++  }
++
++  return { start, end };
++}
++
+ export function overlaps(a, b) {
+-  if (!a || !b) throw new TypeError('ranges are required');
+-  const startA = new Date(a.start);
+-  const endA = new Date(a.end);
+-  const startB = new Date(b.start);
+-  const endB = new Date(b.end);
++  const rangeA = parseRange(a);
++  const rangeB = parseRange(b);
+ 
+-  // BUG: treats adjacent ranges as overlapping and accepts invalid ranges.
+-  return startA <= endB && startB <= endA;
++  return rangeA.start < rangeB.end && rangeB.start < rangeA.end;
+ }
+ 
+ export function mergeRanges(ranges) {
+   return ranges
+-    .slice()
+-    .sort((a, b) => new Date(a.start) - new Date(b.start))
+-    .reduce((acc, range) => {
++    .map((range) => ({ range, parsed: parseRange(range) }))
++    .sort((a, b) => a.parsed.start - b.parsed.start)
++    .reduce((acc, { range, parsed }) => {
+       const last = acc[acc.length - 1];
+-      if (last && overlaps(last, range)) {
+-        last.end = new Date(Math.max(new Date(last.end), new Date(range.end))).toISOString();
++      if (last && last.parsed.start < parsed.end && parsed.start < last.parsed.end) {
++        last.parsed.end = Math.max(last.parsed.end, parsed.end);
++        last.range.end = new Date(last.parsed.end).toISOString();
+       } else {
+-        acc.push({ ...range });
++        acc.push({ range: { ...range }, parsed: { ...parsed } });
+       }
+       return acc;
+-    }, []);
++    }, [])
++    .map(({ range }) => range);
+ }

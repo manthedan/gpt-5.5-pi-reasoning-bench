@@ -1,0 +1,40 @@
+TAP version 13
+# Subtest: parses quoted commas, escaped quotes, comments, and blank lines
+ok 1 - parses quoted commas, escaped quotes, comments, and blank lines
+  ---
+  duration_ms: 0.702209
+  type: 'test'
+  ...
+# Subtest: profiles basic column statistics and inferred types
+ok 2 - profiles basic column statistics and inferred types
+  ---
+  duration_ms: 1.97775
+  type: 'test'
+  ...
+# Subtest: detects duplicate primary keys and inconsistent row widths with suggestions
+ok 3 - detects duplicate primary keys and inconsistent row widths with suggestions
+  ---
+  duration_ms: 0.171625
+  type: 'test'
+  ...
+# Subtest: handles embedded newlines and keeps source metadata
+ok 4 - handles embedded newlines and keeps source metadata
+  ---
+  duration_ms: 0.060083
+  type: 'test'
+  ...
+# Subtest: reports required fields, suspicious dates, and composite primary keys
+ok 5 - reports required fields, suspicious dates, and composite primary keys
+  ---
+  duration_ms: 0.31025
+  type: 'test'
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 40.995667

@@ -1,0 +1,65 @@
+diff --git a/lru.js b/lru.js
+index 413ac2f..f686dd0 100644
+--- a/lru.js
++++ b/lru.js
+@@ -4,33 +4,54 @@ export class LRUCache {
+       throw new RangeError('capacity must be a positive integer');
+     }
+     this.capacity = capacity;
+-    // TODO: implement storage
++    // Map iteration order is oldest -> newest. Whenever a key is used, it is
++    // deleted and re-inserted so it becomes the most recently used entry.
++    this._items = new Map();
+   }
+ 
+   get(key) {
+-    return undefined;
++    if (!this._items.has(key)) {
++      return undefined;
++    }
++
++    const value = this._items.get(key);
++    this._items.delete(key);
++    this._items.set(key, value);
++    return value;
+   }
+ 
+   set(key, value) {
++    if (this._items.has(key)) {
++      this._items.delete(key);
++    }
++
++    this._items.set(key, value);
++
++    if (this._items.size > this.capacity) {
++      const oldestKey = this._items.keys().next().value;
++      this._items.delete(oldestKey);
++    }
++
+     return this;
+   }
+ 
+   has(key) {
+-    return false;
++    return this._items.has(key);
+   }
+ 
+   delete(key) {
+-    return false;
++    return this._items.delete(key);
+   }
+ 
+   clear() {
++    this._items.clear();
+   }
+ 
+   get size() {
+-    return 0;
++    return this._items.size;
+   }
+ 
+   keys() {
+-    return [];
++    return Array.from(this._items.keys()).reverse();
+   }
+ }

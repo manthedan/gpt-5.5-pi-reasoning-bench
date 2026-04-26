@@ -1,0 +1,10 @@
+{
+  "name": "pi-reasoning-bench",
+  "version": "0.1.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "bench": "node scripts/run-benchmark.mjs",
+    "summarize": "node scripts/summarize-results.mjs"
+  }
+}

@@ -1,0 +1,221 @@
+diff --git a/session-inspector.js b/session-inspector.js
+index 09b89d5..91444ce 100644
+--- a/session-inspector.js
++++ b/session-inspector.js
+@@ -1,19 +1,206 @@
+-export function parseSessionJsonl(text) {
+-  return text.trim().split('\n').map(line => JSON.parse(line));
++const DEFAULT_COST_KEYS = ['total', 'amount', 'usd'];
++
++export function parseSessionJsonl(text, options = {}) {
++  const diagnostics = [];
++  const entries = [];
++  const keepBlankLines = options.keepBlankLines ?? false;
++  const lines = String(text ?? '').split(/\r?\n/);
++
++  lines.forEach((rawLine, index) => {
++    const line = index + 1;
++    if (!rawLine.trim()) {
++      if (keepBlankLines) diagnostics.push({ line, column: 1, severity: 'info', message: 'blank line skipped', raw: rawLine });
++      return;
++    }
++    try {
++      const value = JSON.parse(rawLine);
++      if (value && typeof value === 'object') {
++        entries.push({ ...value, _line: line });
++      } else {
++        diagnostics.push({ line, column: 1, severity: 'warning', message: 'JSONL value is not an object', raw: rawLine });
++      }
++    } catch (error) {
++      diagnostics.push({ line, column: parseJsonErrorColumn(error.message), severity: 'error', message: error.message, raw: rawLine });
++    }
++  });
++
++  return { entries, diagnostics };
+ }
+ 
+-export function analyzeSession(entries) {
++export function analyzeSession(input, diagnostics = []) {
++  const entries = Array.isArray(input) ? input : (input?.entries ?? []);
++  const parseDiagnostics = Array.isArray(input) ? diagnostics : (input?.diagnostics ?? diagnostics ?? []);
++  const tree = buildSessionTree(entries);
++  const activePath = getActivePath(tree);
++  const activeIds = new Set(activePath.map(node => node.entry?.id).filter(Boolean));
++  const activeEntries = activePath.map(node => node.entry).filter(Boolean);
++  const metricEntries = activeEntries.length ? activeEntries : entries;
++
++  const metrics = computeMetrics(metricEntries, entries, parseDiagnostics, tree, activeIds);
++  const anomalies = detectAnomalies(entries, parseDiagnostics, tree, metrics);
++  const signals = productivitySignals(metrics, activePath, anomalies);
++
+   return {
+     entries,
+-    metrics: {
+-      assistantTurns: 0,
+-      totalTokens: 0,
+-      cost: 0,
+-      toolCalls: {}
+-    }
++    diagnostics: parseDiagnostics,
++    tree,
++    activePath,
++    metrics,
++    anomalies,
++    signals,
++    summary: { sessionId: entries.find(e => e.type === 'session')?.id, cwd: entries.find(e => e.cwd)?.cwd }
+   };
+ }
+ 
+ export function formatReport(analysis) {
+-  return 'Session report';
++  const m = analysis.metrics ?? {};
++  const lines = [];
++  lines.push('Session report');
++  if (analysis.summary?.sessionId || analysis.summary?.cwd) lines.push(`Session: ${analysis.summary?.sessionId ?? 'unknown'}${analysis.summary?.cwd ? ` (${analysis.summary.cwd})` : ''}`);
++  lines.push(`Time: ${m.startTime ?? 'unknown'} → ${m.endTime ?? 'unknown'}${Number.isFinite(m.durationMs) ? ` (${formatDuration(m.durationMs)})` : ''}`);
++  lines.push(`Assistant turns: ${m.assistantTurns ?? 0}; user turns: ${m.userTurns ?? 0}; tool results: ${m.toolResults ?? 0}`);
++  lines.push(`Tokens: ${m.totalTokens ?? 0} (input ${m.inputTokens ?? 0}, output ${m.outputTokens ?? 0}, cache read ${m.cacheReadTokens ?? 0}, cache write ${m.cacheWriteTokens ?? 0}); cost: ${formatMoney(m.cost ?? 0)}`);
++  lines.push(`Tool calls: ${formatCounts(m.toolCalls)}${m.failedToolCalls ? `; failed: ${m.failedToolCalls}` : ''}`);
++  if (m.filesTouched?.length) lines.push(`Files touched: ${m.filesTouched.slice(0, 12).join(', ')}${m.filesTouched.length > 12 ? `, +${m.filesTouched.length - 12} more` : ''}`);
++  lines.push(`Tree: ${m.nodesWithParent ?? 0} linked nodes, active path ${m.activePathLength ?? 0}, branches ${m.branchPoints ?? 0}, orphans ${m.orphanCount ?? 0}`);
++
++  if (analysis.signals?.length) {
++    lines.push('Productivity signals:');
++    for (const signal of analysis.signals) lines.push(`- ${signal}`);
++  }
++  if (analysis.anomalies?.length) {
++    lines.push('Anomalies:');
++    for (const anomaly of analysis.anomalies) lines.push(`- ${anomaly.message}`);
++  } else {
++    lines.push('Anomalies: none detected');
++  }
++  return lines.join('\n');
++}
++
++export function buildSessionTree(entries) {
++  const nodes = new Map();
++  const roots = [];
++  const orphans = [];
++  const duplicateIds = [];
++  entries.forEach((entry, index) => {
++    const id = entry?.id ?? `__line_${entry?._line ?? index}`;
++    if (nodes.has(id)) duplicateIds.push(id);
++    nodes.set(id, { id, entry, index, parent: null, children: [] });
++  });
++  for (const node of nodes.values()) {
++    const parentId = node.entry?.parentId;
++    if (parentId == null) roots.push(node);
++    else if (nodes.has(parentId)) {
++      node.parent = nodes.get(parentId);
++      node.parent.children.push(node);
++    } else {
++      roots.push(node);
++      orphans.push(node);
++    }
++  }
++  return { nodes, roots, orphans, duplicateIds };
+ }
++
++export function getActivePath(tree) {
++  const candidates = [...tree.nodes.values()].filter(n => n.entry?.id);
++  const leaves = candidates.filter(n => n.children.length === 0);
++  const leaf = leaves.sort((a, b) => compareTime(b.entry, a.entry) || b.index - a.index)[0];
++  if (!leaf) return [];
++  const path = [];
++  for (let n = leaf; n; n = n.parent) path.unshift(n);
++  return path;
++}
++
++function computeMetrics(activeEntries, allEntries, diagnostics, tree) {
++  const metrics = { assistantTurns: 0, userTurns: 0, toolResults: 0, toolCalls: {}, errors: diagnostics.filter(d => d.severity === 'error').length, malformedLines: diagnostics.length, failedToolCalls: 0, inputTokens: 0, outputTokens: 0, cacheReadTokens: 0, cacheWriteTokens: 0, totalTokens: 0, cost: 0, filesTouched: [] };
++  const files = new Set();
++  const times = [];
++  for (const entry of activeEntries) {
++    const message = entry.message ?? entry;
++    const role = message.role ?? entry.role;
++    const t = getTimestamp(entry); if (t != null) times.push(t);
++    if (role === 'assistant') metrics.assistantTurns++;
++    if (role === 'user') metrics.userTurns++;
++    if (role === 'toolResult' || entry.type === 'toolResult') metrics.toolResults++;
++    if (message.isError || entry.isError || message.error || entry.error) metrics.errors++;
++    if ((role === 'toolResult' || entry.type === 'toolResult') && (message.isError || entry.isError)) metrics.failedToolCalls++;
++    addUsage(metrics, message.usage ?? entry.usage);
++    for (const call of extractToolCalls(message).concat(extractToolCalls(entry))) {
++      const name = call.name ?? call.toolName ?? call.function?.name ?? 'unknown';
++      metrics.toolCalls[name] = (metrics.toolCalls[name] ?? 0) + 1;
++      inferFiles(call.arguments ?? call.input ?? call.params, files);
++    }
++    inferFiles(message, files); inferFiles(entry, files);
++  }
++  metrics.filesTouched = [...files].sort();
++  metrics.startTime = times.length ? new Date(Math.min(...times)).toISOString() : undefined;
++  metrics.endTime = times.length ? new Date(Math.max(...times)).toISOString() : undefined;
++  metrics.durationMs = times.length ? Math.max(...times) - Math.min(...times) : undefined;
++  metrics.nodesWithParent = [...tree.nodes.values()].filter(n => n.parent).length;
++  metrics.activePathLength = activeEntries.length;
++  metrics.branchPoints = [...tree.nodes.values()].filter(n => n.children.length > 1).length;
++  metrics.orphanCount = tree.orphans.length;
++  metrics.entryCount = allEntries.length;
++  metrics.cost = round(metrics.cost, 6);
++  return metrics;
++}
++
++function addUsage(m, usage) {
++  if (!usage) return;
++  m.inputTokens += num(usage.input ?? usage.inputTokens ?? usage.prompt_tokens);
++  m.outputTokens += num(usage.output ?? usage.outputTokens ?? usage.completion_tokens);
++  m.cacheReadTokens += num(usage.cacheRead ?? usage.cacheReadTokens);
++  m.cacheWriteTokens += num(usage.cacheWrite ?? usage.cacheWriteTokens);
++  m.totalTokens += num(usage.totalTokens ?? usage.total_tokens ?? (num(usage.input) + num(usage.output) + num(usage.cacheRead) + num(usage.cacheWrite)));
++  const cost = usage.cost;
++  m.cost += typeof cost === 'number' ? cost : DEFAULT_COST_KEYS.reduce((sum, k) => sum || num(cost?.[k]), 0);
++}
++
++function extractToolCalls(obj) {
++  const out = [];
++  const visit = value => {
++    if (Array.isArray(value)) return value.forEach(visit);
++    if (!value || typeof value !== 'object') return;
++    if (value.type === 'toolCall' || value.toolCallId || value.name && (value.arguments || value.input)) out.push(value);
++    if (value.content) visit(value.content);
++    if (value.toolCalls) visit(value.toolCalls);
++  };
++  visit(obj?.content ?? obj);
++  return out;
++}
++
++function inferFiles(value, files) {
++  if (!value || typeof value !== 'object') return;
++  for (const [key, val] of Object.entries(value)) {
++    if (typeof val === 'string' && /^(path|file|filename|filepath|target)$/i.test(key) && looksLikePath(val)) files.add(val);
++    else if (Array.isArray(val)) val.forEach(v => inferFiles(v, files));
++    else if (val && typeof val === 'object') inferFiles(val, files);
++  }
++}
++
++function detectAnomalies(entries, diagnostics, tree, metrics) {
++  const a = diagnostics.map(d => ({ severity: d.severity, message: `malformed/diagnostic line ${d.line}: ${d.message}` }));
++  for (const id of tree.duplicateIds) a.push({ severity: 'warning', message: `duplicate id ${id}` });
++  for (const n of tree.orphans) a.push({ severity: 'warning', message: `missing parent ${n.entry.parentId} for ${n.id}` });
++  if (metrics.errors) a.push({ severity: 'warning', message: `${metrics.errors} error indicator(s) observed` });
++  if (!metrics.assistantTurns) a.push({ severity: 'info', message: 'no assistant turns on active path' });
++  return a;
++}
++
++function productivitySignals(m) {
++  const s = [];
++  if (Object.keys(m.toolCalls).length) s.push(`${Object.values(m.toolCalls).reduce((a, b) => a + b, 0)} tool call(s) across ${Object.keys(m.toolCalls).length} tool(s)`);
++  if (m.filesTouched.length) s.push(`${m.filesTouched.length} file(s) touched/inferred`);
++  if (m.assistantTurns && m.durationMs) s.push(`${(m.durationMs / m.assistantTurns / 1000).toFixed(1)}s per assistant turn`);
++  return s;
++}
++
++const num = v => Number.isFinite(Number(v)) ? Number(v) : 0;
++const round = (v, d) => Math.round(v * 10 ** d) / 10 ** d;
++const looksLikePath = s => /[/.\\]/.test(s) && !/^https?:\/\//.test(s);
++const formatCounts = counts => Object.keys(counts ?? {}).length ? Object.entries(counts).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`${k}=${v}`).join(', ') : 'none';
++const formatMoney = n => `$${Number(n).toFixed(4)}`;
++const formatDuration = ms => ms < 1000 ? `${ms}ms` : `${(ms / 1000).toFixed(1)}s`;
++function getTimestamp(entry) { const v = entry?.timestamp ?? entry?.message?.timestamp; const n = typeof v === 'number' ? v : Date.parse(v); return Number.isFinite(n) ? n : null; }
++function compareTime(a, b) { return (getTimestamp(a) ?? -Infinity) - (getTimestamp(b) ?? -Infinity); }
++function parseJsonErrorColumn(message) { const m = /position (\d+)/.exec(message); return m ? Number(m[1]) + 1 : undefined; }

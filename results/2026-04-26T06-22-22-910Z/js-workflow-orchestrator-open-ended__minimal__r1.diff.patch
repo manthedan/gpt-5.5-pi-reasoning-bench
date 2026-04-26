@@ -1,0 +1,349 @@
+diff --git a/orchestrator.js b/orchestrator.js
+index 38da2ed..06057c1 100644
+--- a/orchestrator.js
++++ b/orchestrator.js
+@@ -1,30 +1,161 @@
+ import { EventEmitter } from 'node:events';
+ 
++const TERMINAL_STATUSES = new Set(['succeeded', 'failed', 'cancelled']);
++const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
++
++function now() {
++  return Date.now();
++}
++
++function toErrorRecord(error) {
++  if (!error) return undefined;
++  return {
++    name: error.name ?? 'Error',
++    message: error.message ?? String(error),
++    stack: error.stack,
++    code: error.code,
++  };
++}
++
++function ensurePositiveInteger(value, fallback, name) {
++  const resolved = value ?? fallback;
++  if (!Number.isInteger(resolved) || resolved < 1) {
++    throw new TypeError(`${name} must be a positive integer`);
++  }
++  return resolved;
++}
++
++function normalizeTimeout(value, fallback, name) {
++  const resolved = value ?? fallback;
++  if (resolved == null) return undefined;
++  if (!Number.isFinite(resolved) || resolved <= 0) {
++    throw new TypeError(`${name} must be a positive number of milliseconds`);
++  }
++  return resolved;
++}
++
++function createTimeoutError(ms) {
++  const error = new Error(`Timed out after ${ms}ms`);
++  error.name = 'TimeoutError';
++  error.code = 'ETIMEDOUT';
++  return error;
++}
++
++async function runWithTimeout(fn, timeoutMs, signal) {
++  if (signal?.aborted) throw signal.reason ?? new Error('cancelled');
++
++  let timer;
++  let abortListener;
++  const racers = [Promise.resolve().then(fn)];
++
++  if (timeoutMs != null) {
++    racers.push(new Promise((_, reject) => {
++      timer = setTimeout(() => reject(createTimeoutError(timeoutMs)), timeoutMs);
++    }));
++  }
++
++  if (signal) {
++    racers.push(new Promise((_, reject) => {
++      abortListener = () => reject(signal.reason ?? new Error('cancelled'));
++      signal.addEventListener('abort', abortListener, { once: true });
++    }));
++  }
++
++  try {
++    return await Promise.race(racers);
++  } finally {
++    clearTimeout(timer);
++    if (signal && abortListener) signal.removeEventListener('abort', abortListener);
++  }
++}
++
+ export class WorkflowOrchestrator extends EventEmitter {
+   constructor(options = {}) {
+     super();
+-    this.options = options;
++    this.options = {
++      concurrency: ensurePositiveInteger(options.concurrency, 1, 'concurrency'),
++      retries: options.retries ?? 0,
++      retryDelayMs: options.retryDelayMs ?? 100,
++      retryBackoff: options.retryBackoff ?? 2,
++      timeoutMs: options.timeoutMs,
++      stepTimeoutMs: options.stepTimeoutMs,
++    };
+     this.handlers = new Map();
+     this.jobs = new Map();
++    this._sequence = 0;
++    this._idCounter = 0;
++    this._running = 0;
++    this._drainers = [];
+   }
+ 
+   register(name, handler) {
++    if (!name || typeof name !== 'string') throw new TypeError('task name must be a non-empty string');
++    if (typeof handler !== 'function') throw new TypeError('handler must be a function');
+     this.handlers.set(name, handler);
+     return this;
+   }
+ 
+   submit(workflow, options = {}) {
+-    const id = options.id ?? String(Date.now());
+-    const job = { id, workflow, options, status: 'queued' };
++    if (!workflow || !Array.isArray(workflow.steps)) {
++      throw new TypeError('workflow must contain a steps array');
++    }
++    if (this.jobs.has(options.id)) throw new Error(`job id already exists: ${options.id}`);
++
++    const id = options.id ?? `job-${++this._idCounter}`;
++    if (this.jobs.has(id)) throw new Error(`job id already exists: ${id}`);
++
++    const createdAt = now();
++    const steps = workflow.steps.map((step, index) => {
++      if (!step || typeof step.task !== 'string') throw new TypeError(`step ${index} must specify a task`);
++      return {
++        index,
++        task: step.task,
++        name: step.name,
++        input: step.input,
++        hasInput: Object.hasOwn(step, 'input'),
++        retries: step.retries,
++        retryDelayMs: step.retryDelayMs,
++        retryBackoff: step.retryBackoff,
++        timeoutMs: step.timeoutMs,
++        status: 'queued',
++        attempts: [],
++      };
++    });
++
++    const job = {
++      id,
++      workflow: { input: workflow.input, steps: workflow.steps },
++      options: { ...options },
++      priority: options.priority ?? workflow.priority ?? 0,
++      status: 'queued',
++      createdAt,
++      updatedAt: createdAt,
++      startedAt: undefined,
++      finishedAt: undefined,
++      durationMs: undefined,
++      steps,
++      outputs: [],
++      error: undefined,
++      reason: undefined,
++      _sequence: ++this._sequence,
++      _controller: new AbortController(),
++    };
++
+     this.jobs.set(id, job);
++    this._emit('job:queued', { jobId: id, priority: job.priority });
++    queueMicrotask(() => this._schedule());
+     return id;
+   }
+ 
+   cancel(id, reason = 'cancelled') {
+     const job = this.jobs.get(id);
+-    if (!job) return false;
+-    job.status = 'cancelled';
++    if (!job || TERMINAL_STATUSES.has(job.status)) return false;
+     job.reason = reason;
++    job.updatedAt = now();
++    job._controller.abort(reason);
++    if (job.status === 'queued') this._finishJob(job, 'cancelled', { reason });
++    else this._emit('job:cancelling', { jobId: id, reason });
++    this._schedule();
+     return true;
+   }
+ 
+@@ -33,6 +164,132 @@ export class WorkflowOrchestrator extends EventEmitter {
+   }
+ 
+   async drain() {
+-    // TODO: implement scheduling and execution
++    this._schedule();
++    if (this._isIdle()) return;
++    await new Promise(resolve => this._drainers.push(resolve));
++  }
++
++  _emit(type, fields = {}) {
++    this.emit('event', { type, timestamp: now(), ...fields });
++  }
++
++  _isIdle() {
++    return this._running === 0 && ![...this.jobs.values()].some(j => j.status === 'queued');
++  }
++
++  _notifyIfIdle() {
++    if (!this._isIdle()) return;
++    const drainers = this._drainers.splice(0);
++    for (const resolve of drainers) resolve();
++  }
++
++  _schedule() {
++    while (this._running < this.options.concurrency) {
++      const next = [...this.jobs.values()]
++        .filter(job => job.status === 'queued')
++        .sort((a, b) => (b.priority - a.priority) || (a._sequence - b._sequence))[0];
++      if (!next) break;
++      this._running++;
++      this._runJob(next).finally(() => {
++        this._running--;
++        this._schedule();
++        this._notifyIfIdle();
++      });
++    }
++    this._notifyIfIdle();
++  }
++
++  async _runJob(job) {
++    job.status = 'running';
++    job.startedAt = job.updatedAt = now();
++    this._emit('job:started', { jobId: job.id });
++
++    const jobTimeoutMs = normalizeTimeout(job.options.timeoutMs, this.options.timeoutMs, 'timeoutMs');
++    let jobTimer;
++    if (jobTimeoutMs != null) {
++      jobTimer = setTimeout(() => job._controller.abort(createTimeoutError(jobTimeoutMs)), jobTimeoutMs);
++    }
++
++    try {
++      let input = job.workflow.input;
++      for (const step of job.steps) {
++        if (job._controller.signal.aborted) throw job._controller.signal.reason ?? new Error('cancelled');
++        const output = await this._runStep(job, step, input);
++        job.outputs[step.index] = output;
++        input = output;
++      }
++      if (job._controller.signal.aborted) throw job._controller.signal.reason ?? new Error('cancelled');
++      this._finishJob(job, 'succeeded');
++    } catch (error) {
++      const aborted = job._controller.signal.aborted;
++      if (aborted && job.reason) this._finishJob(job, 'cancelled', { reason: job.reason, error });
++      else this._finishJob(job, aborted && error?.name !== 'TimeoutError' ? 'cancelled' : 'failed', { error });
++    } finally {
++      clearTimeout(jobTimer);
++      delete job._controller;
++    }
++  }
++
++  async _runStep(job, step, input) {
++    const handler = this.handlers.get(step.task);
++    if (!handler) throw new Error(`No handler registered for task: ${step.task}`);
++
++    const retries = ensurePositiveInteger((step.retries ?? this.options.retries) + 1, 1, 'attempts') - 1;
++    const retryDelayMs = step.retryDelayMs ?? this.options.retryDelayMs;
++    const retryBackoff = step.retryBackoff ?? this.options.retryBackoff;
++    const timeoutMs = normalizeTimeout(step.timeoutMs, this.options.stepTimeoutMs, 'stepTimeoutMs');
++    const stepInput = step.hasInput ? step.input : input;
++
++    step.status = 'running';
++    step.startedAt = step.updatedAt = now();
++    this._emit('step:started', { jobId: job.id, stepIndex: step.index, task: step.task });
++
++    for (let attemptNo = 1; attemptNo <= retries + 1; attemptNo++) {
++      const attempt = { attempt: attemptNo, startedAt: now(), status: 'running' };
++      step.attempts.push(attempt);
++      this._emit('step:attempt:started', { jobId: job.id, stepIndex: step.index, task: step.task, attempt: attemptNo });
++      try {
++        const output = await runWithTimeout(
++          () => handler(stepInput, { jobId: job.id, stepIndex: step.index, attempt: attemptNo, signal: job._controller.signal, job, step }),
++          timeoutMs,
++          job._controller.signal,
++        );
++        attempt.status = 'succeeded';
++        attempt.finishedAt = now();
++        attempt.durationMs = attempt.finishedAt - attempt.startedAt;
++        step.status = 'succeeded';
++        step.output = output;
++        step.finishedAt = step.updatedAt = now();
++        step.durationMs = step.finishedAt - step.startedAt;
++        this._emit('step:succeeded', { jobId: job.id, stepIndex: step.index, task: step.task, attempt: attemptNo, durationMs: step.durationMs });
++        return output;
++      } catch (error) {
++        attempt.status = 'failed';
++        attempt.finishedAt = now();
++        attempt.durationMs = attempt.finishedAt - attempt.startedAt;
++        attempt.error = toErrorRecord(error);
++        step.error = attempt.error;
++        this._emit('step:attempt:failed', { jobId: job.id, stepIndex: step.index, task: step.task, attempt: attemptNo, error: attempt.error });
++        if (job._controller.signal.aborted || attemptNo > retries) {
++          step.status = 'failed';
++          step.finishedAt = step.updatedAt = now();
++          step.durationMs = step.finishedAt - step.startedAt;
++          this._emit('step:failed', { jobId: job.id, stepIndex: step.index, task: step.task, error: step.error });
++          throw error;
++        }
++        const delay = Math.max(0, retryDelayMs * (retryBackoff ** (attemptNo - 1)));
++        this._emit('step:retry:scheduled', { jobId: job.id, stepIndex: step.index, task: step.task, attempt: attemptNo + 1, delayMs: delay });
++        if (delay) await sleep(delay);
++      }
++    }
++  }
++
++  _finishJob(job, status, { error, reason } = {}) {
++    job.status = status;
++    job.finishedAt = job.updatedAt = now();
++    job.durationMs = job.startedAt ? job.finishedAt - job.startedAt : 0;
++    if (error) job.error = toErrorRecord(error);
++    if (reason) job.reason = reason;
++    this._emit(`job:${status}`, { jobId: job.id, durationMs: job.durationMs, error: job.error, reason: job.reason });
+   }
+ }
+diff --git a/orchestrator.test.js b/orchestrator.test.js
+index 13b3df2..452805d 100644
+--- a/orchestrator.test.js
++++ b/orchestrator.test.js
+@@ -49,3 +49,39 @@ test('emits structured lifecycle events', async () => {
+   assert.equal(events.some(e => e.type === 'job:succeeded' && e.jobId === id), true);
+   assert.equal(events.every(e => typeof e.timestamp === 'number'), true);
+ });
++
++test('runs higher priority queued jobs first', async () => {
++  const o = new WorkflowOrchestrator({ concurrency: 1 });
++  const order = [];
++  o.register('record', async value => { order.push(value); return value; });
++  o.submit({ input: 'low', steps: [{ task: 'record' }] }, { priority: 0 });
++  o.submit({ input: 'high', steps: [{ task: 'record' }] }, { priority: 10 });
++  await o.drain();
++  assert.deepEqual(order, ['high', 'low']);
++});
++
++test('cancels queued jobs and running cooperative jobs', async () => {
++  const o = new WorkflowOrchestrator({ concurrency: 1 });
++  o.register('wait', async (value, { signal }) => {
++    while (!signal.aborted) await sleep(2);
++    throw signal.reason;
++  });
++  const running = o.submit({ input: 'a', steps: [{ task: 'wait' }] });
++  const queued = o.submit({ input: 'b', steps: [{ task: 'wait' }] });
++  await sleep(5);
++  assert.equal(o.cancel(queued, 'not needed'), true);
++  assert.equal(o.getJob(queued).status, 'cancelled');
++  assert.equal(o.cancel(running, 'stop'), true);
++  await o.drain();
++  assert.equal(o.getJob(running).status, 'cancelled');
++});
++
++test('marks timed out jobs as failed with error details', async () => {
++  const o = new WorkflowOrchestrator({ timeoutMs: 5 });
++  o.register('slow', async () => { await sleep(50); return 'late'; });
++  const id = o.submit({ input: null, steps: [{ task: 'slow' }] });
++  await o.drain();
++  const job = o.getJob(id);
++  assert.equal(job.status, 'failed');
++  assert.equal(job.error.name, 'TimeoutError');
++});

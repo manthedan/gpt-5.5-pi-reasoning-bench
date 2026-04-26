@@ -1,0 +1,34 @@
+TAP version 13
+# Subtest: set/get/has/size basics
+ok 1 - set/get/has/size basics
+  ---
+  duration_ms: 0.313875
+  type: 'test'
+  ...
+# Subtest: evicts least recently used on capacity overflow
+ok 2 - evicts least recently used on capacity overflow
+  ---
+  duration_ms: 0.04475
+  type: 'test'
+  ...
+# Subtest: updating existing keys refreshes recency without growing
+ok 3 - updating existing keys refreshes recency without growing
+  ---
+  duration_ms: 0.071375
+  type: 'test'
+  ...
+# Subtest: delete, clear, and keys in most-recent-first order
+ok 4 - delete, clear, and keys in most-recent-first order
+  ---
+  duration_ms: 0.566375
+  type: 'test'
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 4
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 39.146209

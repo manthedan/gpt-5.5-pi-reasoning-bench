@@ -1,0 +1,40 @@
+TAP version 13
+# Subtest: parses quoted commas, escaped quotes, comments, and blank lines
+ok 1 - parses quoted commas, escaped quotes, comments, and blank lines
+  ---
+  duration_ms: 4.053041
+  type: 'test'
+  ...
+# Subtest: profiles basic column statistics and inferred types
+ok 2 - profiles basic column statistics and inferred types
+  ---
+  duration_ms: 12.154583
+  type: 'test'
+  ...
+# Subtest: detects duplicate primary keys and inconsistent row widths with suggestions
+ok 3 - detects duplicate primary keys and inconsistent row widths with suggestions
+  ---
+  duration_ms: 0.558875
+  type: 'test'
+  ...
+# Subtest: handles embedded newlines, duplicate headers, and unterminated quote warnings
+ok 4 - handles embedded newlines, duplicate headers, and unterminated quote warnings
+  ---
+  duration_ms: 0.066125
+  type: 'test'
+  ...
+# Subtest: detects required violations, mixed types, and suspicious dates
+ok 5 - detects required violations, mixed types, and suspicious dates
+  ---
+  duration_ms: 0.252
+  type: 'test'
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 61.273625

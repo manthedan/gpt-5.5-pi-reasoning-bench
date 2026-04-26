@@ -1,0 +1,33 @@
+diff --git a/range.js b/range.js
+index f777be2..7f889d4 100644
+--- a/range.js
++++ b/range.js
+@@ -1,12 +1,21 @@
++function parseRange(range) {
++  if (!range) throw new TypeError('ranges are required');
++
++  const start = new Date(range.start);
++  const end = new Date(range.end);
++
++  if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime()) || start > end) {
++    throw new RangeError('invalid range');
++  }
++
++  return { start, end };
++}
++
+ export function overlaps(a, b) {
+-  if (!a || !b) throw new TypeError('ranges are required');
+-  const startA = new Date(a.start);
+-  const endA = new Date(a.end);
+-  const startB = new Date(b.start);
+-  const endB = new Date(b.end);
++  const { start: startA, end: endA } = parseRange(a);
++  const { start: startB, end: endB } = parseRange(b);
+ 
+-  // BUG: treats adjacent ranges as overlapping and accepts invalid ranges.
+-  return startA <= endB && startB <= endA;
++  return startA < endB && startB < endA;
+ }
+ 
+ export function mergeRanges(ranges) {

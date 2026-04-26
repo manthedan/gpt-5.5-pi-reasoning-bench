@@ -1,0 +1,75 @@
+Pi session report
+=================
+Session: 019dc8b4-2d3f-743d-bf74-d846dc77d6d9  cwd: /Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/workspaces/js-agent-session-inspector-open-ended__medium__r1
+Time range: 2026-04-26T07:32:24.519Z → 2026-04-26T07:33:35.121Z (1m 11s)
+Active branch: 21 message(s), leaf 6a9e84d9
+Assistant turns: 9; user turns: 1; tool results: 11
+Tokens: 66385 total (input 14851, output 6990, cache read 44544, cache write 0)
+Cost: $0.0000
+Tool calls: bash×4, read×4, edit×2, write×1
+Files touched (4): EVALUATION_RUBRIC.md, package.json, session-inspector.js, session-inspector.test.js
+Errors: 1 (0 malformed line(s), 1 tool error(s))
+Productivity signals:
+- 9 assistant turn(s) on active branch
+- 11 tool call(s), suggesting external inspection or edits
+- 4 file path(s) inferred from tool use
+- Active branch ends with an assistant response
+Anomalies:
+- Line 4: Message 0b4305f3 references missing parent 89dd12cc
+- 1 message(s) have missing parents
+
+---SELF_ANALYSIS_JSON---
+{
+  "entries": 24,
+  "diagnostics": 0,
+  "metrics": {
+    "entries": 24,
+    "messages": 21,
+    "userTurns": 1,
+    "assistantTurns": 9,
+    "toolResults": 11,
+    "toolCalls": {
+      "bash": 4,
+      "read": 4,
+      "write": 1,
+      "edit": 2
+    },
+    "toolCallIds": {
+      "call_KHrgRj9kU5obK71mtjILA1Cc|fc_045ffcc78215f5600169edbf8a1e988190b039d455e4a3572f": "bash",
+      "call_ur1Y8qDf6AEHkasbGfYce2um|fc_045ffcc78215f5600169edbf8bfe508190b9fa2b0f74d032dc": "read",
+      "call_UH4O4MsabAk2ihEOlSMVxrJR|fc_045ffcc78215f5600169edbf8bfe60819090ae25947d1e3135": "read",
+      "call_Pw8Bx6zDmBLijN7xadtlG6H6|fc_045ffcc78215f5600169edbf8bfe68819085def00f771e9d8b": "read",
+      "call_X84MC2ciLOTTAWs1IVUlKTNW|fc_045ffcc78215f5600169edbf8bfe7081908075c5010588c266": "read",
+      "call_WSrL1wdwEBUwhnW11xanmBdQ|fc_045ffcc78215f5600169edbf9434348190ae73531470a77ae6": "write",
+      "call_huol8AfQZFNSIRfGKX36aMl8|fc_045ffcc78215f5600169edbfbaa4548190b17b6e2057abf371": "bash",
+      "call_RSTQk30jCMbmsDRkiaHzNoob|fc_045ffcc78215f5600169edbfc0038081909f10a2226c18b69b": "edit",
+      "call_koMgHjsZuLBbLUssmDKIJmhO|fc_045ffcc78215f5600169edbfc1273881908b101196fd120125": "bash",
+      "call_5eGtTgfM0AqiS9fhogFbtJZ0|fc_045ffcc78215f5600169edbfc89bb88190b72dc039207b9891": "edit",
+      "call_5xDhD3M2hnwlz08Rkldg0wqL|fc_045ffcc78215f5600169edbfc9e22881909726c10e788ba748": "bash"
+    },
+    "toolErrorCount": 1,
+    "errorCount": 1,
+    "malformedLines": 0,
+    "inputTokens": 14851,
+    "outputTokens": 6990,
+    "cacheReadTokens": 44544,
+    "cacheWriteTokens": 0,
+    "totalTokens": 66385,
+    "cost": 0,
+    "startTime": "2026-04-26T07:32:24.519Z",
+    "endTime": "2026-04-26T07:33:35.121Z",
+    "startTimestampMs": 1777188744519,
+    "endTimestampMs": 1777188815121,
+    "durationMs": 70602,
+    "filesTouched": [
+      "session-inspector.js",
+      "session-inspector.test.js",
+      "package.json",
+      "EVALUATION_RUBRIC.md"
+    ],
+    "sessionId": "019dc8b4-2d3f-743d-bf74-d846dc77d6d9",
+    "cwd": "/Users/macthedan/pi-reasoning-bench/results/2026-04-26T06-22-22-910Z/workspaces/js-agent-session-inspector-open-ended__medium__r1",
+    "activeBranchLength": 21,
+    "branchCount": 1
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "id": "js-markdown-refactor",
+  "title": "Refactor markdown table parser",
+  "prompt": "The markdown table parser works for the simplest case but fails common edge cases. Refactor it to pass the tests while keeping a small, dependency-free implementation. Prefer clear helper functions over clever regex-only code. Run the tests before finishing.",
+  "testCommand": "node --test",
+  "files": {
+    "package.json": "{\n  \"name\": \"markdown-table-task\",\n  \"type\": \"module\",\n  \"scripts\": {\"test\": \"node --test\"}\n}\n",
+    "table.js": "export function parseMarkdownTable(markdown) {\n  const lines = markdown.trim().split('\\n');\n  const headers = lines[0].split('|').map(s => s.trim()).filter(Boolean);\n  return lines.slice(2).map(line => {\n    const cells = line.split('|').map(s => s.trim()).filter(Boolean);\n    return Object.fromEntries(headers.map((header, i) => [header, cells[i] ?? '']));\n  });\n}\n",
+    "table.test.js": "import test from 'node:test';\nimport assert from 'node:assert/strict';\nimport { parseMarkdownTable } from './table.js';\n\ntest('parses basic table', () => {\n  assert.deepEqual(parseMarkdownTable(`\n| name | age |\n| --- | ---: |\n| Ada | 36 |\n| Linus | 56 |\n`), [\n    { name: 'Ada', age: '36' },\n    { name: 'Linus', age: '56' }\n  ]);\n});\n\ntest('preserves empty cells and handles missing outer pipes', () => {\n  assert.deepEqual(parseMarkdownTable(`\nname | age | city\n--- | --- | ---\nAda |  | London\nBob | 42 |\n`), [\n    { name: 'Ada', age: '', city: 'London' },\n    { name: 'Bob', age: '42', city: '' }\n  ]);\n});\n\ntest('supports escaped pipe characters in cells', () => {\n  assert.deepEqual(parseMarkdownTable(`\n| package | description |\n| --- | --- |\n| a \\| b | contains a pipe |\n`), [\n    { package: 'a | b', description: 'contains a pipe' }\n  ]);\n});\n\ntest('ignores blank lines before and after table', () => {\n  assert.deepEqual(parseMarkdownTable(`\n\n| k | v |\n| --- | --- |\n| x | y |\n\n`), [{ k: 'x', v: 'y' }]);\n});\n\ntest('throws for malformed tables', () => {\n  assert.throws(() => parseMarkdownTable('not a table'), SyntaxError);\n  assert.throws(() => parseMarkdownTable('| a | b |\\n| --- |\\n| 1 | 2 |'), SyntaxError);\n});\n"
+  }
+}
